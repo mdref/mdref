@@ -2,8 +2,6 @@
 
 error_reporting(E_ALL &~ E_DEPRECATED);
 
-define("OUTPUT", fopen("php://memory", "w+"));
-
 function cut(array $lines, array $specs) {
 	$delim = "[[:space:]]+";
 	$bytes = [];
@@ -69,98 +67,139 @@ function ns($file) {
 }
 
 function urlpath($dir, $file) {
-	return (strlen($dir) ? $dir . "/" : "") . urlencode($file);
+	return (strlen($dir) ? $dir . "/" : "") . basename($file, ".md");
 }
 
-function ls($dir, $invert = false) {
-	fprintf(OUTPUT, "<ul>\n");
-	foreach (scandir($dir) as $file) {
-		$dir = trim($dir, "./");
-		$html = "";
-		if ($file === ".") {
-			continue;
-		} elseif ($file === "..") {
-			if ($dir === "" || $invert) {
+function ls($dir) {
+	$dir = rtrim(is_dir($dir) ? $dir : dirname($dir) ."/". basename($dir, ".md"), "/");
+	printf("<ul>\n");
+	printf("<li><a href=/>Home</a></li>\n");
+	if ($dir !== "." && ($dn = dirname($dir)) !== ".") {
+		printf("<li><a href=/%s>%s</a></li>\n", 
+			urlpath($dir, ".."),
+			ns($dn));
+	}
+	if (is_dir($dir)) {
+		if ($dir !== ".") {
+			printf("<li>%s</li>\n", ns($dir));
+		}
+		foreach (scandir($dir) as $file) {
+			/* ignore dot-files */
+			if ($file{0} === ".") {
 				continue;
 			}
-			$name = sprintf("namespace %s", ns(dirname($dir)));
-		} elseif (!$invert && is_dir("./$dir/$file")) {
-			$name = sprintf("namespace %s", ns("./$dir/$file"));
-		} elseif (!$invert && ctype_upper($file{0})) {
-			$name = join(" ", cut(head("./$dir/$file"), ["f"=>"1-2"]));
-		} elseif (!$invert || ctype_upper($file{0})) {
-			continue;
-		} else {
-			$name = ns($dir)."::".basename($file, ".md");
-			$html = "<p>".join(" ", cut(head("./$dir/$file"), ["f"=>"1-"]))."</p>";
+			
+			$path = "$dir/$file";
+			
+			if (is_file($path)) {
+				$pi = pathinfo($path);
+				/* ignore files not ending in .md */
+				if (!isset($pi["extension"]) || $pi["extension"] != "md") {
+					continue;
+				}
+				if (!ctype_upper($file{0}) && !is_dir("$dir/".$pi["filename"])) {
+					continue;
+				}
+			} else {
+				/* ignore directories where an companying file exists */
+				if (is_file("$path.md")) {
+					continue;
+				}
+			}
+			
+			printf("<li><a href=\"/%s\">%s</a></li>\n", 
+				urlpath($dir, $file),
+				ns("$dir/".basename($file, ".md")));
 		}
-
-		fprintf(OUTPUT, "<li><a href=\"/%s\">%s</a>%s</li>\n",
-			urlpath($dir, $file),
-			htmlspecialchars($name),
-			$html);
 	}
-	fprintf(OUTPUT, "</ul>\n");
+	
+	printf("</ul>\n");
 }
 
 function ml($file) {
 	$pi = pathinfo($file);
 	if (ctype_upper($pi["filename"][0])) {
-		fprintf(OUTPUT, "<h2>Methods:</h2>\n");
-		$el = $pi["dirname"] . "/" . $pi["filename"];
-		ls($el, true);
+		printf("<h2>Methods:</h2>\n");
+		$dir = $pi["dirname"] . "/" . $pi["filename"];
+		if (is_dir($dir)) {
+			printf("<ul>\n");
+			foreach (scandir($dir) as $file) {
+				if (!is_file("$dir/$file") || ctype_upper($file{0})) {
+					continue;
+				}
+				printf("<li><h3>%s</h3><p>%s</p></li>\n",
+					basename($file, ".md"),
+					join(" ", cut(head("$dir/$file"), ["f"=>"1-"]))
+				);
+			}
+			printf("</ul>\n");
+		}
 	}
 }
 
 function md($file) {
-	$r = fopen($file, "r");
-	$md = MarkdownDocument::createFromStream($r);
-	$md->compile();
-	$md->writeHtml(OUTPUT);
-	unset($md);
-	fclose($r);
-
-	// BS Markdown seeks around...
-	fseek(OUTPUT, 0, SEEK_END);
-	
-	ml($file);
+	$file = rtrim($file, "/");
+	if (is_file($file) || is_file($file .= ".md")) {
+		$r = fopen($file, "r");
+		$md = MarkdownDocument::createFromStream($r);
+		$md->compile();
+		echo $md->getHtml();
+		fclose($r);
+		ml($file);
+	} else {
+		printf("<h1>Quick Markdown Doc Browser</h1>\n");
+		printf("<p>v0.1.0</p>\n");
+		printf("<p>");
+		ob_start(function($s) {
+			return nl2br(htmlspecialchars($s));
+		});
+		readfile("LICENSE");
+		ob_end_flush();
+		printf("</p>\n");
+	}
 }
 
+
+function index($pn) {
+	?>
+	<!doctype html>
+	<html>
+	<head>
+		<meta charset="utf-8">
+		<title><?=ns($pn)?></title>
+		<link rel="stylesheet" href="/index.css">
+	</head>
+	<body>
+		<div class="sidebar">
+			<?php ls($pn); ?>
+		</div>
+		<?php md($pn); ?>
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
+		<script src="/index.js"></script>
+	</body>
+	</html>
+	<?php
+}
+
+chdir($_SERVER["DOCUMENT_ROOT"]);
+$t = ["css"=>"text/css", "js"=>"application/javascript"];
 $r = new http\Env\Request;
 $u = new http\Url($r->getRequestUrl());
-$t = ["css"=>"text/css", "js"=>"application/javascript"];
+$s = new http\Env\Response;
 
 switch($u->path) {
 case "/index.js":
 case "/index.css":
-	$s = new http\Env\Response;
 	$s->setHeader("Content-type", $t[pathinfo($u->path, PATHINFO_EXTENSION)]);
 	$s->setBody(new http\Message\Body(fopen(basename($u->path), "r")));
 	$s->send();
 	exit;
-}
-
-if (is_dir(".".$u->path)) {
-	ls(".".$u->path);
-} else {
-	md(".".$u->path);
+default:
+	ob_start($s);
+	index(".".$u->path);
+	ob_end_flush();
+	$s->send();
+	break;
 }
 
 ?>
-<!doctype html>
-<html>
-<head>
-<meta charset="utf-8">
-<title><?=$u->path?></title>
-<link rel="stylesheet" href="/index.css">
-</head>
-<body>
-<?php
-rewind(OUTPUT);
-fpassthru(OUTPUT);
-fclose(OUTPUT);
-?>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
-<script src="/index.js"></script>
-</body>
-</html>
