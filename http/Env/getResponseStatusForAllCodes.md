@@ -4,12 +4,12 @@ Retrieve a list of all known HTTP response status.
 
 ## Parameters:
 
-> None.
+None.
 
 ## Returns:
 
-* ```array``` mapping of the form \[  
+* array mapping of the form \[  
   ...  
-  ```int $code``` => ```string $status```  
+  int $code => string $status  
   ...  
   \]

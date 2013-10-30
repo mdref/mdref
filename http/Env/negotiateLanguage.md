@@ -6,12 +6,12 @@ Negotiate the client's preferred language.
 
 ## Params:
 
-* ```array $supported```  
+* array $supported  
   List of supported content languages.
-* Optional reference ```array &$result```  
+* Optional reference array &$result  
   Out parameter recording negotiation results.
   
 ## Returns:
 
-* ```NULL```, if negotiation fails.
-* ```string```, the negotiated language.
+* NULL, if negotiation fails.
+* string, the negotiated language.

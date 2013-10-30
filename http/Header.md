@@ -4,20 +4,20 @@ The http\Header class provides methods to manipulate, match, negotiate and seria
 
 ## Constants:
 
-* ```MATCH_LOOSE```  
+* MATCH_LOOSE  
   None of the following match constraints applies.
-* ```MATCH_CASE```  
+* MATCH_CASE  
   Perform case sensitive matching.
-* ```MATCH_WORD```  
+* MATCH_WORD  
   Match only on word boundaries (according by CTYPE alpha-numeric).
-* ```MATCH_FULL```  
+* MATCH_FULL  
   Match the complete string.
-* ```MATCH_STRICT```  
-  Case sensitively match the full string (same as ```MATCH_CASE|MATCH_FULL```).
+* MATCH_STRICT  
+  Case sensitively match the full string (same as MATCH_CASE|MATCH_FULL).
 
 ## Properties:
 
-* ```public $name = NULL```  
+* public $name = NULL  
   The name of the HTTP header.
-* ```public $value = NULL```  
+* public $value = NULL  
   The value of the HTTP header.

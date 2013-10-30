@@ -4,8 +4,8 @@ Implements Serializable.
 
 ## Params:
 
-> None.
+None.
 
 ## Returns:
 
-* ```string```, serialized representation of HTTP header (i.e. "Name: value")
+* string, serialized representation of HTTP header (i.e. "Name: value")

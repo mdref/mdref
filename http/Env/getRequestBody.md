@@ -4,12 +4,12 @@ Retreive the current HTTP request's body.
 
 ## Parameters:
 
-* Optional ```string $body_class_name```  
+* Optional string $body_class_name  
   A user class extending http\Body.
 
 ## Returns:
 
-* ```http\Message\Body``` instance representing the request body
+* http\Message\Body instance representing the request body
 
 ## Throws:
 

@@ -5,8 +5,8 @@ Returns a stringified version of the parameters.
 
 ## Params:
 
-> None.
+None.
 
 ## Returns:
 
-* ```string``` version of the parameters.
+* string version of the parameters.

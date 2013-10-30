@@ -6,12 +6,12 @@ Negotiate the client's preferred encoding.
 
 ## Params:
 
-* ```array $supported```  
+* array $supported  
   List of supported content encodings.
-* Optional reference ```array &$result```  
+* Optional reference array &$result  
   Out parameter recording negotiation results.
   
 ## Returns:
 
-* ```NULL```, if negotiation fails.
-* ```string```, the negotiated encoding.
+* NULL, if negotiation fails.
+* string, the negotiated encoding.

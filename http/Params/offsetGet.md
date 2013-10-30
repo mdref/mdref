@@ -4,9 +4,9 @@ Implements ArrayAccess.
 
 ## Params:
 
-* ```string $name```  
+* string $name  
   The offset to retrieve.
   
 ## Returns:
 
-* ```mixed```, contents at offset.
+* mixed, contents at offset.

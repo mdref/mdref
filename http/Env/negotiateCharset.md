@@ -6,12 +6,12 @@ Negotiate the client's preferred character set.
 
 ## Params:
 
-* ```array $supported```  
+* array $supported  
   List of supported content character sets.
-* Optional reference ```array &$result```  
+* Optional reference array &$result  
   Out parameter recording negotiation results.
   
 ## Returns:
 
-* ```NULL```, if negotiation fails.
-* ```string```, the negotiated character set.
+* NULL, if negotiation fails.
+* string, the negotiated character set.

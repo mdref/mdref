@@ -6,16 +6,16 @@ Generic negotiator. For specific client negotiation see http\Env::negotiateConte
 
 ## Params:
 
-* ```string $params```  
+* string $params  
   HTTP header parameter's value to negotiate.
-* ```array $supported```  
+* array $supported  
   List of supported negotiation operands.
-* Optional ```string $prim_typ_sep```  
+* Optional string $prim_typ_sep  
   A "primary type separator", i.e. that would be a hyphen for content language negotiation (en-US, de-DE, etc.).
-* Optional reference ```array &$result```  
+* Optional reference array &$result  
   Out parameter recording negotiation results.
   
 ## Returns:
 
-* ```NULL```, if negotiation fails.
-* ```string```, the closest match negotiated, or the default (first entry of $supported).
+* NULL, if negotiation fails.
+* string, the closest match negotiated, or the default (first entry of $supported).

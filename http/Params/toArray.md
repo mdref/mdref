@@ -4,8 +4,8 @@ Convenience method that simply returns http\Params::$params.
 
 ## Params:
 
-> None.
+None.
 
 ## Returns:
 
-* ```array``` of paramters.
+* array of paramters.

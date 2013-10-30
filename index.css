@@ -6,12 +6,25 @@ body {
 	font-family: monospace;
 	font-size: 1.5em;
 	margin: 0;
-	padding: 4em 0 0 0;
+	padding: 0;
 }
 
 body>* {
+	margin-left: 1em;
+}
+
+.sidebar {
+	float: right;
+	width: 400px;
+	background: #f0f0f0;
+	border-bottom-left-radius: 10px;
+	padding: 0;
+	margin-bottom: 1em;
 	margin-left: 2em;
-	margin-right: 2em;
+}
+.sidebar>ul {
+	paddinng: 1em;
+	margin-left: 1em;
 }
 
 code { 
@@ -24,22 +37,17 @@ code {
 }
 
 h1 {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
 	margin: 0;
 	padding: 1em;
 }
 p {
 	color: #3f3f3f;
-	margin: 1em;
+	margin: 1em 2em;
 }
 
 blockquote {
 	padding: 1em;
 	border-radius: 4px;
-	max-width: 1000px;
 }
 blockquote, blockquote p {
 	color: #f0f0f0;
@@ -57,10 +65,17 @@ a {
 .var {
 	color: #800000;
 }
+.constant {
+	color: #2e8b57;
+}
 
 .invert, h1, blockquote, blockquote p {
-	background: #030303;
-	color: #f0f0f0;
+	background: #708090;
+	color: #f5f5dc;
+}
+
+.invert .constant, h1 .constant, blockquote .constant {
+	color: #98fb98;
 }
 
 .invert .var, h1 .var, blockquote .var {
@@ -70,4 +85,3 @@ a {
 .invert a, h1 a, blockquote a {
 	color: #b0e0e6;
 }
-

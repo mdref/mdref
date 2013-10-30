@@ -4,8 +4,8 @@ Implements ArrayAccess.
 
 ## Params:
 
-* ```string $name```  
+* string $name  
   The offset to modify.
-* ```mixed $value```  
+* mixed $value  
   The value to set.
   

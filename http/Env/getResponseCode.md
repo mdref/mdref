@@ -4,9 +4,9 @@ Get the HTTP response code to send.
 
 ## Parameters:
 
-> None.
+None.
 
 ## Returns:
 
-* ```int```, the HTTP response code.
+* int, the HTTP response code.
 

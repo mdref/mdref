@@ -6,20 +6,20 @@ Negotiate the client's preferred MIME content type.
 
 ## Params:
 
-* ```array $supported```  
+* array $supported  
   List of supported MIME content types.
-* Optional reference ```array &$result```  
+* Optional reference array &$result  
   Out parameter recording negotiation results.
   
 ## Returns:
 
-* ```NULL```, if negotiation fails.
-* ```string```, the negotiated content type.
+* NULL, if negotiation fails.
+* string, the negotiated content type.
 
 ## Example:
 
-A client indicates his accepted MIME content types by sending an ```Accept```
-header. The static ```http\Env``` class provides a facility to negotiate the
+A client indicates his accepted MIME content types by sending an Accept
+header. The static http\Env class provides a facility to negotiate the
 client's preferred content type:
 
     <?php

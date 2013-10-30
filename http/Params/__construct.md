@@ -4,15 +4,15 @@ Instantiate a new HTTP (header) parameter set.
 
 ## Params:
 
-* Optional ```mixed $params```  
+* Optional mixed $params  
   Pre-parsed parameters or a string to be parsed.
-* Optional ```mixed $ps```  
+* Optional mixed $ps  
   The parameter separator(s).
-* Optional ```mixed $as```  
+* Optional mixed $as  
   The argument separator(s).
-* Optional ```mixed $vs```  
+* Optional mixed $vs  
   The value separator(s).
-* Optional ```int $flags```  
+* Optional int $flags  
   The modus operandi. See http\Params::PARSE_* constants.
 
 ## Throws:

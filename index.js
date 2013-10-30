@@ -1,4 +1,13 @@
+function is_constant(s) {
+	return s.length > 3 &&  s.toUpperCase(s) === s;
+}
+
+function is_variable(s) {
+	return s.substring(0,1) === "$";
+}
+
 function type(s) {
+	var i, j, t;
 	
 	// nothing
 	if (!s.match(/[a-zA-Z]/)) {
@@ -15,6 +24,7 @@ function type(s) {
 	case "array":
 	case "object":
 	case "callable":
+	case "mixed":
 		return "<code>";
 		
 	// keywords
@@ -35,16 +45,22 @@ function type(s) {
 		return "<em>";
 	}
 	
-	var is_namespace, is_method;
-	
-	if ((is_method = (s.indexOf("::") !== -1)) || (is_namespace = (s.indexOf("\\") !== -1))) {
-		return "<a href=\"/" + s.replace(/::|\\/g, "/") + (is_method ? ".md":"") + "\">";
+	// class members
+	if (-1 !== (i = s.indexOf("::"))) {
+		t = s.substring(i+2);
+		if (!is_constant(t) && !is_variable(t)) {
+			// methods
+			return "<a href=\"/" + s.replace(/::|\\/g, "/") + "\">";
+		}
+	}
+	if (-1 !== (j = s.indexOf("\\"))) {
+		return "<a href=\"/" + s.replace(/\\/g, "/").replace(/::|$/, "#") + "\">";
 	}
 	
 	switch (s.toLowerCase()) {
 	// variables
 	default:
-		if (s.substring(0,1) !== "$") {
+		if (!is_variable(s)) {
 			break;
 		}
 	// special constants
@@ -55,8 +71,8 @@ function type(s) {
 	}
 	
 	// constants
-	if (s.toUpperCase() === s) {
-		return "<code>";
+	if (is_constant(s)) {
+		return "<span class=\"constant\">";
 	}
 }
 function node(s) {
@@ -94,8 +110,32 @@ function walk(i, e) {
 		}
 	});
 }
-$(document).ready(function() {
-	//console.log("ready");
 
+function hashchange() {
+	if (location.hash.length > 1) {
+		var hash = location.hash.substring(1);
+		
+		$(is_variable(hash) ? ".var" : ".constant").each(function(i, c) {
+			
+			if (c.textContent === hash) {
+				var $c = $(c);
+				
+				$(window).scrollTop($c.offset().top - 100);
+				$c.fadeOut("slow").queue(function(next) {
+					this.style.color = "red";
+					next();
+				}).fadeIn("fast").fadeOut("fast").queue(function(next) {
+					this.style.color = "";
+					next();
+				}).fadeIn("slow");
+				return false;
+			}
+		});
+	}
+}
+
+$(function() {
 	$("h1,h2,h3,h4,h5,h6,p,li,code").each(walk);
+	$(window).on("hashchange", hashchange);
+	hashchange();
 });

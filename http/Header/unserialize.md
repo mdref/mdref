@@ -4,6 +4,6 @@ Implements Serializable.
 
 ## Params:
 
-* ```string $serialized```  
+* string $serialized  
   The serialized HTTP header (i.e. "Name: value")
 

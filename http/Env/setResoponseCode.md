@@ -4,9 +4,9 @@ Set the HTTP response code to send.
 
 ## Params:
 
-* ```int $code```  
+* int $code  
   The HTTP response status code.
   
 ## Returns:
 
-* ```bool``` Success.
+* bool Success.

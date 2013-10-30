@@ -4,9 +4,9 @@ Implements ArrayAccess.
 
 ## Params:
 
-* ```string $name```  
+* string $name  
   The offset to look after.
 
 ## Returns:
 
-* ```bool``` Existence.
+* bool Existence.

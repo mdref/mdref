@@ -4,9 +4,9 @@ Create an http\Header instance for use of simple matching or negotiation. If the
 
 ## Params:
 
-* Optional ```string $name```  
+* Optional string $name  
   The HTTP header name.
-* Optional ```mixed $value```  
+* Optional mixed $value  
   The value of the header.
 
 # Throws: 

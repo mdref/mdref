@@ -4,11 +4,11 @@ Parse HTTP headers.
 
 ## Params:
 
-* ```string $header```  
+* string $header  
   The complete string of headers.
-* Optional ```string $header_class```  
+* Optional string $header_class  
   A class extending http\Header.
   
 ## Returns:
 
-* ```array``` of parsed headers, where the elements are instances of $header_class if specified.
+* array of parsed headers, where the elements are instances of $header_class if specified.

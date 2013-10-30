@@ -2,13 +2,13 @@
 
 ## Constants:
 
-> None.
+None.
 
 ## Properties:
 
-* ```protected $query = NULL```  
+* protected $query = NULL  
   The request's query parameters. ($_GET)
-* ```protected $form = NULL```  
+* protected $form = NULL  
   The request's form parameters. ($_POST)
-* ```protected $files = NULL```  
+* protected $files = NULL  
   The request's form uploads. ($_FILES)
