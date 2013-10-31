@@ -1,5 +1,9 @@
 # class http\Env\Request extends http\Message
 
+The http\Env\Request class' instances represent the server's current HTTP request.
+
+See http\Message for inherited members.
+
 ## Constants:
 
 None.

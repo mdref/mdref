@@ -62,30 +62,6 @@ function head($file, $lines = 1) {
 	return $ld;
 }
 
-function tail($file, $lines = 1) {
-	$bs = 512;
-	$fs = 0;
-	$ld = [];
-	if (is_resource($file) || ($file = fopen($file, "r"))) {
-		fseek($file, 0, SEEK_END);
-		$fs = ftell($file);
-		$fp = $fs;
-		$ls = "";
-		while ($fp > 0 && count($ld) < $lines) {
-			do {
-				fseek($file, -min($fp, $bs), SEEK_CUR);
-				$fp = ftell($file);
-				$ls = fread($file, $fs-$fp) . $ls;
-			} while ($fp > 0 && -1 === ($eol = strrpos($ls, "\n", $ls)));
-			
-			array_unshift($ld, substr($ls, $eol));
-			$ls = substr($ls, 0, $eol-1);
-		}
-	}
-	
-	return $ld;
-}
-
 function ns($file) {
 	return str_replace("/", "\\", str_replace("//", "/", trim($file, "/.")));
 }
@@ -97,16 +73,17 @@ function urlpath($dir, $file) {
 function ls($dir) {
 	$dir = rtrim(is_dir($dir) ? $dir : dirname($dir) ."/". basename($dir, ".md"), "/");
 	printf("<ul>\n");
-	printf("<li><a href=/>Home</a></li>\n");
+	printf("<li>&lArr; <a href=/>Home</a></li>\n");
 	if ($dir !== "." && ($dn = dirname($dir)) !== ".") {
-		printf("<li><a href=/%s>%s</a></li>\n", 
+		printf("<li>&uArr; <a href=/%s>%s</a></li>\n", 
 			urlpath($dir, ".."),
 			ns($dn));
 	}
 	if (is_dir($dir)) {
 		if ($dir !== ".") {
-			printf("<li>%s</li>\n", ns($dir));
+			printf("<ul>\n<li>&nbsp; %s</li>\n", ns($dir));
 		}
+		printf("<ul>\n");
 		foreach (scandir($dir) as $file) {
 			/* ignore dot-files */
 			if ($file{0} === ".") {
@@ -121,7 +98,7 @@ function ls($dir) {
 				if (!isset($pi["extension"]) || $pi["extension"] != "md") {
 					continue;
 				}
-				if (!ctype_upper($file{0}) && !is_dir("$dir/".$pi["filename"])) {
+				if (!is_dir("$dir/".$pi["filename"])) {
 					continue;
 				}
 			} else {
@@ -131,9 +108,13 @@ function ls($dir) {
 				}
 			}
 			
-			printf("<li><a href=\"/%s\">%s</a></li>\n", 
+			printf("<li>&rArr; <a href=\"/%s\">%s</a></li>\n", 
 				urlpath($dir, $file),
 				ns("$dir/".basename($file, ".md")));
+		}
+		printf("</ul>\n");
+		if ($dir !== ".") {
+			printf("</ul>\n");
 		}
 	}
 	
@@ -142,54 +123,59 @@ function ls($dir) {
 
 function ml($file) {
 	$pi = pathinfo($file);
-	if (ctype_upper($pi["filename"][0])) {
+	if (!isset($pi["extension"])) {
+		return;
+	}
+	if ($pi["extension"] !== "md") {
+		return;
+	}
+	if (!ctype_upper($pi["filename"][0])) {
+		return;
+	}
+	$dir = $pi["dirname"] . "/" . $pi["filename"];
+	if (is_dir($dir)) {
 		printf("<h2>Methods:</h2>\n");
-		$dir = $pi["dirname"] . "/" . $pi["filename"];
-		if (is_dir($dir)) {
-			printf("<ul>\n");
-			foreach (scandir($dir) as $file) {
-				if (!is_file("$dir/$file") || ctype_upper($file{0})) {
-					continue;
-				}
-				printf("<li><h3><a href=\"/%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
-					urlpath($dir, $file),
-					basename($file, ".md"),
-					@end(head("$dir/$file", 3)),
-					join(" ", cut(head("$dir/$file"), ["f"=>"1-"]))
-				);
+		printf("<ul>\n");
+		foreach (scandir($dir) as $file) {
+			if (!is_file("$dir/$file") || ctype_upper($file{0})) {
+				continue;
 			}
-			printf("</ul>\n");
+			printf("<li><h3><a href=\"/%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
+				urlpath($dir, $file),
+				basename($file, ".md"),
+				@end(head("$dir/$file", 3)),
+				join(" ", cut(head("$dir/$file"), ["f"=>"1-"]))
+			);
 		}
+		printf("</ul>\n");
 	}
 }
 
 function md($file) {
 	$file = rtrim($file, "/");
 	if (is_file($file) || is_file($file .= ".md")) {
-		if (extension_loaded("discount") && getenv("DISCOUNT")) {
+		$pi = pathinfo($file);
+		
+		switch (@$pi["extension"]) {
+		case "md":
 			$r = fopen($file, "r");
 			$md = MarkdownDocument::createFromStream($r);
 			$md->compile(MarkdownDocument::AUTOLINK);
 			print str_replace("<br/>","<br />",$md->getHtml());
 			fclose($r);
-		} else {
-			printf("<script>document.write(markdown.toHTML(decodeURIComponent(\"%s\")));</script>\n",
-				rawurlencode(file_get_contents($file)));
+			ml($file);
+			break;
+		case null:
+			printf("<h1>%s</h1>", basename($file));
+			printf("<pre>%s</pre>\n", htmlspecialchars(file_get_contents($file)));
+			break;
 		}
-		ml($file);
 	} else {
-		printf("<h1>Quick Markdown Doc Browser</h1>\n");
-		printf("<p>v0.1.0</p>\n");
-		printf("<p>");
-		ob_start(function($s) {
-			return nl2br(htmlspecialchars($s));
-		});
-		readfile("LICENSE");
-		ob_end_flush();
-		printf("</p>\n");
+		http\Env::setResponseCode(404);
+		printf("<h1>Not Found</h1>\n");
+		printf("<blockquote><p>Sorry, I could not find <code>%s/%s</code>.</p></blockquote>", dirname($file), basename($file, ".md"));
 	}
 }
-
 
 function index($pn) {
 	?>
@@ -204,8 +190,9 @@ $s = new http\Env\Response;
 $p = ".". $u->path;
 
 switch($p) {
+case "./index.php":
+	exit;
 case "./index.js":
-case "./markdown.js":
 case "./index.css":
 	$s->setHeader("Content-type", $t[pathinfo($p, PATHINFO_EXTENSION)]);
 	$s->setBody(new http\Message\Body(fopen($p, "r")));
@@ -231,7 +218,25 @@ ob_start($s);
 	<div class="sidebar">
 		<?php ls($p); ?>
 	</div>
-	<?php md($p); ?>
+	<?php if ($p === "./") : ?>
+		<h1>Quick Markdown Documentation Browser</h1>
+		<p>v<?php readfile("VERSION")?></p>
+		<pre><?php
+			ob_start(function($s) {
+				return htmlspecialchars($s);
+			});
+			readfile("LICENSE");
+			ob_end_flush();
+		?></pre>
+	<?php else: ?>
+		<?php if (!md($p)): ?>
+		<?php endif; ?>
+	<?php endif; ?>
+	<footer>
+		<a href="/VERSION">Version</a>
+		<a href="/AUTHORS">Authors</a>
+		<a href="/LICENSE">License</a>
+	</footer>
 	<script src="/index.js"></script>
 </body>
 </html>

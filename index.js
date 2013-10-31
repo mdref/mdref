@@ -1,3 +1,7 @@
+function log() {
+	// console.log.apply(console, arguments);
+}
+
 function is_constant(s) {
 	return s.length > 1 && s.toUpperCase(s) === s;
 }
@@ -8,9 +12,9 @@ function is_variable(s) {
 
 var is_in_string = false;
 
-function type(s) {
+function type(s, nn) {
 	var i, j, t;
-	console.log("type", s);
+	//log("type", s);
 	// nothing
 	if (!s.match(/[a-zA-Z]/)) {
 		return;
@@ -27,14 +31,34 @@ function type(s) {
 	case "object":
 	case "callable":
 	case "mixed":
+	// Zend/SPL
+	case "stdClass":
+	case "Exception":
+	case "ErrorException":
+	case "Closure":
+	case "Generator":
+	case "Countable":
+	case "Serializable":
+	case "Traversable":
+	case "Iterator":
+	case "IteratorAggregate":
+	case "ArrayAccess":
+	case "ArrayObject":
+	case "ArrayIterator":
+	case "RecursiveArrayIterator":
+	case "SplObserver":
+	case "SplSubject":
 		return "<code>";
 		
 	// keywords
+	case "extends":
+	case "implements":
+		if (nn === "H1") {
+			return "<br>&nbsp;<em>";
+		}
 	case "class":
 	case "interface":
 	case "namespace":
-	case "extends":
-	case "implements":
 	case "public":
 	case "protected":
 	case "private":
@@ -80,27 +104,27 @@ function type(s) {
 	}
 }
 
-function node(s) {
-	//console.log("node", s);
+function node(s, nn) {
+	//log("node", s);
 	
 	var t;
 	
-	if ((t = type(s))) {
+	if ((t = type(s, nn))) {
 		return $(t).text(s);
 	}
 	return document.createTextNode(s);
 }
-function wrap(n) {
+function wrap(n, nn) {
 	var $n = $(n)
 	var a = [];
 
 	$n.text().split(/([^a-zA-Z0-9_\\\$:]+)/).forEach(function(v) {
-		a.push(node(v));
+		a.push(node(v, nn));
 	});
 	$n.replaceWith(a);
 }
 function walk(i, e) {
-	console.log("walk", i, e);
+	log("walk", i, e);
 
 	$.each($.makeArray(e.childNodes), function(i, n) {
 		switch (n.nodeName) {
@@ -109,7 +133,7 @@ function walk(i, e) {
 		case "HR":
 			break;
 		case "#text":
-			wrap(n);
+			wrap(n, e.nodeName);
 			break;
 		default:
 			walk(-1, n);
