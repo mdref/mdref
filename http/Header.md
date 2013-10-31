@@ -9,7 +9,7 @@ The http\Header class provides methods to manipulate, match, negotiate and seria
 * MATCH_CASE  
   Perform case sensitive matching.
 * MATCH_WORD  
-  Match only on word boundaries (according by CTYPE alpha-numeric).
+  Match only on word boundaries (according by CType alpha-numeric).
 * MATCH_FULL  
   Match the complete string.
 * MATCH_STRICT  

@@ -21,7 +21,7 @@ Parse, interpret and compose HTTP (header) parameters.
 * PARSE_DIMENSION  
   Parse sub dimensions indicated by square brackets.
 * PARSE_QUERY  
-  Parse URL query string (same as http\Params::PARSE_URLENCODED|http\Params::PARSE_DIMENSION).
+  Parse URL querystring (same as http\Params::PARSE_URLENCODED|http\Params::PARSE_DIMENSION).
 
 ## Properties:
 
