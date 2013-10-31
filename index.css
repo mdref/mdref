@@ -21,7 +21,7 @@ body>* {
 	background: #f0f0f0;
 	border-bottom-left-radius: 10px;
 	padding: 0;
-	margin-bottom: 1em;
+	margin-bottom: .2em;
 	margin-left: 2em;
 }
 .sidebar>ul {
@@ -111,7 +111,7 @@ li h3 {
 	border-radius: 4px;
 	display: inline-block;
 	width: auto;
-	padding: .5em;
+	padding: .2em;
 	margin: .5em 0 0 0;
 }
 
