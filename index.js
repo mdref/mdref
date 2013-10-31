@@ -1,14 +1,16 @@
 function is_constant(s) {
-	return s.length > 3 &&  s.toUpperCase(s) === s;
+	return s.length > 1 && s.toUpperCase(s) === s;
 }
 
 function is_variable(s) {
 	return s.substring(0,1) === "$";
 }
 
+var is_in_string = false;
+
 function type(s) {
 	var i, j, t;
-	
+	console.log("type", s);
 	// nothing
 	if (!s.match(/[a-zA-Z]/)) {
 		return;
@@ -39,6 +41,8 @@ function type(s) {
 	case "static":
 	case "final":
 	case "abstract":
+	case "self":
+	case "parent":
 	// phrases
 	case "Optional":
 	case "optional":
@@ -75,6 +79,7 @@ function type(s) {
 		return "<span class=\"constant\">";
 	}
 }
+
 function node(s) {
 	//console.log("node", s);
 	
@@ -89,45 +94,60 @@ function wrap(n) {
 	var $n = $(n)
 	var a = [];
 
-	$n.text().split(/([^a-zA-Z_\\\$:]+)/).forEach(function(v) {
+	$n.text().split(/([^a-zA-Z0-9_\\\$:]+)/).forEach(function(v) {
 		a.push(node(v));
 	});
 	$n.replaceWith(a);
 }
 function walk(i, e) {
-	//console.log("walk", i, e);
+	console.log("walk", i, e);
 
-	e && $.each(e.childNodes, function(i, n) {
-		//console.log(n.nodeName);
+	$.each($.makeArray(e.childNodes), function(i, n) {
 		switch (n.nodeName) {
 		case "A":
+		case "BR":
+		case "HR":
 			break;
 		case "#text":
 			wrap(n);
 			break;
 		default:
-			walk(n);
+			walk(-1, n);
+			break;
 		}
 	});
+}
+
+function blink(c) {
+	var $c = $(c);
+	
+	$c.fadeOut("slow").queue(function(next) {
+		this.style.color = "red";
+		next();
+	}).fadeIn("fast").fadeOut("fast").queue(function(next) {
+		this.style.color = "";
+		next();
+	}).fadeIn("slow");
 }
 
 function hashchange() {
 	if (location.hash.length > 1) {
 		var hash = location.hash.substring(1);
+		var name = is_variable(hash) ? ".var" : ".constant";
+		var scrolled = false;
 		
-		$(is_variable(hash) ? ".var" : ".constant").each(function(i, c) {
-			
+		$(name).each(hash.substring(hash.length-1) === "_" ? function(i, c) {
+			if (c.textContent.substring(0, hash.length) === hash) {
+				if (!scrolled) {
+					$(window).scrollTop($(c).offset().top - 100);
+					scrolled = true;
+				}
+				blink(c);
+			}
+		} : function(i, c) {
 			if (c.textContent === hash) {
-				var $c = $(c);
-				
-				$(window).scrollTop($c.offset().top - 100);
-				$c.fadeOut("slow").queue(function(next) {
-					this.style.color = "red";
-					next();
-				}).fadeIn("fast").fadeOut("fast").queue(function(next) {
-					this.style.color = "";
-					next();
-				}).fadeIn("slow");
+				$(window).scrollTop($(c).offset().top - 100);
+				blink(c);
 				return false;
 			}
 		});

@@ -3,10 +3,11 @@
 }
 
 body {
-	font-family: monospace;
+	font-family: Inconsolata, Monospace, 'Courier New', Courier, monospace;
 	font-size: 1.5em;
 	margin: 0;
 	padding: 0;
+	color: #3f3f3f;
 }
 
 body>* {
@@ -23,7 +24,6 @@ body>* {
 	margin-left: 2em;
 }
 .sidebar>ul {
-	paddinng: 1em;
 	margin-left: 1em;
 }
 
@@ -36,22 +36,28 @@ code {
 	box-shadow: 0 0 1px #999;
 }
 
-h1 {
-	margin: 0;
+code code {
+	display: inline;
+	padding: 0;
+	background: transparent;
+	border: none;
+	box-shadow: none;
+}
+
+pre > code {
 	padding: 1em;
 }
-p {
-	color: #3f3f3f;
+
+p, pre {
 	margin: 1em 2em;
 }
 
 blockquote {
-	padding: 1em;
 	border-radius: 4px;
+	border: 1px solid #800000;
+	background: #ffe4e1;
 }
-blockquote, blockquote p {
-	color: #f0f0f0;
-}
+
 ul {
 	margin-bottom: 2em;
 }
@@ -69,19 +75,39 @@ a {
 	color: #2e8b57;
 }
 
-.invert, h1, blockquote, blockquote p {
+h1, li h3 {
 	background: #708090;
 	color: #f5f5dc;
 }
 
-.invert .constant, h1 .constant, blockquote .constant {
+h1 {
+	margin: 0;
+	padding: 1em;
+}
+
+li h3 {
+	border-radius: 4px;
+	display: inline-block;
+	width: auto;
+	padding: .5em;
+	margin: .5em 0 0 0;
+}
+
+h1 .constant, li h3 .constant {
 	color: #98fb98;
 }
 
-.invert .var, h1 .var, blockquote .var {
+h1 .var, li h3 .var {
 	color: #f4a460;
 }
 
-.invert a, h1 a, blockquote a {
+h1 a, li h3 a {
 	color: #b0e0e6;
+}
+
+li h3 a {
+	text-decoration: none;
+}
+li h3 a:hover {
+	text-decoration: underline;
 }

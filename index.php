@@ -54,11 +54,35 @@ function cut(array $lines, array $specs) {
 
 function head($file, $lines = 1) {
 	$ld = [];
-	if (($fd = fopen($file, "r"))) {
+	if (is_resource($file) || ($file = fopen($file, "r"))) {
 		while ($lines--) {
-			$ld[] = fgets($fd);
+			$ld[] = fgets($file);
 		}
 	}
+	return $ld;
+}
+
+function tail($file, $lines = 1) {
+	$bs = 512;
+	$fs = 0;
+	$ld = [];
+	if (is_resource($file) || ($file = fopen($file, "r"))) {
+		fseek($file, 0, SEEK_END);
+		$fs = ftell($file);
+		$fp = $fs;
+		$ls = "";
+		while ($fp > 0 && count($ld) < $lines) {
+			do {
+				fseek($file, -min($fp, $bs), SEEK_CUR);
+				$fp = ftell($file);
+				$ls = fread($file, $fs-$fp) . $ls;
+			} while ($fp > 0 && -1 === ($eol = strrpos($ls, "\n", $ls)));
+			
+			array_unshift($ld, substr($ls, $eol));
+			$ls = substr($ls, 0, $eol-1);
+		}
+	}
+	
 	return $ld;
 }
 
@@ -127,8 +151,10 @@ function ml($file) {
 				if (!is_file("$dir/$file") || ctype_upper($file{0})) {
 					continue;
 				}
-				printf("<li><h3>%s</h3><p>%s</p></li>\n",
+				printf("<li><h3><a href=\"/%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
+					urlpath($dir, $file),
 					basename($file, ".md"),
+					@end(head("$dir/$file", 3)),
 					join(" ", cut(head("$dir/$file"), ["f"=>"1-"]))
 				);
 			}
@@ -140,11 +166,16 @@ function ml($file) {
 function md($file) {
 	$file = rtrim($file, "/");
 	if (is_file($file) || is_file($file .= ".md")) {
-		$r = fopen($file, "r");
-		$md = MarkdownDocument::createFromStream($r);
-		$md->compile();
-		echo $md->getHtml();
-		fclose($r);
+		if (extension_loaded("discount") && getenv("DISCOUNT")) {
+			$r = fopen($file, "r");
+			$md = MarkdownDocument::createFromStream($r);
+			$md->compile(MarkdownDocument::AUTOLINK);
+			print str_replace("<br/>","<br />",$md->getHtml());
+			fclose($r);
+		} else {
+			printf("<script>document.write(markdown.toHTML(decodeURIComponent(\"%s\")));</script>\n",
+				rawurlencode(file_get_contents($file)));
+		}
 		ml($file);
 	} else {
 		printf("<h1>Quick Markdown Doc Browser</h1>\n");
@@ -162,22 +193,6 @@ function md($file) {
 
 function index($pn) {
 	?>
-	<!doctype html>
-	<html>
-	<head>
-		<meta charset="utf-8">
-		<title><?=ns($pn)?></title>
-		<link rel="stylesheet" href="/index.css">
-	</head>
-	<body>
-		<div class="sidebar">
-			<?php ls($pn); ?>
-		</div>
-		<?php md($pn); ?>
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
-		<script src="/index.js"></script>
-	</body>
-	</html>
 	<?php
 }
 
@@ -186,20 +201,41 @@ $t = ["css"=>"text/css", "js"=>"application/javascript"];
 $r = new http\Env\Request;
 $u = new http\Url($r->getRequestUrl());
 $s = new http\Env\Response;
+$p = ".". $u->path;
 
-switch($u->path) {
-case "/index.js":
-case "/index.css":
-	$s->setHeader("Content-type", $t[pathinfo($u->path, PATHINFO_EXTENSION)]);
-	$s->setBody(new http\Message\Body(fopen(basename($u->path), "r")));
+switch($p) {
+case "./index.js":
+case "./markdown.js":
+case "./index.css":
+	$s->setHeader("Content-type", $t[pathinfo($p, PATHINFO_EXTENSION)]);
+	$s->setBody(new http\Message\Body(fopen($p, "r")));
 	$s->send();
 	exit;
-default:
-	ob_start($s);
-	index(".".$u->path);
-	ob_end_flush();
-	$s->send();
-	break;
 }
 
+ob_start($s);
+
 ?>
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title><?=ns($p)?></title>
+	<link rel="stylesheet" href="/index.css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
+	<?php if (!extension_loaded("discount") || !getenv("DISCOUNT")) : ?>
+	<script src="/markdown.js"></script>
+	<?php endif; ?>
+</head>
+<body>
+	<div class="sidebar">
+		<?php ls($p); ?>
+	</div>
+	<?php md($p); ?>
+	<script src="/index.js"></script>
+</body>
+</html>
+<?php
+
+ob_end_flush();
+$s->send();
