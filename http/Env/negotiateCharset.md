@@ -2,7 +2,7 @@
 
 Negotiate the client's preferred character set.
 
-> ***NOTE:*** The first elemement of $supported character sets serves as a default if no character set matches.
+> **Note:** The first elemement of $supported character sets serves as a default if no character set matches.
 
 ## Params:
 
