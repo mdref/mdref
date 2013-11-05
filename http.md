@@ -2,7 +2,7 @@
 
 > **Note:** This documentation is work-in-progress.
 
-## About
+## About:
 
 Extended HTTP support. Again. Keep in mind that it's got the major version 2, because it's incompatible with pecl_http v1.
 

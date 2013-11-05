@@ -3,7 +3,11 @@ function log() {
 }
 
 function is_constant(s) {
-	return s.length > 1 && s.toUpperCase(s) === s;
+	s = s.replace(/v\d+(_\d+)?$/, "");
+	if (s.length < 2) {
+		return false;
+	}
+	return s.toUpperCase(s) === s;
 }
 
 function is_variable(s) {
@@ -48,6 +52,7 @@ function type(s, nn) {
 	case "RecursiveArrayIterator":
 	case "SplObserver":
 	case "SplSubject":
+	case "SplObjectStorage":
 		return "<code>";
 		
 	// keywords
@@ -145,10 +150,10 @@ function walk(i, e) {
 function blink(c) {
 	var $c = $(c);
 	
-	$c.fadeOut("slow").queue(function(next) {
+	$c.fadeOut("fast").queue(function(next) {
 		this.style.color = "red";
 		next();
-	}).fadeIn("fast").fadeOut("fast").queue(function(next) {
+	}).fadeIn("fast").fadeOut("slow").queue(function(next) {
 		this.style.color = "";
 		next();
 	}).fadeIn("slow");
