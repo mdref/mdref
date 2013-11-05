@@ -189,7 +189,7 @@ function ml($file) {
 	}
 }
 
-function md($file) {
+function md($file, $res) {
 	$file = rtrim($file, "/");
 	if (is_file($file) || is_file($file .= ".md")) {
 		$pi = pathinfo($file);
@@ -209,7 +209,7 @@ function md($file) {
 			break;
 		}
 	} else {
-		http\Env::setResponseCode(404);
+		$res->setResponseCode(404);
 		printf("<h1>Not Found</h1>\n");
 		printf("<blockquote><p>Sorry, I could not find <code>%s/%s</code>.</p></blockquote>", dirname($file), basename($file, ".md"));
 	}
@@ -267,7 +267,7 @@ ob_start($s);
 			ob_end_flush();
 		?></pre>
 	<?php else: ?>
-		<?php if (!md($p)): ?>
+		<?php if (!md($p, $s)): ?>
 		<?php endif; ?>
 	<?php endif; ?>
 	<footer>
