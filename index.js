@@ -86,7 +86,7 @@ function type(s, nn) {
 			return "<a href=\"/" + s.replace(/::|\\/g, "/") + "\">";
 		}
 	}
-	if (-1 !== (j = s.indexOf("\\"))) {
+	if (-1 !== (j = s.indexOf("\\")) && s.substr(j+1,1) !== "n") {
 		return "<a href=\"/" + s.replace(/\\/g, "/").replace(/::|$/, "#") + "\">";
 	}
 	
