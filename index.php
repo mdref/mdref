@@ -62,7 +62,25 @@ function head($file, $lines = 1) {
 	return $ld;
 }
 
-function ns($file) {
+function ns($path) {
+	$ns = "";
+	$parts = explode("/", $path);
+	$upper = ctype_upper($path[0]);
+	for ($i = 0; $i < count($parts); ++$i) {
+		if (!strlen($parts[$i]) || $parts[$i] === ".") {
+			continue;
+		}
+		if (strlen($ns)) {
+			if ($upper && !ctype_upper($parts[$i][0])) {
+				$ns .= "::";
+			} else {
+				$ns .= "\\";
+			}
+		}
+		$ns .= $parts[$i];
+		$upper = ctype_upper($parts[$i][0]);
+	}
+	return $ns;
 	return str_replace("/", "\\", str_replace("//", "/", trim($file, "/.")));
 }
 
@@ -98,12 +116,13 @@ function ls($dir) {
 				if (!isset($pi["extension"]) || $pi["extension"] != "md") {
 					continue;
 				}
-				if (!is_dir("$dir/".$pi["filename"])) {
+				/* ignore files where an accompanying directory exists */
+				if (is_dir("$dir/".$pi["filename"])) {
 					continue;
 				}
 			} else {
-				/* ignore directories where an companying file exists */
-				if (is_file("$path.md")) {
+				/* ignore directories where no accompanying file exists */
+				if (!is_file("$path.md")) {
 					continue;
 				}
 			}
@@ -130,24 +149,43 @@ function ml($file) {
 		return;
 	}
 	if (!ctype_upper($pi["filename"][0])) {
-		return;
-	}
-	$dir = $pi["dirname"] . "/" . $pi["filename"];
-	if (is_dir($dir)) {
-		printf("<h2>Methods:</h2>\n");
-		printf("<ul>\n");
-		foreach (scandir($dir) as $file) {
-			if (!is_file("$dir/$file") || ctype_upper($file{0})) {
-				continue;
+		// namespaced functions
+		$dir = $pi["dirname"] . "/" . $pi["filename"];
+		if (is_dir($dir)) {
+			printf("<h2>Functions:</h2>\n");
+			printf("<ul>\n");
+			foreach (scandir($dir) as $file) {
+				if ($file{0} === "." || !is_file("$dir/$file") || ctype_upper($file{0})) {
+					continue;
+				}
+				printf("<li><h3><a href=\"/%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
+					urlpath($dir, $file),
+					basename($file, ".md"),
+					@end(head("$dir/$file", 3)),
+					join(" ", cut(head("$dir/$file"), ["f"=>"1-"]))
+				);
 			}
-			printf("<li><h3><a href=\"/%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
-				urlpath($dir, $file),
-				basename($file, ".md"),
-				@end(head("$dir/$file", 3)),
-				join(" ", cut(head("$dir/$file"), ["f"=>"1-"]))
-			);
+			printf("</ul>\n");
 		}
-		printf("</ul>\n");
+	} else {
+		// methods
+		$dir = $pi["dirname"] . "/" . $pi["filename"];
+		if (is_dir($dir)) {
+			printf("<h2>Methods:</h2>\n");
+			printf("<ul>\n");
+			foreach (scandir($dir) as $file) {
+				if ($file{0} === "." || !is_file("$dir/$file") || ctype_upper($file{0})) {
+					continue;
+				}
+				printf("<li><h3><a href=\"/%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
+					urlpath($dir, $file),
+					basename($file, ".md"),
+					@end(head("$dir/$file", 3)),
+					join(" ", cut(head("$dir/$file"), ["f"=>"1-"]))
+				);
+			}
+			printf("</ul>\n");
+		}
 	}
 }
 
@@ -160,7 +198,7 @@ function md($file) {
 		case "md":
 			$r = fopen($file, "r");
 			$md = MarkdownDocument::createFromStream($r);
-			$md->compile(MarkdownDocument::AUTOLINK);
+			$md->compile(MarkdownDocument::AUTOLINK|MarkdownDocument::TOC);
 			print str_replace("<br/>","<br />",$md->getHtml());
 			fclose($r);
 			ml($file);
