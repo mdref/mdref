@@ -215,11 +215,6 @@ function md($file, $res) {
 	}
 }
 
-function index($pn) {
-	?>
-	<?php
-}
-
 chdir($_SERVER["DOCUMENT_ROOT"]);
 $t = ["css"=>"text/css", "js"=>"application/javascript"];
 $r = new http\Env\Request;
