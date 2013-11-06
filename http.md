@@ -13,6 +13,12 @@ Extended HTTP support. Again. Keep in mind that it's got the major version 2, be
 * Errors triggered by the extension can be configured statically by http\Object::$defaultErrorHandling or inherited http\Object->errorHandling.
 * The request ecosystem has been modularized to support different libraries, though for the moment only libcurl is supported.
 
+## Installation:
+
+This extension is hosted at PECL (<http://pecl.php.net>) and can be installed eith PEAR's pecl command:
+
+    # pecl install pecl_http
+
 ## INI Directives:
 
 * http.etag.mode = "crc32b"  
