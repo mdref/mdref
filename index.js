@@ -83,11 +83,11 @@ function type(s, nn) {
 		t = s.substring(i+2);
 		if (!is_constant(t) && !is_variable(t)) {
 			// methods
-			return "<a href=\"/" + s.replace(/::|\\/g, "/") + "\">";
+			return "<a href=\"" + s.replace(/::|\\/g, "/") + "\">";
 		}
 	}
 	if (-1 !== (j = s.indexOf("\\")) && s.substr(j+1,1) !== "n") {
-		return "<a href=\"/" + s.replace(/\\/g, "/").replace(/::|$/, "#") + "\">";
+		return "<a href=\"" + s.replace(/\\/g, "/").replace(/::|$/, "#") + "\">";
 	}
 	
 	switch (s.toLowerCase()) {

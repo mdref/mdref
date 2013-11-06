@@ -91,9 +91,9 @@ function urlpath($dir, $file) {
 function ls($dir) {
 	$dir = rtrim(is_dir($dir) ? $dir : dirname($dir) ."/". basename($dir, ".md"), "/");
 	printf("<ul>\n");
-	printf("<li>&lArr; <a href=/>Home</a></li>\n");
+	printf("<li>&lArr; <a href=>Home</a></li>\n");
 	if ($dir !== "." && ($dn = dirname($dir)) !== ".") {
-		printf("<li>&uArr; <a href=/%s>%s</a></li>\n", 
+		printf("<li>&uArr; <a href=%s>%s</a></li>\n", 
 			urlpath($dir, ".."),
 			ns($dn));
 	}
@@ -127,7 +127,7 @@ function ls($dir) {
 				}
 			}
 			
-			printf("<li>&rArr; <a href=\"/%s\">%s</a></li>\n", 
+			printf("<li>&rArr; <a href=\"%s\">%s</a></li>\n", 
 				urlpath($dir, $file),
 				ns("$dir/".basename($file, ".md")));
 		}
@@ -158,7 +158,7 @@ function ml($file) {
 				if ($file{0} === "." || !is_file("$dir/$file") || ctype_upper($file{0})) {
 					continue;
 				}
-				printf("<li><h3><a href=\"/%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
+				printf("<li><h3><a href=\"%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
 					urlpath($dir, $file),
 					basename($file, ".md"),
 					@end(head("$dir/$file", 3)),
@@ -177,7 +177,7 @@ function ml($file) {
 				if ($file{0} === "." || !is_file("$dir/$file") || ctype_upper($file{0})) {
 					continue;
 				}
-				printf("<li><h3><a href=\"/%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
+				printf("<li><h3><a href=\"%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
 					urlpath($dir, $file),
 					basename($file, ".md"),
 					@end(head("$dir/$file", 3)),
@@ -215,12 +215,13 @@ function md($file, $res) {
 	}
 }
 
-chdir($_SERVER["DOCUMENT_ROOT"]);
+chdir(__DIR__);
 $t = ["css"=>"text/css", "js"=>"application/javascript"];
 $r = new http\Env\Request;
 $u = new http\Url($r->getRequestUrl());
 $s = new http\Env\Response;
-$p = ".". $u->path;
+$b = dirname($_SERVER["SCRIPT_NAME"]);
+$p = ".". substr($u->path, strlen($b));
 
 switch($p) {
 case "./index.php":
@@ -241,11 +242,9 @@ ob_start($s);
 <head>
 	<meta charset="utf-8">
 	<title><?=ns($p)?></title>
-	<link rel="stylesheet" href="/index.css">
+	<base href="<?=$b?>/">
+	<link rel="stylesheet" href="index.css">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
-	<?php if (!extension_loaded("discount") || !getenv("DISCOUNT")) : ?>
-	<script src="/markdown.js"></script>
-	<?php endif; ?>
 </head>
 <body>
 	<div class="sidebar">
@@ -262,15 +261,14 @@ ob_start($s);
 			ob_end_flush();
 		?></pre>
 	<?php else: ?>
-		<?php if (!md($p, $s)): ?>
-		<?php endif; ?>
+		<?php md($p, $s); ?>
 	<?php endif; ?>
 	<footer>
-		<a href="/VERSION">Version</a>
-		<a href="/AUTHORS">Authors</a>
-		<a href="/LICENSE">License</a>
+		<a href="VERSION">Version</a>
+		<a href="AUTHORS">Authors</a>
+		<a href="LICENSE">License</a>
 	</footer>
-	<script src="/index.js"></script>
+	<script src="index.js"></script>
 </body>
 </html>
 <?php
