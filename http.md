@@ -4,14 +4,13 @@
 
 ## About:
 
-Extended HTTP support. Again. Keep in mind that it's got the major version 2, because it's incompatible with pecl_http v1.
+Extended HTTP support. Again. 
 
 * Introduces the http namespace.
-* Message bodies have been remodeled to use PHP temporary streams instead of in-memory buffers.
-* The utterly misunderstood HttpResponse class has been reimplemented as http\Env\Response inheriting http\Message.
-* Currently, there's only one Exception class left, http\Exception.
-* Errors triggered by the extension can be configured statically by http\Object::$defaultErrorHandling or inherited http\Object->errorHandling.
-* The request ecosystem has been modularized to support different libraries, though for the moment only libcurl is supported.
+* PHP stream based message bodies.
+* Encapsulated env request/response.
+* Versatile error handling.
+* Modular client support.
 
 ## Installation:
 
@@ -19,8 +18,42 @@ This extension is hosted at PECL (<http://pecl.php.net>) and can be installed ei
 
     # pecl install pecl_http
 
+## Dependencies:
+
+This extension unconditionally depends on the pre-loaded presence of the following PHP extensions:
+
+* raphf
+* propro
+* spl
+
+
+If configured ```--with-http-shared-deps``` (default) it requires on the pre-loaded presence of the following extensions, as long as they where available at build time:
+
+* hash
+* iconv
+* json
+
+## Conflicts:
+
+pecl/http-v2 conflicts with thw following extensions:
+
+* http-v1
+* event
+
 ## INI Directives:
 
 * http.etag.mode = "crc32b"  
   Default hash method for dynamic response payloads to generate an ETag.
 
+## Stream Filters:
+
+The http extension registers the ```http.*``` namespace for its stream filters. Provided stream filters are:
+
+* http.chunked_decode  
+  Decode a stream encoded with chunked transfer encoding.
+* http.chunked_encode  
+  Encode a stream with chunked transfer encoding.
+* http.inflate  
+  Decode a stream encoded with deflate/zlib/gzip encoding.
+* http.deflate  
+  Encode a stream with deflate/zlib/gzip encoding.

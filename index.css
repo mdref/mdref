@@ -15,6 +15,9 @@ body {
 body>* {
 	margin-left: 1em;
 }
+body>ul {
+	margin-left: 2em;
+}
 
 .sidebar {
 	font-size: .9em;
