@@ -270,6 +270,9 @@ ob_start($s);
 		<a href="VERSION">Version</a>
 		<a href="AUTHORS">Authors</a>
 		<a href="LICENSE">License</a>
+		<?php if ($p !== "./") : ?>
+		<a href="https://github.com/m6w6/mdref/edit/master/<?=trim($p,"/")?>.md">Edit</a>
+		<?php endif; ?>
 	</footer>
 	<script src="index.js"></script>
 	<?php if ($_SERVER["SERVER_NAME"] != "localhost") : ?>
