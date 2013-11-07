@@ -63,7 +63,8 @@ p, pre {
 }
 
 blockquote {
-	border: 1px solid #800000;
+	border-top: 1px solid #800000;
+	border-bottom: 1px solid #800000;
 	background: #ffe4e1;
 	margin: 2em 0;
 }
@@ -132,6 +133,11 @@ li h3 a {
 }
 li h3 a:hover {
 	text-decoration: underline;
+}
+
+#disqus_thread {
+	margin-top: 8em;
+	margin-right: 2em;
 }
 
 footer {

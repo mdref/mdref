@@ -263,12 +263,26 @@ ob_start($s);
 	<?php else: ?>
 		<?php md($p, $s); ?>
 	<?php endif; ?>
+	
+	<div id="disqus_thread"></div>
+	
 	<footer>
 		<a href="VERSION">Version</a>
 		<a href="AUTHORS">Authors</a>
 		<a href="LICENSE">License</a>
 	</footer>
 	<script src="index.js"></script>
+	<?php if ($_SERVER["SERVER_NAME"] != "localhost") : ?>
+    <script>
+        var disqus_shortname = 'mdref';
+        var disqus_identifier = '<?=$p?>';
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <?php endif; ?>
 </body>
 </html>
 <?php

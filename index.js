@@ -31,6 +31,7 @@ function type(s, nn) {
 	case "int":
 	case "float":
 	case "string":
+	case "resource":
 	case "array":
 	case "object":
 	case "callable":
