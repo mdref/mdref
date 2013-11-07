@@ -24,11 +24,6 @@ body>* {
 	padding: 0;
 	width: auto;
 	padding-right: 1em;
-	/*
-	width: 520px;
-	margin-bottom: .2em;
-	margin-left: 2em;
-	* */
 }
 .sidebar>ul {
 }
@@ -68,10 +63,9 @@ p, pre {
 }
 
 blockquote {
-	border-radius: 4px;
 	border: 1px solid #800000;
 	background: #ffe4e1;
-	display: inline-block;
+	margin: 2em 0;
 }
 
 ul {
