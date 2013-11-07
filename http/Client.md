@@ -11,4 +11,4 @@ The HTTP client.
 * protected $history = NULL  
   http\Message request/response history.
 * public $recordHistory = false  
-  Boolean flag whether to record instory in http\Client::$history.
+  Boolean flag whether to record history in http\Client::$history.

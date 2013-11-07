@@ -1,6 +1,6 @@
 # array http\Client::getSslOptions()
 
-Retrive priorly set SSL options.
+Retrieve priorly set SSL options.
 See http\Client::getOptions() and http\Client::setSslOptions().
 
 ## Params:

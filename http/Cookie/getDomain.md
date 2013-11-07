@@ -1,6 +1,6 @@
 # string http\Cookie::getDomain()
 
-Retrive the effective domain of the cookie list.
+Retrieve the effective domain of the cookie list.
 See http\Cookie::setDomain().
 
 ## Params:
