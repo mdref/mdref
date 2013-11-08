@@ -10,3 +10,8 @@ Append plain bytes to the message body.
 ## Returns:
 
 * http\Message\Body, self.
+
+
+## Warnings:
+
+* E_MESSAGE_BODY, if writing to the body fails.
