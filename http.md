@@ -14,7 +14,7 @@ Extended HTTP support. Again.
 
 ## Installation:
 
-This extension is hosted at PECL (<http://pecl.php.net>) and can be installed eith PEAR's pecl command:
+This extension is hosted at [PECL](http://pecl.php.net) and can be installed with [PEAR](http://pear.php.net)'s pecl command:
 
     # pecl install pecl_http
 
