@@ -154,15 +154,12 @@ function ml($file) {
 		if (is_dir($dir)) {
 			printf("<h2>Functions:</h2>\n");
 			printf("<ul>\n");
-			foreach (scandir($dir) as $file) {
-				if ($file{0} === "." || !is_file("$dir/$file") || ctype_upper($file{0})) {
-					continue;
-				}
+			foreach (glob("$dir/[_a-z]*.md") as $file) {
 				printf("<li><h3><a href=\"%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
 					urlpath($dir, $file),
 					basename($file, ".md"),
-					@end(head("$dir/$file", 3)),
-					join(" ", cut(head("$dir/$file"), ["f"=>"1-"]))
+					@end(head($file, 3)),
+					join(" ", cut(head($file), ["f"=>"1-"]))
 				);
 			}
 			printf("</ul>\n");
@@ -173,15 +170,12 @@ function ml($file) {
 		if (is_dir($dir)) {
 			printf("<h2>Methods:</h2>\n");
 			printf("<ul>\n");
-			foreach (scandir($dir) as $file) {
-				if ($file{0} === "." || !is_file("$dir/$file") || ctype_upper($file{0})) {
-					continue;
-				}
+			foreach (glob("$dir/[_a-z]*.md") as $file) {
 				printf("<li><h3><a href=\"%s\">%s</a></h3><p>%s</p><p>%s</p></li>\n",
 					urlpath($dir, $file),
 					basename($file, ".md"),
-					@end(head("$dir/$file", 3)),
-					join(" ", cut(head("$dir/$file"), ["f"=>"1-"]))
+					@end(head($file, 3)),
+					join(" ", cut(head($file), ["f"=>"1-"]))
 				);
 			}
 			printf("</ul>\n");
