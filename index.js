@@ -57,6 +57,10 @@ function type(s, nn) {
 		return "<code>";
 		
 	// keywords
+	case "is":
+		if (nn !== "H1") {
+			return;
+		}
 	case "extends":
 	case "implements":
 		if (nn === "H1") {
