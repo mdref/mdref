@@ -1,6 +1,6 @@
 # abstract class http\Encoding\Stream extends http\Object
 
-Base for encoding stream implementations.
+Base class for encoding stream implementations.
 
 ## Constants:
 
