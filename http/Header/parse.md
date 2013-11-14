@@ -1,4 +1,4 @@
-# static array http\Header::parse(string $header[, string $header_class = null])
+# static array http\Header::parse(string $header[, string $header_class = NULL])
 
 Parse HTTP headers.
 
