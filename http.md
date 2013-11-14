@@ -1,7 +1,5 @@
 # pecl/http v2
 
-> **Note:** This documentation is work-in-progress.
-
 ## About:
 
 Extended HTTP support. Again. 
