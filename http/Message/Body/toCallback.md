@@ -5,7 +5,7 @@ Stream the message body through a callback.
 ## Params:
 
 * callable $callback  
-  The callback of the form function(http\MessageBody $from, string $data).
+  The callback of the form function(http\Message\Body $from, string $data).
 * Optional int $offset = 0  
   Start to stream from this offset.
 * Optional int $maxlen = 0  
