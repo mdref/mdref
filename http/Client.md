@@ -1,4 +1,4 @@
-# class http\Client implements SplSubject
+# class http\Client implements SplSubject, Countable
 
 The HTTP client.
 
