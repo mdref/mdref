@@ -11,6 +11,11 @@ Add a part to a multipart body.
 
 * http\Message\Body, self.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\RuntimeException
+
 ## Example:
 
     <?php

@@ -12,3 +12,6 @@ Encode data with deflate/zlib/gzip encoding.
 ## Returns:
 
 * string, the compressed data.
+## Warnings:
+
+* If $data cannot be encoded.

@@ -10,3 +10,7 @@ Update the encoding stream with more input.
 ## Returns:
 
 * string, processed data.
+
+## Warnings:
+
+* If the encoding stream is in an invalid state.

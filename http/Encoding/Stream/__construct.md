@@ -9,4 +9,5 @@ Base constructor for encoding stream implementations.
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\RuntimeException

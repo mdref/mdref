@@ -14,7 +14,6 @@ Parses any "Set-Cookie" response headers into an http\Cookie list. See http\Cook
 
 * array, list of http\Cookie instances.
 
-
 ## Example:
 
     <?php

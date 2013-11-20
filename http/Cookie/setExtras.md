@@ -11,3 +11,7 @@ See http\Cookie::addExtras().
 ## Returns:
 
 * http\Cookie, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

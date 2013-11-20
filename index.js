@@ -40,6 +40,11 @@ function type(s, nn) {
 	case "stdClass":
 	case "Exception":
 	case "ErrorException":
+	case "RuntimeException":
+	case "UnexpectedValueException":
+	case "DomainException":
+	case "InvalidArgumentException":
+	case "BadMethodCallException":
 	case "Closure":
 	case "Generator":
 	case "Countable":

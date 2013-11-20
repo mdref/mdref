@@ -12,3 +12,7 @@ See http\Cookie::setExpires().
 ## Returns:
 
 * http\Cookie, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

@@ -12,6 +12,10 @@ None.
 
 * http\Message, the request/response message chain representing the client's history.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+
 ## Example:
 
     <?php

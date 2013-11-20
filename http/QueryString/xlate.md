@@ -17,4 +17,5 @@ Translate character encodings of the querystring with ext/iconv.
 
 ## Throws:
 
-* http\Exception
+* http\Exception\InvalidArgumentException
+* http\Exception\BadConversionException

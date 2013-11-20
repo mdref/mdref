@@ -12,6 +12,7 @@ Append plain bytes to the message body.
 * http\Message\Body, self.
 
 
-## Warnings:
+## Throws:
 
-* E_MESSAGE_BODY, if writing to the body fails.
+* http\Exception\InvalidArgumentException
+* http\Exception\RuntimeException

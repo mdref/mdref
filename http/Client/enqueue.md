@@ -18,7 +18,9 @@ See http\Client::dequeue() and http\Client::send().
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\BadMethodCallException
+* http\Exception\RuntimeException
 
 ## Example:
 

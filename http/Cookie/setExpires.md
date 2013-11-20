@@ -11,3 +11,7 @@ See http\Cookie::setMaxAge() for a safer alternative.
 ## Returns:
 
 * http\Cookie, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

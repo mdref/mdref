@@ -1,4 +1,4 @@
-# abstract class http\Encoding\Stream extends http\Object
+# abstract class http\Encoding\Stream
 
 Base class for encoding stream implementations.
 

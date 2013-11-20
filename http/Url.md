@@ -1,4 +1,4 @@
-# class http\Url extends http\Object
+# class http\Url
 
 The http\Url class provides versatile means to parse, construct and manipulate URLs.
 

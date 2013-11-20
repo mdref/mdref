@@ -17,4 +17,5 @@ Prepend message(s) $message to this message, or the top most message of this mes
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException

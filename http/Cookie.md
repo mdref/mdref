@@ -1,6 +1,6 @@
-# class http\Cookie extends http\Object
+# class http\Cookie
 
-A class representing a lisdt of cookies with specific attributes.
+A class representing a list of cookies with specific attributes.
 
 ## Constants:
 

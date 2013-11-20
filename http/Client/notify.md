@@ -13,6 +13,11 @@ Implements SplSubject. Notify attached observers about progress with $request.
 
 * http\Client, self.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException
+
 ## Example:
 
     <?php

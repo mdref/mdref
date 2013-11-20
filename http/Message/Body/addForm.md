@@ -47,6 +47,11 @@ As you can see, a file structure must contain a "file" entry, which holds a file
 
 * http\Message\Body, self.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\RuntimeException
+
 ## Example:
 
     <?php

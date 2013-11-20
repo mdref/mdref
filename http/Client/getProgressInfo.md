@@ -14,7 +14,8 @@ Retrieve the progress information for $request.
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException
 
 ## Example:
 

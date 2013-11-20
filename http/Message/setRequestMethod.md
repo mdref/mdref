@@ -11,12 +11,8 @@ See http\Message::getRequestMethod() and http\Message::setRequestUrl().
 ## Returns:
 
 * http\Message, self.
-* false, if the message was not of type request.
 
-## Notices:
+## Throws:
 
-* E_MESSAGE_TYPE, if the message is not of type request.
-
-## Warnings:
-
-* E_INVALID_PARAM, if the method is of zero length.
+* http\Exception\InvalidArgumentException
+* http\Exception\BadMethodCallException

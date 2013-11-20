@@ -1,27 +1,29 @@
-# class http\Exception extends Exception
+# interface http\Exception
 
-The http extension's Exception.
+The http extension's Exception interface.
 
-## Constants:
+Use it to catch any Exception thrown by pecl/http.
 
-* E_UNKNOWN  
-* E_RUNTIME  
-* E_INVALID_PARAM  
-* E_HEADER  
-* E_MALFORMED_HEADERS  
-* E_MESSAGE  
-* E_MESSAGE_TYPE  
-* E_MESSAGE_BODY  
-* E_ENCODING  
-* E_CLIENT  
-* E_CLIENT_POOL  
-* E_CLIENT_DATASHARE  
-* E_SOCKET  
-* E_RESPONSE  
-* E_URL  
-* E_QUERYSTRING  
-* E_COOKIE  
+The individual exception classes extend their equally named native PHP extensions, if such exist, and implement this empty interface. For example the http\Exception\BadMethodCallException extends SPL's BadMethodCallException.
 
 ## Properties:
 
 None.
+
+## Example:
+
+    <?php
+    $req = new http\Env\Request;
+    
+    try {
+        $messages = $req->splitMultipartBody();
+    } catch (http\Exception\BadMethodCallException $e) {
+        // doh, no multipart message
+    } catch (http\Exception\BadMessageException $e) {
+        // failure while parsing
+    } catch (http\Exception $e) {
+        // here we used the interface to catch any http\Exception
+    } catch (Exception $e) {
+        // catch any other exception (unlikely, though)
+    }
+    ?>

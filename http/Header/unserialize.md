@@ -7,3 +7,6 @@ Implements Serializable.
 * string $serialized  
   The serialized HTTP header (i.e. "Name: value")
 
+## Warnings:
+
+* If the header parser fails.

@@ -16,7 +16,7 @@ Retrieve a single header, optionally hydrated into a http\Header extending class
 
 ## Warnings:
 
-* E_INVALID_PARAM, if $into_class is not a descendant of http\Header.
+* If $into_class is specified but is not a descendant of http\Header.
 
 ## Example:
 

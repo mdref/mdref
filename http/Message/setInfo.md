@@ -12,9 +12,10 @@ See http\Message::getInfo().
 
 * http\Message, self.
 
-## Warnings:
+## Throws:
 
-* E_MALFORMED_HEADERS, if the message information could not be parsed.
+* http\Exception\InvalidArgumentException
+* http\Exception\BadHeaderException
 
 ## Format of the message info:
 

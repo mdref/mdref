@@ -13,7 +13,8 @@ Get transfer related informatioin for a running or finished request.
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException
 
 ## Example:
 

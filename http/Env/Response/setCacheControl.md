@@ -10,3 +10,7 @@ Make suggestions to the client how it should cache the response.
 ## Returns:
 
 * http\Env\Response, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

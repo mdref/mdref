@@ -14,3 +14,6 @@ See http\Client\Curl.
 
 * http\Client, self.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException

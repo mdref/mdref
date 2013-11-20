@@ -1,4 +1,4 @@
-# class http\Message\Body extends http\Object implements Serializable
+# class http\Message\Body implements Serializable
 
 The message body, represented as a PHP (temporary) stream.
 

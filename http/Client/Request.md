@@ -10,6 +10,6 @@ None.
 
 ## Properties:
 
-* array $options = NULL  
-  Options for this request, which override client options.
+* protected $options = NULL  
+  Array of options for this request, which override client options.
 

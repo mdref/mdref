@@ -11,3 +11,8 @@ See http\Client\Request::setQuery() and http\Message::setRequestUrl().
 ## Returns:
 
 * http\Client\Request, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\BadQueryStringException

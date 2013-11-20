@@ -14,3 +14,6 @@ See http\Client::setOptions() and http\Client\Curl.
 
 * http\Client\Request, self.
 
+## Throws:
+
+* http\Client\InvalidArgumentException

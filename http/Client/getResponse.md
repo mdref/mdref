@@ -12,7 +12,12 @@ Retrieve the corresponding reponse of an already finished request, or the last r
 ## Returns:
 
 * http\Client\Response, the stored response for the request, or the last that was received.
-* NULL, if no response was found.
+* NULL, if no more response was available to pop, when no $request was given.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException
 
 ## Example:
 

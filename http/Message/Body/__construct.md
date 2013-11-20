@@ -9,7 +9,8 @@ Create a new message body, optionally referencing $stream.
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException
 
 ## Example:
 

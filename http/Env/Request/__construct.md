@@ -10,3 +10,7 @@ It also compiles an array of uploaded files ($\_FILES) more comprehensive than t
 
 None.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException

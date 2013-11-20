@@ -11,12 +11,11 @@ See http\Message::getResponseStatus() and http\Message::setResponseCode().
 ## Returns:
 
 * http\Message, self.
-* false, if the message is not of type response.
 
-## Notice:
+## Throws:
 
-* E_MESSAGE_TYPE, if the message is not of type response.
-
+* http\Exception\InvalidArgumentException
+* http\Exception\BadMethodCallException
 
 ## Example:
 

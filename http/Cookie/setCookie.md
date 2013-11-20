@@ -15,3 +15,7 @@ See http\Cookie::addCookie() and http\Cookie::setCookies().
 ## Returns:
 
 * http\Cookie, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

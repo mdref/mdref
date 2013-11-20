@@ -11,3 +11,7 @@ See http\Cookie::SECURE and http\Cookie::HTTPONLY constants.
 ## Returns:
 
 * http\Cookie, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

@@ -11,6 +11,10 @@ Override the environment's request.
 
 * http\Env\Response, self.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+
 ## Example:
 
     <?php

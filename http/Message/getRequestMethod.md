@@ -12,6 +12,6 @@ None.
 * string, the request method.
 * false, if the message was not of type request.
 
-## Notices:
+## Warnings:
 
-* E_MESSAGE_TYPE, if the message is not of type request.
+* If the message is not of type request.

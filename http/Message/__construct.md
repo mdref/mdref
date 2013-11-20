@@ -11,4 +11,5 @@ Create a new HTTP message.
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\BadMessageException

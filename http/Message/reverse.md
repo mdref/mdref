@@ -13,3 +13,7 @@ None.
 ## Returns:
 
 * http\Message, the other end of the message chain.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

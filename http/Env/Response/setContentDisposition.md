@@ -11,6 +11,10 @@ Set the reponse's content disposition parameters.
 
 * http\Env\Response, self.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+
 ## Example:
 
     <?php ob_end_Clean();chdir(__DIR__."/../../..");

@@ -12,3 +12,8 @@ Parse HTTP headers.
 ## Returns:
 
 * array of parsed headers, where the elements are instances of $header_class if specified.
+* false, if parsing fails.
+
+## Warnings:
+
+* If the header parser fails.

@@ -10,3 +10,7 @@ None.
 ## Returns:
 
 * string, any pending data.
+
+## Warnings:
+
+* If the encoding stream is in an invalid state.

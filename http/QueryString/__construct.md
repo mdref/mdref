@@ -9,7 +9,7 @@ Create an independent querystring instance.
   
 ## Throws:
 
-* http\Exception
+* http\Exception\BadQueryStringException
 
 ## Example:
 

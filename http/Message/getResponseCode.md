@@ -12,6 +12,6 @@ None.
 * int, the response status code.
 * false, if the message is not of type response.
 
-## Notices:
+## Warnings:
 
-* E_MESSAGE_TYPE, if the message is not of type response.
+* If the message is not of type response.

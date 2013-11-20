@@ -15,4 +15,6 @@ See http\Client::requeue(), if you want to requeue the request, instead of calli
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\BadMethodCallException
+* http\Exception\RuntimeException

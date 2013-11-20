@@ -11,15 +11,11 @@ See http\Message::getRequestUrl() and http\Message::setRequestMethod().
 ## Returns:
 
 * http\Message, self.
-* false, if the message was not of type request.
 
-## Notices:
+## Throws:
 
-* E_MESSAGE_TYPE, if the message is not of type request.
-
-## Warnings:
-
-* E_INVALID_PARAM, if the url is of zero length.
+* http\Exception\InvalidArgumentException
+* http\Exception\BadMethodCallException
 
 ## Example:
 

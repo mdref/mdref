@@ -10,3 +10,8 @@ Implements SplSubject. Detach $observer, which has been previously attached.
 ## Returns:
 
 * http\Client, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException

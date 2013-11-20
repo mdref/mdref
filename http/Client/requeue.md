@@ -13,3 +13,8 @@ The difference simply is, that this method, in contrast to http\Client::enqueue(
 ## Returns:
 
 * http\Client, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\RuntimeException

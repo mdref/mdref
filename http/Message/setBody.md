@@ -11,3 +11,8 @@ See http\Message::getBody() and http\Message::addBody().
 ## Returns:
 
 * http\Message, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException

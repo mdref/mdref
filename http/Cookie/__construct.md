@@ -13,7 +13,8 @@ Create a new cookie list.
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\RuntimeException
 
 ## Example:
 

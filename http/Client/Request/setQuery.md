@@ -11,6 +11,11 @@ See http\Client\Request::addQuery() and http\Message::setRequestUrl().
 
 * http\Client\Request, self.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\BadQueryStringException
+
 ## Example:
 
     <?php

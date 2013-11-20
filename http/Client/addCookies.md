@@ -11,3 +11,7 @@ See http\Client::setCookies().
 ## Returns:
 
 * http\Client, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

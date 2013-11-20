@@ -1,4 +1,4 @@
-# class http\QueryString extends http\Object implements Serializable, ArrayAccess, IteratorAggregate
+# class http\QueryString implements Serializable, ArrayAccess, IteratorAggregate
 
 The http\QueryString class provides versatile facilities to retrieve, use and manipulate query strings and form data.
 

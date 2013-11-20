@@ -14,11 +14,12 @@ See http\Message::getHttpVersion().
 
 ## Notices:
 
-* E_MALFORMED_HEADERS, if the version separator is non-standard.
+* If a non-standard version separator is encounted.
 
-## Warnings:
+## Throws:
 
-* E_MALFORMED_HEADERS, if the version could not be parsed.
+* http\Exception\InvalidArgumentException
+* http\Exception\BadHeaderException
 
 ## Example:
 

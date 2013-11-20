@@ -17,5 +17,6 @@ Instantiate a new HTTP (header) parameter set.
 
 ## Throws:
 
-* http\Exception
+* http\Exception\InvalidArgumentException
+* http\Exception\RuntimeException
 

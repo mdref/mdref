@@ -11,6 +11,7 @@ Set the MIME content type of the request message.
 
 * http\Client\Request, self.
 
-## Warnings:
+## Throws:
 
-* HTTP_E_INVALID_PARAM, if $content_type does not follow the general "primary/secondary" notation.
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException

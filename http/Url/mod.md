@@ -14,3 +14,9 @@ Clone this URL and apply $parts to the cloned URL.
 ## Returns:
 
 * http\Url, clone.
+
+## Throws:
+
+
+* http\Exception\InvalidArgumentException
+* http\Exception\BadUrlException

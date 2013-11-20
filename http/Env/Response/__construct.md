@@ -8,7 +8,8 @@ None.
 
 ## Throws:
 
-* http\Exception.
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException
 
 ## Example:
 

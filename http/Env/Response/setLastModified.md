@@ -12,3 +12,7 @@ Set a custom last modified time stamp.
 ## Returns:
 
 * http\Env\Response, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

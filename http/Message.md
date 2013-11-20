@@ -1,4 +1,4 @@
-# class http\Message extends http\Object implements Countable, Serializable, Iterator
+# class http\Message implements Countable, Serializable, Iterator
 
 The message class builds the foundation for any request and response message.
 See http\Client\Request and http\Client\Response, as well as http\Env\Request and http\Env\Response.

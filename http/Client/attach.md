@@ -11,3 +11,8 @@ Attached observers will be notified with progress of each transfer.
 ## Returns:
 
 * http\Client, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException

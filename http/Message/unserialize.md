@@ -7,3 +7,6 @@ Implements Serializable.
 * string $data  
   The serialized message.
 
+## Errors:
+
+* If the message could not be unserialized.

@@ -13,4 +13,5 @@ Retreive the current HTTP request's body.
 
 ## Throws:
 
-* http\Exception
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException

@@ -1,4 +1,4 @@
-# class http\Header extends http\Object implements Serializable
+# class http\Header implements Serializable
 
 The http\Header class provides methods to manipulate, match, negotiate and serialize HTTP headers.
 

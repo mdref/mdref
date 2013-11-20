@@ -13,3 +13,7 @@ See http\Cookie::setExtra().
 ## Returns:
 
 * http\Cookie, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

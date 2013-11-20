@@ -14,4 +14,6 @@ Persisted resources identified by $persistent_handle_id will be re-used if avail
 
 # Throws:
 
-* http\Exception
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException
+* http\Exception\RuntimeException

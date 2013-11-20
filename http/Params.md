@@ -1,4 +1,4 @@
-# class http\Params extends http\Object implements ArrayAccess
+# class http\Params implements ArrayAccess
 
 Parse, interpret and compose HTTP (header) parameters.
 
@@ -11,7 +11,7 @@ Parse, interpret and compose HTTP (header) parameters.
 * DEF_VAL_SEP  
   The default value separator ("=").
 * COOKIE_PARAM_SEP  
-  TBD
+  Empty param separator to parse cookies.
 * PARSE_RAW  
   Do not interpret the parsed parameters.
 * PARSE_DEFAULT  

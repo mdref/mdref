@@ -11,6 +11,12 @@ None.
 
 * http\Message, a message chain of all messages of the multipart body.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\BadMethodCallException
+* http\Exception\BadMessageException
+
 ## Example:
 
     <?php

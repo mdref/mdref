@@ -13,5 +13,6 @@ Create an instance of an http\URL.
 
 ## Throws:
 
-* http\Exception
+* http\Exception\InvalidArgumentException
+* http\Exception\BadUrlException
 

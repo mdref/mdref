@@ -10,3 +10,7 @@ Decode deflate/zlib/gzip encoded data.
 ## Returns:
 
 * string, the uncompressed data.
+
+## Warnings:
+
+* If $data cannot be decoded.

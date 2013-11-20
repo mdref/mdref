@@ -12,3 +12,7 @@ Set a custom ETag.
 ## Returns:
 
 * http\Env\Response, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

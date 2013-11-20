@@ -11,3 +11,7 @@ See http\Cookie::setDomain().
 ## Returns:
 
 * http\Cookie, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

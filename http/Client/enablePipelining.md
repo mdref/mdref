@@ -10,3 +10,8 @@ Enable sending pipelined requests to the same host if the driver supports it.
 ## Returns:
 
 * http\Client, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException

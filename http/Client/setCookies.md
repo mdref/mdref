@@ -11,3 +11,7 @@ See http\Client::addCookies() and http\Client::getCookies().
 ## Returns:
 
 * http\Client, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException

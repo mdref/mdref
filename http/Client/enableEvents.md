@@ -11,3 +11,7 @@ Enable usage of an event library like libevent, which might improve performance 
 
 * http\Client, self.
 
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\UnexpectedValueException

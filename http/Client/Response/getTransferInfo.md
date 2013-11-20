@@ -10,6 +10,11 @@ See http\Client::getTransferInfo().
 
 ## Returns:
 
-* array, all transfer info if $name was not given.
+* object, stdClass instance with all transfer info if $name was not given.
 * mixed, the specific transfer info for $name.
-* false, if the request was not complete or $name was not found.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException
+* http\Exception\BadMethodCallException
+* http\Exception\UnexpectedValueException

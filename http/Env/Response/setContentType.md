@@ -10,3 +10,7 @@ Set the MIME content type of the response.
 ## Returns:
 
 * http\Env\Response, self.
+
+## Throws:
+
+* http\Env\InvalidArgumentException

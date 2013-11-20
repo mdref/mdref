@@ -11,3 +11,7 @@ See http\Client\Request::setOptions() and http\Client\Curl::$ssl options.
 ## Returns:
 
 * http\Client\Request, self.
+
+## Throws:
+
+* http\Client\InvalidArgumentException

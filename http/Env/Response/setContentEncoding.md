@@ -11,3 +11,7 @@ The response will be compressed if the client indicates support and wishes that.
 ## Returns:
 
 * http\Env\Response, self.
+
+## Throws:
+
+* http\Exception\InvalidArgumentException
