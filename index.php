@@ -88,6 +88,16 @@ function urlpath($dir, $file) {
 	return (strlen($dir) ? $dir . "/" : "") . basename($file, ".md");
 }
 
+function email($email) {
+	if (preg_match("/^([^<]+) <([^>]+)>/", $email, $matches)) {
+		list(, $name, $mail) = $matches;
+		return sprintf('<a href="mailto:%s">%s</a>', 
+			htmlspecialchars($mail), 
+			htmlspecialchars($name));
+	}
+	var_dump(sscanf($email, "%s <%s>"));
+}
+
 function ls($dir) {
 	$dir = rtrim(is_dir($dir) ? $dir : dirname($dir) ."/". basename($dir, ".md"), "/");
 	printf("<ul>\n");
@@ -206,7 +216,7 @@ ob_start($s);
 	</div>
 	<?php if ($p === "./") : ?>
 		<h1>Quick Markdown Documentation Browser</h1>
-		<p>v<?php readfile("VERSION")?></p>
+		<p><a href="https://github.com/m6w6/mdref">mdref-v<?php readfile("VERSION")?></a></p>
 		<pre><?php
 			ob_start(function($s) {
 				return htmlspecialchars($s);
@@ -221,12 +231,10 @@ ob_start($s);
 	<div id="disqus_thread"></div>
 	
 	<footer>
-		<a href="VERSION">Version</a>
-		<a href="AUTHORS">Authors</a>
-		<a href="LICENSE">License</a>
-		<?php if ($p !== "./") : ?>
-		<a href="https://github.com/m6w6/mdref/edit/master/<?=trim($p,"/")?>.md">Edit</a>
-		<?php endif; ?>
+		<ul>
+			<li><a href="https://github.com/m6w6/mdref">mdref-v<?php readfile("VERSION")?></a></li>
+			<li><a href="LICENSE">&copy; <?= implode("-", array_unique([2013,idate("Y")]))?></a></li>
+		</ul>
 	</footer>
 	<script src="index.js"></script>
 	<?php if ($_SERVER["SERVER_NAME"] != "localhost") : ?>

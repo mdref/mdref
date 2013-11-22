@@ -146,7 +146,17 @@ li h3 a:hover {
 footer {
 	font-size: smaller;
 	text-align: center;
-	word-spacing: 1em;
 	clear: both;
 	margin-top: 8em;
+}
+
+footer ul {
+	margin: 0;
+	padding: 0;
+}
+
+footer li {
+	list-style-type: none;
+	display: inline-block;
+	margin: 0 1em;
 }
