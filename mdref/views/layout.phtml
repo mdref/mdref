@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+ <head>
+  <meta charset="utf-8">
+  <title><?= $title ?></title>
+  <base href="<?= $baseUrl ?>/">
+  <link rel="stylesheet" href="index.css">
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+ </head>
+ <body>
+  <div class="sidebar">
+   <?= $listing ?>
+  </div>
+
+  <?= $content ?>
+
+  <div id="disqus_thread"></div>
+
+  <footer>
+   <ul>
+	<li><a href="https://github.com/m6w6/mdref">mdref-v<?php readfile("../VERSION")?></a></li>
+	<li><a href="LICENSE">&copy; <?= implode("-", array_unique([2013,idate("Y")]))?></a></li>
+   </ul>
+  </footer>
+  <script src="index.js"></script>
+ </body>
+</html>

@@ -1,0 +1,5 @@
+{
+    "require": {
+        "m6w6/autocracy": "dev-master"
+    }
+}
