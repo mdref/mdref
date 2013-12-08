@@ -206,7 +206,7 @@ ob_start($s);
 <head>
 	<meta charset="utf-8">
 	<title><?=ns($p)?></title>
-	<base href="<?=$b?>/">
+	<base href="<?=new http\Url($b, null, http\Url::FROM_ENV | (http\Url::STRIP_ALL & ~http\Url::STRIP_PATH))  ?>/">
 	<link rel="stylesheet" href="index.css">
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script> 
 </head>
