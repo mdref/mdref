@@ -1,0 +1,24 @@
+<?php if (isset($listing)) : ?>
+<div class="sidebar">
+	<?php include __DIR__."/edit.phtml" ?>
+	<ul>
+		<li>&lsh; <a href="">Home</a></li>
+		<?php if (($entry = $listing->getParent())) : ?>
+			<li>&uarr; <a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></li>
+		<?php endif; ?>
+		<?php if (($entry = $listing->getSelf()) && ($link = $entry->formatLink())) : ?>
+			<ul><li>&circlearrowright; <?= $link ?>
+		<?php endif; ?>
+		<?php if (count($listing)) : ?>
+			<ul>
+				<?php foreach ($listing as $entry) : ?>
+				<li>&rdsh; <a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endif; ?>
+		<?php if (isset($link) && strlen($link)) : ?>
+			</li></ul>
+		<?php endif; ?>
+	</ul>
+</div>
+<?php endif; ?>

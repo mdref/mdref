@@ -16,34 +16,13 @@ class RefListing implements \Countable, \Iterator
 	
 	/**
 	 * @param \mdref\Path $path
+	 * @param array $files
 	 */
 	function __construct(Path $path, array $files) {
 		$this->path = $path;
 		$this->entries = array_map(function($fn) {
 			return substr(trim($fn, DIRECTORY_SEPARATOR), 0, -3);
 		}, $files);
-	}
-	
-	/**
-	 * Copy constructor
-	 * @param mixed $filter callable array filter or fnmatch pattern
-	 * @return \mdref\RefListing
-	 */
-	function __invoke($filter) {
-		die(__METHOD__);
-		$that = clone $this;
-		$that->entries =  array_filter($that->entries, is_callable($filter) 
-				? $filter 
-				: function($fn) use ($filter) {
-					return fnmatch($filter, $fn);
-				}
-		);
-		return $that;
-	}
-	
-	function __toString() {
-		return __METHOD__;
-		return $this->format(substr($this->path, strlen($this->path->getBaseDir())));
 	}
 	
 	function count() {
@@ -82,30 +61,5 @@ class RefListing implements \Countable, \Iterator
 	
 	function getSelf() {
 		return new RefEntry($this->path);
-	}
-	
-	function format($entry) {
-		return __METHOD__;
-		$ns = "";
-		if (strlen($entry = trim($entry, DIRECTORY_SEPARATOR))) {
-			$upper = ctype_upper($entry[0]);
-			$parts = explode(DIRECTORY_SEPARATOR, $entry);
-			
-			for ($i = 0; $i < count($parts); ++$i) {
-				if (!strlen($parts[$i]) || $parts[$i] === ".") {
-					continue;
-				}
-				if (strlen($ns)) {
-					if ($upper && !ctype_upper($parts[$i][0])) {
-						$ns .= "::";
-					} else {
-						$ns .= "\\";
-					}
-				}
-				$ns .= $parts[$i];
-				$upper = ctype_upper($parts[$i][0]);
-			}
-		}
-		return $ns;
 	}
 }

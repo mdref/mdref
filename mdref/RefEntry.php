@@ -21,7 +21,7 @@ class RefEntry
 	
 	function __construct(Path $path, $entry = null) {
 		$this->path = $path;
-		$this->entry = $entry ?: $path->getPathName();
+		$this->entry = trim($entry ?: $path->getPathName(), DIRECTORY_SEPARATOR);
 	}
 	
 	function __destruct() {
@@ -32,12 +32,9 @@ class RefEntry
 	
 	function formatUrl() {
 		return htmlspecialchars($this->entry);
-		return implode("/", explode(DIRECTORY_SEPARATOR, trim(substr(
-				$this->entry, strlen($this->path->getBaseDir())), 
-				DIRECTORY_SEPARATOR)));
 	}
 	
-	protected function joinLink(array $parts) {
+	private function joinLink(array $parts) {
 		$link = "";
 		$upper = ctype_upper($parts[0][0]);;
 		for ($i = 0; $i < count($parts); ++$i) {
@@ -59,19 +56,25 @@ class RefEntry
 
 	function formatLink($basename = false) {
 		$link = "";
-		if (strlen($entry = trim($this->entry, DIRECTORY_SEPARATOR))) {
-			$parts = explode(DIRECTORY_SEPARATOR, $entry);
+		if (strlen($this->entry)) {
+			$parts = explode(DIRECTORY_SEPARATOR, $this->entry);
 			$link = $basename ? end($parts) : $this->joinLink($parts);
 		}
 		return htmlspecialchars($link);
 	}
 	
-	protected function openFile() {
+	function getPath() {
+		$path = $this->path;
+		$file = $path($this->entry);
+		return $file;
+	}
+	
+	private function openFile() {
 		if (!is_resource($this->file)) {
-			$path = $this->path;
-			$file = $path($this->entry);
+			$file = $this->getPath();
+			
 			if (!$file->isFile()) {
-				throw new \Exception("Not a file: '$this->entry'");
+				throw new \Exception("Not a file: '{$this->entry}'");
 			}
 			if (!$this->file = fopen($file->getFullPath(".md"), "r")) {
 				throw new \Exception("Could not open {$this->entry}");
@@ -91,5 +94,15 @@ class RefEntry
 		fgets($this->file);
 		fgets($this->file);
 		return htmlspecialchars(fgets($this->file));
+	}
+	
+	function formatEditUrl() {
+		$path = $this->path;
+		$base = current(explode(DIRECTORY_SEPARATOR, $path->getPathName()));
+		$file = $path($base);
+		if ($file->isFile(".mdref")) {
+			return sprintf(file_get_contents($file->getFullPath(".mdref")),
+					$this->entry);
+		}
 	}
 }

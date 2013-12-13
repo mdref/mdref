@@ -1,0 +1,18 @@
+<h1>mdref</h1>
+
+<?php if (isset($exception)) : ?>
+	<?=\mdref\ExceptionHandler::html($exception, ["h2"], ["p"], ["pre", "style='overflow-x:scroll'"]); ?>
+<?php else : ?>
+	<?php if (isset($listing) && count($listing)) : ?>
+		<h2>Available References</h2>
+		<?php foreach ($listing as $entry) : ?>
+			<h3><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></h3>
+			<ul>
+				<?php foreach (new mdref\RefListing($path = $refs->find($baseUrl->mod($entry->formatUrl())), $refs->glob($path, "/*.md")) as $entry) : ?>
+				<li><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a><br>
+					<?=$entry->readDescription()?></li>
+				<?php endforeach; ?>
+			</ul>
+		<?php endforeach; ?>
+	<?php endif; ?>
+<?php endif; ?>

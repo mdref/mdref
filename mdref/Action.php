@@ -6,35 +6,43 @@ use http\Controller\Observer;
 
 class Action extends Observer
 {
+	private function serveReference(\http\Controller $ctl) {
+		$payload = $ctl->getPayload();
+		$finder = new Finder($this->baseUrl, REFS);
+		$path = $finder->find(new \http\Url($ctl->getRequest()->getRequestUrl()));
+		$payload->listing = new RefListing($path, 
+				$finder->glob($path, "/[_a-zA-Z]*.md"));
+		$payload->title = $payload->listing->getSelf()->formatLink();
+		$payload->refs = $finder;
+		if ($path->isFile()) {
+			$payload->html = new Markdown($path);
+			$payload->sublisting = new RefListing($path, 
+					$finder->glob($path, "/[_a-z]*.md"));
+			return true;
+		}
+	}
+	
+	private function serveInternal(\http\Controller $ctl) {
+		$payload = $ctl->getPayload();
+		$finder = new Finder($this->baseUrl, ROOT);
+		$url = new \http\Url($ctl->getRequest()->getRequestUrl());
+		$path = $finder->find($url, "");
+		if ($path->isFile("")) {
+			$payload->html = $path->toHtml();
+		} else if (strcmp($url, $this->baseUrl)) {
+			throw new \http\Controller\Exception(404, "Could not find '$path'");
+		}
+	}
+
 	function update(\SplSubject $ctl) {
 		/* @var \http\Controller $ctl */
 		try {
-			$payload = $ctl->getPayload();
-			$request = $ctl->getRequest();
+			$ctl->getPayload()->baseUrl = $this->baseUrl;
 
-			$finder = new Finder($this->baseUrl, REFS);
-			$url = new \http\Url($request->getRequestUrl());
-			if (!$path = $finder->find($url)) {
-				$path = new Path;
-			}
-
-			$payload->baseUrl = $this->baseUrl;
-			$payload->requestUrl = $url;
-
-			$payload->listing = new RefListing($path, 
-					$finder->glob($path, "/[_a-zA-Z]*.md"));
-
-			if ($path->isFile()) {
-				$payload->markdown = new Markdown($path);
-				$payload->sublisting = new RefListing($path, 
-						$finder->glob($path, "/[_a-z]*.md"));
-			} else if ($path($url)->isFile("")) {
-				$payload->markdown = $path->toHtml();
-			} else if (strcmp($url, $this->baseUrl)) {
-				throw new \http\Controller\Exception(404, "Could not find '$url'");
+			if (!$this->serveReference($ctl)) {
+				$this->serveInternal($ctl);
 			}
 		} catch (\Exception $e) {
-			$payload->baseUrl = $this->baseUrl;
 			$ctl->getPayload()->exception = $e;
 		}
 	}
