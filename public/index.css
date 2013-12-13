@@ -79,6 +79,10 @@ p, pre {
 	margin: 1em 2em;
 }
 
+li>p {
+	margin: 1em 0;
+}
+
 blockquote {
 	border-top: 1px solid #800000;
 	border-bottom: 1px solid #800000;

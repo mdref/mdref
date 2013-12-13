@@ -7,12 +7,14 @@
 		<h2>Available References</h2>
 		<?php foreach ($listing as $entry) : ?>
 			<h3><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></h3>
+			<?php $entry->recurse($refs, "/*.md", function($entry, $pattern, callable $recursor) { ?>
 			<ul>
-				<?php foreach (new mdref\RefListing($path = $refs->find($baseUrl->mod($entry->formatUrl())), $refs->glob($path, "/*.md")) as $entry) : ?>
-				<li><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a><br>
-					<?=$entry->readDescription()?></li>
-				<?php endforeach; ?>
+				<li><p><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></p>
+					<?=$entry->readDescription()?>
+					<?php $recursor($entry, "/[A-Z]*.md") ?>
+				</li>
 			</ul>
+			<?php }); ?>
 		<?php endforeach; ?>
 	<?php endif; ?>
 <?php endif; ?>

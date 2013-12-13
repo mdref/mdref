@@ -74,10 +74,10 @@ class RefEntry
 			$file = $this->getPath();
 			
 			if (!$file->isFile()) {
-				throw new \Exception("Not a file: '{$this->entry}'");
+				throw new \Exception("Not a file: '{$file}'");
 			}
 			if (!$this->file = fopen($file->getFullPath(".md"), "r")) {
-				throw new \Exception("Could not open {$this->entry}");
+				throw new \Exception("Could not open {$file}");
 			}
 		}
 	}
@@ -103,6 +103,16 @@ class RefEntry
 		if ($file->isFile(".mdref")) {
 			return sprintf(file_get_contents($file->getFullPath(".mdref")),
 					$this->entry);
+		}
+	}
+	
+	function recurse(Finder $refs, $pattern, callable $cb) {
+		$path = $refs->find($refs->getBaseUrl()->mod($this->entry));
+		foreach (new RefListing($path, $refs->glob($path, $pattern)) as $entry) {
+			/* @var $entry RefEntry */
+			$cb($entry, $pattern, function($entry, $pattern) use ($refs, $cb) {
+				$entry->recurse($refs, $pattern, $cb);
+			});
 		}
 	}
 }

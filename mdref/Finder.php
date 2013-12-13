@@ -36,6 +36,10 @@ class Finder
 		$this->baseUrl = $baseUrl;
 	}
 	
+	function getBaseUrl() {
+		return $this->baseUrl;
+	}
+	
 	/**
 	 * Find a markdown reference file in one REFPATH. If nothing could be found
 	 * an empty Path will be returned.
