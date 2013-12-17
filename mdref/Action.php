@@ -4,6 +4,9 @@ namespace mdref;
 
 use http\Controller\Observer;
 
+/**
+ * The sole action controller of mdref
+ */
 class Action extends Observer
 {
 	private function serveReference(\http\Controller $ctl) {
@@ -34,6 +37,10 @@ class Action extends Observer
 		}
 	}
 
+	/**
+	 * Implements \SplObserver
+	 * @param \SplSubject $ctl
+	 */
 	function update(\SplSubject $ctl) {
 		/* @var \http\Controller $ctl */
 		try {

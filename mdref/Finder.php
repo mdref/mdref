@@ -36,6 +36,9 @@ class Finder
 		$this->baseUrl = $baseUrl;
 	}
 	
+	/**
+	 * @return \http\Controller\Url
+	 */
 	function getBaseUrl() {
 		return $this->baseUrl;
 	}

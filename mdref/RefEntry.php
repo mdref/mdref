@@ -2,6 +2,9 @@
 
 namespace mdref;
 
+/**
+ * The RefEntry class represents a reference entry, i.e. a .md file
+ */
 class RefEntry
 {
 	/**
@@ -19,17 +22,28 @@ class RefEntry
 	 */
 	protected $file;
 	
+	/**
+	 * @param \mdref\Path $path
+	 * @param type $entry
+	 */
 	function __construct(Path $path, $entry = null) {
 		$this->path = $path;
 		$this->entry = trim($entry ?: $path->getPathName(), DIRECTORY_SEPARATOR);
 	}
 	
+	/**
+	 * Clean up the file handle
+	 */
 	function __destruct() {
 		if (is_resource($this->file)) {
 			fclose($this->file);
 		}
 	}
 	
+	/**
+	 * Format as URL
+	 * @return string
+	 */
 	function formatUrl() {
 		return htmlspecialchars($this->entry);
 	}
@@ -54,6 +68,11 @@ class RefEntry
 		return $link;
 	}
 
+	/**
+	 * Format as link text
+	 * @param bool $basename whether to use the basename only
+	 * @return string
+	 */
 	function formatLink($basename = false) {
 		$link = "";
 		if (strlen($this->entry)) {
@@ -63,6 +82,10 @@ class RefEntry
 		return htmlspecialchars($link);
 	}
 	
+	/**
+	 * Create a consolidated Path of this entry
+	 * @return \mdref\Path
+	 */
 	function getPath() {
 		$path = $this->path;
 		$file = $path($this->entry);
@@ -82,12 +105,20 @@ class RefEntry
 		}
 	}
 	
+	/**
+	 * Read the title of the refentry
+	 * @return string
+	 */
 	function readTitle() {
 		$this->openFile();
 		fseek($this->file, 1, SEEK_SET);
 		return htmlspecialchars(fgets($this->file));
 	}
 	
+	/**
+	 * Read the description of the refentry
+	 * @return string
+	 */
 	function readDescription() {
 		$this->openFile();
 		fseek($this->file, 0, SEEK_SET);
@@ -96,6 +127,13 @@ class RefEntry
 		return htmlspecialchars(fgets($this->file));
 	}
 	
+	/**
+	 * Format a "Edit me" URL. The project reference top directory needs a 
+	 * »name«.mdref file besides its »name«.md entry point with the edit URL
+	 * printf template as content. The sole printf argument is the relative 
+	 * path of the entry.
+	 * @return string
+	 */
 	function formatEditUrl() {
 		$path = $this->path;
 		$base = current(explode(DIRECTORY_SEPARATOR, $path->getPathName()));
@@ -106,6 +144,12 @@ class RefEntry
 		}
 	}
 	
+	/**
+	 * Recurse into the reference tree
+	 * @param \mdref\Finder $refs
+	 * @param string $pattern
+	 * @param callable $cb
+	 */
 	function recurse(Finder $refs, $pattern, callable $cb) {
 		$path = $refs->find($refs->getBaseUrl()->mod($this->entry));
 		foreach (new RefListing($path, $refs->glob($path, $pattern)) as $entry) {

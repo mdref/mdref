@@ -175,12 +175,12 @@ $(function() {
 							$(window).scrollTop($(c).offset().top - 100);
 							scrolled = true;
 						}
-						blink(c);
+						mdref.blink(c);
 					}
 				} : function(i, c) {
 					if (c.textContent === hash) {
 						$(window).scrollTop($(c).offset().top - 100);
-						blink(c);
+						mdref.blink(c);
 						return false;
 					}
 				});
