@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>
+			<?php if ($title) : ?>
+				<?= $title ?> - mdref
+			<?php else: ?>
+				mdref
+			<?php endif; ?>
+		</title>
+		<base href="<?= $baseUrl ?>">
+		<link rel="stylesheet" href="index.css">
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	</head>
+	<body>
+		<?php include __DIR__."/sidebar.phtml" ?>
+		
+		<?php if (isset($html)) : ?>
+			<?php include __DIR__."/mdref.phtml" ?>
+		<?php else: ?>
+			<?php include __DIR__."/index.phtml" ?>
+		<?php endif; ?>
+
+		<div id="disqus_thread"></div>
+
+		<footer>
+			<?php include __DIR__."/footer.phtml" ?>
+		</footer>
+		<script src="index.js"></script>
+	</body>
+</html>

@@ -1,0 +1,3 @@
+<?php if (isset($listing) && ($entry = $listing->getSelf()) && ($url = $entry->formatEditUrl())) : ?>
+	<a class="edit" href="<?=$url?>">Edit Page</a>
+<?php endif; ?>
