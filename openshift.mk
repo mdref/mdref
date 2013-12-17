@@ -1,4 +1,4 @@
-PHP = $(OPENSHIFT_DATA_DIR)/php-$(PHP_VERSION)/bin/php
+PHP = $(OPENSHIFT_DATA_DIR)/php/bin/php
 
 all: vendor
 
