@@ -1,4 +1,7 @@
 {
+    "name": "m6w6/mdref",
+    "description": "Quick Markdown Reference Browser",
+    "license": "BSD-2-Clause",
     "require": {
         "m6w6/autocracy": "dev-master"
     }
