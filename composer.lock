@@ -11,12 +11,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/m6w6/autocracy.git",
-                "reference": "2df65756ee04c9c6b133f6e1bbb70644fead8b76"
+                "reference": "ccf41b290a1ea26eae5e427c9636a2235d089bd0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/m6w6/autocracy/zipball/2df65756ee04c9c6b133f6e1bbb70644fead8b76",
-                "reference": "2df65756ee04c9c6b133f6e1bbb70644fead8b76",
+                "url": "https://api.github.com/repos/m6w6/autocracy/zipball/ccf41b290a1ea26eae5e427c9636a2235d089bd0",
+                "reference": "ccf41b290a1ea26eae5e427c9636a2235d089bd0",
                 "shasum": ""
             },
             "type": "library",
@@ -43,7 +43,7 @@
                 "pecl",
                 "pecl_http"
             ],
-            "time": "2013-12-18 13:50:05"
+            "time": "2013-12-18 14:21:23"
         }
     ],
     "packages-dev": [
