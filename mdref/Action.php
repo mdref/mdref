@@ -32,7 +32,7 @@ class Action extends Observer
 		$path = $finder->find($url, "");
 		if ($path->isFile("")) {
 			$payload->html = $path->toHtml();
-		} else if (strcmp($url, $this->baseUrl)) {
+		} else if (strcmp($url->path, $this->baseUrl->path)) {
 			throw new \http\Controller\Exception(404, "Could not find '$path'");
 		}
 	}
