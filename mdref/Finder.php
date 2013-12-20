@@ -74,7 +74,7 @@ class Finder
 	 */
 	function glob(Path $path, $pattern, $flags = GLOB_BRACE) {
 		if (strlen($path->getBaseDir())) {
-			return glob($path->getFullPath($pattern), $flags);
+			return glob($path->getFullPath($pattern), $flags) ?: array();
 		}
 		$glob = array();
 		foreach ($this->refs as $ref) {
