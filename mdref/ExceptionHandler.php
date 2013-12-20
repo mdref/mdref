@@ -19,7 +19,7 @@ class ExceptionHandler
 			try {
 				echo static::html($e);
 			} catch (\Exception $ignore) {
-				HTTP::sendStatusCode(500);
+				headers_sent() or HTTP::setResponseCode(500);
 			}
 		} else {
 			throw new \Exception($msg, $e);
@@ -39,7 +39,7 @@ class ExceptionHandler
 		if ($e instanceof \http\Controller\Exception) {
 			$code = $e->getCode() ?: 500;
 			foreach ($e->getHeaders() as $key => $val) {
-				HTTP::sendResponseHeader($key, $val);
+				HTTP::setResponseHeader($key, $val);
 			}
 		} else {
 			$code = 500;
