@@ -3,11 +3,10 @@
 	<head>
 		<meta charset="utf-8">
 		<title>
-			<?php if ($title) : ?>
-				<?= $title ?> - mdref
-			<?php else: ?>
-				mdref
+			<?php if (!empty($title)) : ?>
+				<?= $title ?> -
 			<?php endif; ?>
+				mdref
 		</title>
 		<base href="<?= $baseUrl ?>">
 		<link rel="stylesheet" href="index.css">
