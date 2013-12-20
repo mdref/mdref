@@ -3,7 +3,9 @@
 define("ROOT", dirname(__DIR__));
 define("REFS", getenv("REFPATH") ?: implode(PATH_SEPARATOR, glob(ROOT."/refs/*")));
 
-$loader = require __DIR__ . "/../vendor/autoload.php";
+ini_set("open_basedir", ROOT.":".REFS);
+
+$loader = require ROOT . "/vendor/autoload.php";
 /* @var $loader \Composer\Autoload\ClassLoader */
 $loader->add("mdref", ROOT);
 
