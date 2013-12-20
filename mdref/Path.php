@@ -70,7 +70,15 @@ class Path
 	 * @return string
 	 */
 	function getFullPath($ext = "") {
-		return $this->baseDir . DIRECTORY_SEPARATOR . $this->path . $ext;
+		$path = "";
+		if (strlen($this->baseDir)) {
+			$path .= $this->baseDir . DIRECTORY_SEPARATOR;
+		}
+		if (strlen($this->path)) {
+			$path .= $this->path;
+		}
+		$path .= $ext;
+		return $path;
 	}
 	
 	/**
