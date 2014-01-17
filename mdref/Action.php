@@ -68,6 +68,7 @@ class Action extends Observer
 			$pld = $ctl->getPayload();
 			$pld->baseUrl = $this->baseUrl;
 			$url = $this->baseUrl->mod($ctl->getRequest()->getRequestUrl());
+			$pld->permUrl = implode("/", $this->baseUrl->params($url));
 			
 			if ($this->serveReference($url, $pld) || $this->serveInternal($url, $pld)) {
 				return;

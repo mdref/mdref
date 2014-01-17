@@ -9,6 +9,7 @@ body {
 	font-size: 1.5em;
 	margin: 0;
 	padding: 0;
+	padding-bottom: 5em;
 	color: #3f3f3f;
 }
 
@@ -120,7 +121,7 @@ h1 code {
 	line-height: 1.33;
 }
 
-footer, h1, li h3 {
+footer, h1, li h3, th {
 	background: #708090;
 	color: #f5f5dc;
 }
@@ -166,12 +167,15 @@ footer {
 	font-size: smaller;
 	text-align: center;
 	clear: both;
-	margin-top: 8em;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	padding: 0;
 }
 
 footer ul {
 	margin: 0;
-	padding: 0;
+	padding: 1em 0;
 }
 
 footer li {
@@ -186,4 +190,15 @@ footer a {
 
 footer a:hover {
 	text-decoration: underline;
+}
+
+table {
+	border-collapse: collapse;
+}
+th, td {
+	padding: .4em;
+}
+
+h1, footer, table, .sidebar, pre>code, li h3 {
+	box-shadow: 0 0 4px #708090;
 }
