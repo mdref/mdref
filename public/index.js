@@ -117,20 +117,24 @@ $(function() {
 				return "<span class=\"constant\">";
 			}
 		},
-		node: function node(s, nn) {
-			// mdref.log("node", s);
-			var t;
-			if ((t = mdref.type(s, nn))) {
-				return $(t).text(s);
-			}
-			return document.createTextNode(s);
-		},
 		wrap: function wrap(n, nn) {
 			var $n = $(n)
 			var a = [];
 
 			$n.text().split(/([^a-zA-Z0-9_\\\$:]+)/).forEach(function(v) {
-				a.push(mdref.node(v, nn));
+				var t;
+				
+				if ((t = mdref.type(v, nn))) {
+					a.push($(t).text(v));
+				} else if (a.length && a[a.length-1].nodeName === "#text") {
+					/* if we already have a text node and the next is also gonna be a text
+					 * node, then join them, becuase chrome v30+ or something eats whitespace
+					 * for breakfast, lunch and dinner!
+					 */
+					a[a.length-1].textContent += v;
+				} else {
+					a.push(document.createTextNode(v));
+				}
 			});
 			$n.replaceWith(a);
 		},
@@ -142,6 +146,9 @@ $(function() {
 				case "A":
 				case "BR":
 				case "HR":
+				case "EM":
+				case "CODE":
+				case "SPAN":
 					break;
 				case "#text":
 					mdref.wrap(n, e.nodeName);
