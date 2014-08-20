@@ -9,11 +9,11 @@ use http\Controller\Observer;
  */
 class Action extends Observer
 {
-	private function serveReference(\http\Url $url, \http\Controller\Payload $payload) {
+	private function serveReference(\http\Url $url, \stdClass $payload) {
 		$finder = new Finder($this->baseUrl, REFS);
 		$path = $finder->find($url);
 		$payload->listing = new RefListing($path, 
-				$finder->glob($path, "/[_a-zA-Z]*.md"));
+				$finder->glob($path, "/[:_a-zA-Z]*.md"));
 		$payload->title = $payload->listing->getSelf()->formatLink();
 		$payload->refs = $finder;
 		if ($path->isFile()) {
@@ -24,7 +24,7 @@ class Action extends Observer
 		}
 	}
 	
-	private function serveInternal(\http\Url $url, \http\Controller\Payload $payload) {
+	private function serveInternal(\http\Url $url, \stdClass $payload) {
 		$finder = new Finder($this->baseUrl, ROOT);
 		$path = $finder->find($url, "");
 		if ($path->isFile("")) {
@@ -65,15 +65,18 @@ class Action extends Observer
 	function update(\SplSubject $ctl) {
 		/* @var \http\Controller $ctl */
 		try {
-			$pld = $ctl->getPayload();
+			$pld = new \stdClass;
+			$ctl[Observer\View::class] = function() use($pld) {
+				return $pld;
+			};
+ 			
 			$pld->baseUrl = $this->baseUrl;
 			$url = $this->baseUrl->mod($ctl->getRequest()->getRequestUrl());
 			$pld->permUrl = implode("/", $this->baseUrl->params($url));
-			
 			if ($this->serveReference($url, $pld) || $this->serveInternal($url, $pld)) {
 				return;
 			} elseif ($this->servePublic($url, $ctl->getResponse())) {
-				$ctl->detachAll("\\http\\Controller\\Observer\\View");
+				$ctl->detachAll(Observer\View::class);
 				return;
 			}
 			
@@ -81,8 +84,10 @@ class Action extends Observer
 			if (strcmp($url->path, $this->baseUrl->path)) {
 				throw new \http\Controller\Exception(404, "Could not find '$url'");
 			}
-		} catch (\Exception $e) {
-			$ctl->getPayload()->exception = $e;
+		} catch (\Exception $exception) {
+			$ctl[Observer\View::class] = function() use($exception) {
+					return compact("exception");
+			};
 		}
 	}
 }
