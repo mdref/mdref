@@ -71,7 +71,7 @@ class RefListing implements \Countable, \Iterator
 	 * @return \mdref\RefEntry
 	 */
 	function current() {
-		return new RefEntry($this->path, $this->key());//$this->format($this->key());
+		return new RefEntry($this->path, $this->key());
 	}
 	
 	/**

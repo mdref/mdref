@@ -12,7 +12,7 @@ class Markdown
 	/**
 	 * @param \mdref\Path $path
 	 */
-	function __construct(Path $path) {
+	function __construct(Path $path = null) {
 		$this->path = $path;
 	}
 	
@@ -20,6 +20,9 @@ class Markdown
 	 * @return string
 	 */
 	function __toString() {
+		if (!$this->path) {
+			return "";
+		}
 		try {
 			$r = fopen($this->path->getFullPath(".md"), "r");
 			$md = \MarkdownDocument::createFromStream($r);
@@ -30,5 +33,11 @@ class Markdown
 			$html = ExceptionHandler::html($e);
 		}
 		return $html;
+	}
+
+	function quick($string) {
+		$md = \MarkdownDocument::createFromString($string);
+		$md->compile(\MarkdownDocument::AUTOLINK);
+		return $md->getHtml();
 	}
 }

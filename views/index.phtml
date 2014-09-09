@@ -10,8 +10,13 @@
 			<?php $entry->recurse($refs, "/*.md", function($entry, $pattern, callable $recursor) { ?>
 			<ul>
 				<li><p><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></p>
-					<?=$entry->readDescription()?>
-					<?php $recursor($entry, "/[A-Z]*.md") ?>
+					<?php
+						if (!isset($html)) {
+							$html = new \mdref\Markdown;
+						}
+						echo $html->quick($entry->readDescription());
+						$recursor($entry, "/[A-Z]*.md");
+					?>
 				</li>
 			</ul>
 			<?php }); ?>

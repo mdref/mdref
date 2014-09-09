@@ -114,7 +114,7 @@ class RefEntry
 	function readTitle() {
 		$this->openFile();
 		fseek($this->file, 1, SEEK_SET);
-		return htmlspecialchars(fgets($this->file));
+		return fgets($this->file);
 	}
 	
 	/**
@@ -126,7 +126,7 @@ class RefEntry
 		fseek($this->file, 0, SEEK_SET);
 		fgets($this->file);
 		fgets($this->file);
-		return htmlspecialchars(fgets($this->file));
+		return fgets($this->file);
 	}
 	
 	/**

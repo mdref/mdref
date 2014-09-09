@@ -6,8 +6,8 @@
 	<?php foreach($sublisting as $entry) : ?>
 		<li>
 			<h3><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink(true)?></a></h3>
-			<p><?=$entry->readDescription()?></p>
-			<p><?=$entry->readTitle()?></p>
+			<p><?=$html->quick($entry->readDescription())?></p>
+			<p><?=$view->esc($entry->readTitle())?></p>
 		</li>
 	<?php endforeach; ?>
 	</ul>
