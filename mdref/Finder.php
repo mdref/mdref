@@ -74,14 +74,16 @@ class Finder
 	 */
 	function glob(Path $path, $pattern, $flags = GLOB_BRACE) {
 		if (strlen($path->getBaseDir())) {
-			return glob($path->getFullPath($pattern), $flags) ?: array();
+			$glob = glob($path->getFullPath($pattern), $flags) ?: array();
+		} else {
+			$glob = array();
+			foreach ($this->refs as $ref) {
+				$glob = array_merge($glob, array_map(function ($fn) use ($ref) {
+					return substr($fn, strlen($ref));
+				}, glob($ref . $pattern, $flags)));
+			}
 		}
-		$glob = array();
-		foreach ($this->refs as $ref) {
-			$glob = array_merge($glob, array_map(function ($fn) use ($ref) {
-				return substr($fn, strlen($ref));
-			}, glob($ref . $pattern, $flags)));
-		}
+		sort($glob, SORT_STRING|SORT_FLAG_CASE);
 		return $glob;
 	}
 }
