@@ -20,7 +20,7 @@ new ExceptionHandler;
 
 $ctl = new Controller;
 $ctl->setDependency("baseUrl", new Url)
-	->attach(new Action)
+	->attach(new Action(["refpath" => REFS]))
 	->attach(new Layout)
 	->notify()
 	->getResponse()

@@ -1,24 +1,46 @@
-<?php if (isset($listing)) : ?>
 <div class="sidebar">
-	<?php include __DIR__."/edit.phtml" ?>
 	<ul>
-		<li>&lsh; <a href="">Home</a></li>
-		<?php if (($entry = $listing->getParent())) : ?>
-			<li>&uarr; <a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></li>
-		<?php endif; ?>
-		<?php if (($entry = $listing->getSelf()) && ($link = $entry->formatLink())) : ?>
-			<ul><li>&circlearrowright; <?= $link ?>
-		<?php endif; ?>
-		<?php if (count($listing)) : ?>
+		<li>&lsh; <a href="">Home</a>
+			<?php if (isset($entry)) : /* @var \mdref\Entry $entry */ ?>
 			<ul>
-				<?php foreach ($listing as $entry) : ?>
-				<li>&rdsh; <a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></li>
+				<li>
+					<?php foreach ($entry->getParents() as $parent) if ($parent->isFile()) : ?>
+					&uarr; 
+						<a href="<?= $view->esc($parent->getName()) ?>">
+							<?= $view->esc($entry->getRepo()->getEntry($parent)) ?>
+						</a>
+						<ul>
+							<li>
+					<?php endif; ?>
+							&circlearrowright; <a href="<?= $view->esc($entry->getName()) ?>"
+							><?= $view->esc($entry) ?></a>
+							<ul>
+								<?php foreach ($entry as $sub) : /* @var \mdref\Entry $sub */ ?>
+								<li>
+									&rdsh; <a href="<?= $view->esc($sub->getName()) ?>"
+									><?= $view->esc($sub) ?></a>
+								</li>
+								<?php endforeach; ?>
+							</ul>
+					<?php foreach ($entry->getParents() as $parent) if ($parent->isFile()) : ?>
+						</li>
+					</ul>
+					<?php endif; ?>
+				</li>
+			</ul>
+			<?php elseif (isset($refs)) : ?>
+			<ul>
+				<?php foreach ($refs as $repo) : /* @var \mdref\Repo $repo */ ?>
+					<?php foreach ($repo as $sub) : /* @var \mdref\Entry $entry */ ?>
+						<li>
+							&rdsh; <a href="<?= $view->esc($sub->getName()) ?>"
+							><?= $view->esc($sub->getTitle()) ?></a>
+						</li>
+					<?php endforeach; ?>
 				<?php endforeach; ?>
 			</ul>
-		<?php endif; ?>
-		<?php if (isset($link) && strlen($link)) : ?>
-			</li></ul>
-		<?php endif; ?>
+			<?php endif; ?>
+		</li>
 	</ul>
 </div>
-<?php endif; ?>
+

@@ -5,89 +5,145 @@ namespace mdref;
 use http\Controller\Observer;
 
 /**
- * The sole action controller of mdref
+ * Request handler
  */
-class Action extends Observer
-{
-	private function serveReference(\http\Url $url, \stdClass $payload) {
-		$finder = new Finder($this->baseUrl, REFS);
-		$path = $finder->find($url);
-		$payload->listing = new RefListing($path, 
-				$finder->glob($path, "/[:_a-zA-Z]*.md"));
-		$payload->title = $payload->listing->getSelf()->formatLink();
-		$payload->refs = $finder;
-		if ($path->isFile()) {
-			$payload->html = new Markdown($path);
-			$payload->sublisting = new RefListing($path, 
-					$finder->glob($path, "/[_a-z]*.md"));
-			return true;
-		}
+class Action extends Observer {
+	/**
+	 * Reference paths
+	 * @var string
+	 */
+	protected $refpath;
+	
+	/**
+	 * The reference
+	 * @var \mdref\Reference
+	 */
+	private $reference;
+	
+	/**
+	 * Initialize the reference
+	 */
+	protected function init() {
+		$this->reference = new Reference(explode(PATH_SEPARATOR, $this->refpath));
 	}
 	
-	private function serveInternal(\http\Url $url, \stdClass $payload) {
-		$finder = new Finder($this->baseUrl, ROOT);
-		$path = $finder->find($url, "");
-		if ($path->isFile("")) {
-			$payload->html = $path->toHtml();
-			return true;
-		}
-	}
-	
-	private function getType($file) {
-		static $inf = null;
-		static $typ = array(".css" => "text/css", ".js" => "applicatin/javascript");
+	/**
+	 * Create the view payload
+	 * @param \http\Controller $ctl
+	 * @return \stdClass
+	 */
+	private function createPayload(\http\Controller $ctl) {
+		$pld = new \stdClass;
 		
-		$ext = strrchr($file, ".");
-		if (isset($typ[$ext])) {
-			return $typ[$ext];
+		try {
+			$pld->quick = function($string) {
+				$md = \MarkdownDocument::createFromString($string);
+				$md->compile(\MarkdownDocument::AUTOLINK);
+				return $md->getHtml();
+			};
+			
+			$pld->file = function($file) {
+				$fd = fopen($file, "r");
+				$md = \MarkdownDocument::createFromStream($fd);
+				$md->compile(\MarkdownDocument::AUTOLINK | \MarkdownDocument::TOC);
+				$html = $md->getHtml();
+				fclose($fd);
+				return $html;
+			};
+			
+			$pld->ref = implode("/",  $this->baseUrl->params(
+				$this->baseUrl->mod($ctl->getRequest()->getRequestUrl())));
+			
+			$pld->refs = $this->reference;
+			$pld->baseUrl = $this->baseUrl;
+			
+		} catch (\Exception $e) {
+			$pld->exception = $e;
 		}
 		
-		if (!$inf) {
-			$inf = new \FINFO(FILEINFO_MIME_TYPE);
-		}
-		return $inf->file($file);
+		return $pld;
 	}
 	
-	private function servePublic(\http\Url $url, \http\Env\Response $res) {
-		$finder = new Finder($this->baseUrl, ROOT."/public");
-		$path = $finder->find($url, "");
-		if ($path->isFile("")) {
-			$res->setHeader("Content-Type", $this->getType($path->getFullPath("")));
-			$res->setBody(new \http\Message\Body(fopen($path->getFullPath(""),"r")));
-			return true;
+	/**
+	 * Redirect to canononical url
+	 * @param \http\Controller $ctl
+	 * @param string $cnn
+	 */
+	private function serveCanonical($ctl, $cnn) {
+		$ctl->detachAll(Observer\View::class);
+		$ctl->getResponse()->setHeader("Location", $this->baseUrl->mod($cnn));
+		$ctl->getResponse()->setResponseCode(301);
+	}
+	
+	/**
+	 * Serve index.css
+	 * @param \http\Controller $ctl
+	 */
+	private function serveStylesheet($ctl) {
+		$ctl->detachAll(Observer\View::class);
+		$ctl->getResponse()->setHeader("Content-Type", "text/css");
+		$ctl->getResponse()->setBody(new \http\Message\Body(fopen(ROOT."/public/index.css", "r")));
+	}
+	
+	/**
+	 * Serve index.js
+	 * @param \http\Controller $ctl
+	 */
+	private function serveJavascript($ctl) {
+		$ctl->detachAll(Observer\View::class);
+		$ctl->getResponse()->setHeader("Content-Type", "application/javascript");
+		$ctl->getResponse()->setBody(new \http\Message\Body(fopen(ROOT."/public/index.js", "r")));
+	}
+	
+	/**
+	 * Serve a preset
+	 * @param \http\Controller $ctl
+	 * @param \stdClass $pld
+	 * @throws \http\Controller\Exception
+	 */
+	private function servePreset($ctl, $pld) {
+		switch ($pld->ref) {
+		case "AUTHORS":
+		case "LICENSE":
+		case "VERSION":
+			$pld->text = file_get_contents(ROOT."/$pld->ref");
+			break;
+		case "index.css":
+			$this->serveStylesheet($ctl);
+			break;
+		case "index.js":
+			$this->serveJavascript($ctl);
+			break;
+		default:
+			throw new \http\Controller\Exception(404, "$pld->ref not found");
+		}
+	}
+	
+	/**
+	 * Implements Observer
+	 * @param \SplSubject $ctl \http\Controller
+	 */
+	public function update(\SplSubject $ctl) {
+		/* @var http\Controller $ctl */
+		$pld = $this->createPayload($ctl);
+		$ctl[Observer\View::class] = function() use($pld) {
+			return $pld;
+		};
+		
+		if (!isset($pld->ref) || !strlen($pld->ref)) {
+			/* front page */
+			return;
+		}
+		
+		if (($repo = $this->reference->getRepoForEntry($pld->ref, $cnn))) {
+			/* direct match */
+			$pld->entry = $repo->getEntry($pld->ref);
+		} else if (strlen($cnn)) {
+			/* redirect */
+			$this->serveCanonical($ctl, $cnn);
+		} else {
+			$this->servePreset($ctl, $pld);
 		}
 	}
 
-	/**
-	 * Implements \SplObserver
-	 * @param \SplSubject $ctl
-	 */
-	function update(\SplSubject $ctl) {
-		/* @var \http\Controller $ctl */
-		try {
-			$pld = new \stdClass;
-			$ctl[Observer\View::class] = function() use($pld) {
-				return $pld;
-			};
- 			
-			$pld->baseUrl = $this->baseUrl;
-			$url = $this->baseUrl->mod($ctl->getRequest()->getRequestUrl());
-			$pld->permUrl = implode("/", $this->baseUrl->params($url));
-			if ($this->serveReference($url, $pld) || $this->serveInternal($url, $pld)) {
-				return;
-			} elseif ($this->servePublic($url, $ctl->getResponse())) {
-				$ctl->detachAll(Observer\View::class);
-				return;
-			}
-			
-			/* fallthrough */
-			if (strcmp($url->path, $this->baseUrl->path)) {
-				throw new \http\Controller\Exception(404, "Could not find '$url'");
-			}
-		} catch (\Exception $exception) {
-			$ctl[Observer\View::class] = function() use($exception) {
-					return compact("exception");
-			};
-		}
-	}
 }

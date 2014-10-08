@@ -1,25 +1,16 @@
 <h1>mdref</h1>
 
-<?php if (isset($exception)) : ?>
-	<?=\mdref\ExceptionHandler::html($exception, ["h2"], ["p"], ["pre", "style='overflow-x:scroll'"]); ?>
-<?php else : ?>
-	<?php if (isset($listing) && count($listing)) : ?>
-		<h2>Available References</h2>
-		<?php foreach ($listing as $entry) : ?>
-			<h3><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></h3>
-			<?php $entry->recurse($refs, "/*.md", function($entry, $pattern, callable $recursor) { ?>
-			<ul>
-				<li><p><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink()?></a></p>
-					<?php
-						if (!isset($html)) {
-							$html = new \mdref\Markdown;
-						}
-						echo $html->quick($entry->readDescription());
-						$recursor($entry, "/[A-Z]*.md");
-					?>
-				</li>
-			</ul>
-			<?php }); ?>
+<?php if (isset($html)) : ?>
+	<?= $html ?>
+<?php elseif (isset($text)) : ?>
+	<p style="white-space:pre-wrap"><?= $view->esc($text) ?></p>
+<?php elseif (isset($refs)) : ?>
+	<?php foreach ($refs as $repo) : /* @var \mdref\Repo $repo */ ?>
+		<?php foreach ($repo as $entry) : /* @var \mdref\Entry $entry */ ?>
+		<h2>
+			<a href="<?= $view->esc($entry->getName()) ?>"
+			><?= $view->esc($entry->getTitle()) ?></a></h2>
+		<div><?= $quick($entry->getIntro()) ?></div>
 		<?php endforeach; ?>
-	<?php endif; ?>
+	<?php endforeach; ?>
 <?php endif; ?>

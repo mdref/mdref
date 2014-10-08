@@ -35,8 +35,11 @@ then
 	printf "\t          list of those (optional, multiple)\n\n"
 	printf "Environment:\n"
 	printf "\tREFPATH   colon separated list of refpaths\n\n"
-	printf "At least one refpath must be given, either through the environment "
-	printf "with REFPATH or as command line argument.\n\n"
+	printf "Examples:\n"
+	printf "\t\$ REFPATH=refs/foo:refs/bar ./bin/cli-server\n\n"
+	printf "\t\$ ./bin/cli-server refs/*\n\n"
+	printf "\tAt least one refpath must be given, either through the environment\n"
+	printf "\twith REFPATH or as command line argument.\n\n"
 	exit 1
 fi
 

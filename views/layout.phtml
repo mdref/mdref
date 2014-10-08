@@ -9,13 +9,15 @@
 			mdref
 		</title>
 		<base href="<?= $baseUrl ?>">
+		<meta http-equiv="Content-Location" content="<?= $baseUrl . $ref ?>">
 		<link rel="stylesheet" href="index.css">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	</head>
 	<body>
 		<?php include __DIR__."/sidebar.phtml" ?>
-		
-		<?php if (isset($html)) : ?>
+		<?php if (isset($exception)) : ?>
+			<?= \mdref\ExceptionHandler::htmlException($exception) ?>
+		<?php elseif (isset($entry)) : ?>
 			<?php include __DIR__."/mdref.phtml" ?>
 		<?php else: ?>
 			<?php include __DIR__."/index.phtml" ?>
@@ -25,7 +27,7 @@
 		<div id="disqus_thread"></div>
 		<script>
 			var disqus_shortname = 'mdref';
-			var disqus_identifier = '<?=$permUrl?>';
+			var disqus_identifier = '<?=$ref?>';
 			(function() {
 				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
 				dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';

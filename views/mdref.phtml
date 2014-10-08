@@ -1,14 +1,27 @@
-<?= $html ?>
+<?= $file($entry->getPath()) ?>
 
-<?php if (isset($sublisting) && count($sublisting)) : ?>
-	<h2>Functions:</h2>
-	<ul>
-	<?php foreach($sublisting as $entry) : ?>
-		<li>
-			<h3><a href="<?=$entry->formatUrl()?>"><?=$entry->formatLink(true)?></a></h3>
-			<p><?=$html->quick($entry->readDescription())?></p>
-			<p><?=$view->esc($entry->readTitle())?></p>
-		</li>
+<?php if ($entry->hasFunctions()) : ?>
+<h2>Functions:</h2>
+<ul>
+	<?php foreach($entry as $sub) : if (!$sub->isFunction()) continue; ?>
+	<li>
+		<h3><a href="<?= $view->esc($sub->getName()) ?>"><?= $view->esc($sub) ?></a></h3>
+		<p><?= $quick($sub->getDescription()) ?></p>
+		<p><?= $view->esc($sub->getTitle()) ?></p>
+	</li>
 	<?php endforeach; ?>
-	</ul>
+</ul>
+<?php endif; ?>
+
+<?php if ($entry->hasNsClasses()) : ?>
+<h2>Namespaces, Interfaces and Classes:</h2>
+<ul>
+	<?php foreach ($entry as $sub) : if (!$sub->isNsClass()) continue; ?>
+	<li>
+		<h3><a href="<?= $view->esc($sub->getName()) ?>"><?= $view->esc($sub) ?></a></h3>
+		<p><?= $quick($sub->getDescription()) ?></p>
+		<p><?= $view->esc($sub->getTitle()) ?></p>
+	</li>
+	<?php endforeach; ?>
+</ul>
 <?php endif; ?>

@@ -16,7 +16,7 @@ body {
 body>* {
 	margin-left: 1em;
 }
-body>ul {
+body>ul, body>div>ul {
 	margin-left: 2em;
 }
 
@@ -77,7 +77,7 @@ pre>code, pre>code code {
 	color: #eee;
 }
 
-p, pre {
+p, pre, table {
 	margin: 1em 2em 2em 2em;
 }
 
@@ -103,6 +103,9 @@ a, h1 code>a {
 }
 a:hover {
 	text-decoration: none;
+}
+a[href^="http:"]:after, a[href^="https:"]:after {
+	content: " ⬈";
 }
 
 .var {
@@ -139,7 +142,7 @@ li h3 {
 	margin: .5em 0 0 0;
 }
 
-body>h3 {
+body>h3, body>div>h3 {
 	margin-left: 2em;
 }
 
