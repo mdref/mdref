@@ -13,7 +13,7 @@ class Tree implements \RecursiveIterator {
 	 * List of first level entries
 	 * @var array
 	 */
-	private $list;
+	private $list = array();
 	
 	/**
 	 * The list iterator
@@ -29,8 +29,10 @@ class Tree implements \RecursiveIterator {
 		if (!($list = glob("$path/*.md"))) {
 			$list = glob("$path/*/*.md");
 		}
-		$this->list = array_filter($list, $this->generateFilter($list));
-		sort($this->list, SORT_STRING);
+		if ($list) {
+			$this->list = array_filter($list, $this->generateFilter($list));
+			sort($this->list, SORT_STRING);
+		}
 		$this->repo = $repo;
 	}
 	
