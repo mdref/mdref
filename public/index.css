@@ -71,6 +71,7 @@ code code {
 
 pre>code {
 	padding: 1em;
+	min-width: 50%;
 }
 pre>code, pre>code code {
 	background: #333;
