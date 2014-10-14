@@ -218,9 +218,10 @@ class Entry implements \IteratorAggregate {
 	 * @param string $glob
 	 * @return boolean
 	 */
-	function hasIterator($glob = null) {
+	function hasIterator($glob = null, $loose = false) {
 		if (strlen($glob)) {
-			return glob($this->getBasename() . "/$glob");
+			return glob($this->getBasename() . "/$glob") ||
+				($loose && glob($this->getBasename() . "/*/$glob"));
 		} elseif ($this->isRoot()) {
 			return true;
 		} else {
@@ -233,7 +234,7 @@ class Entry implements \IteratorAggregate {
 	 * @return bool
 	 */
 	function hasNsClasses() {
-		return $this->hasIterator("/[A-Z]*.md");
+		return $this->hasIterator("/[A-Z]*.md", true);
 	}
 	
 	/**
@@ -249,6 +250,6 @@ class Entry implements \IteratorAggregate {
 	 * @return \mdref\Tree child nodes
 	 */
 	function getIterator() {
-		return new Tree($this->getBasename(), $this->repo, $this->isRoot());
+		return new Tree($this->getBasename(), $this->repo);
 	}
 }
