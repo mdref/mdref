@@ -135,12 +135,15 @@ class Action extends Observer {
 			return;
 		}
 		
+		$cnn = null;
 		if (($repo = $this->reference->getRepoForEntry($pld->ref, $cnn))) {
-			/* direct match */
-			$pld->entry = $repo->getEntry($pld->ref);
-		} else if (strlen($cnn)) {
-			/* redirect */
-			$this->serveCanonical($ctl, $cnn);
+			if (strlen($cnn)) {
+				/* redirect */
+				$this->serveCanonical($ctl, $cnn);
+			} else {
+				/* direct match */
+				$pld->entry = $repo->getEntry($pld->ref);
+			}
 		} else {
 			$this->servePreset($ctl, $pld);
 		}
