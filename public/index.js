@@ -55,9 +55,11 @@ $(function() {
 			case "ArrayObject":
 			case "ArrayIterator":
 			case "RecursiveArrayIterator":
+			case "SeekableIterator":
 			case "SplObserver":
 			case "SplSubject":
 			case "SplObjectStorage":
+			case "JsonSerializable":
 				return "<code>";
 
 			// keywords
