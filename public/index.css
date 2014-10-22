@@ -6,7 +6,7 @@ body, code {
 	font-family: Inconsolata, Monospace, 'Courier New', Courier, monospace;
 }
 body {
-	font-size: 1.5em;
+	font-size: 1.1em;
 	margin: 0;
 	padding: 0;
 	padding-bottom: 5em;
@@ -21,7 +21,6 @@ body>ul, body>div>ul {
 }
 
 .sidebar {
-	font-size: .9em;
 	float: right;
 	background: #f0f0f0;
 	border-bottom-left-radius: 10px;
@@ -47,16 +46,17 @@ body>ul, body>div>ul {
 	-webkit-transform: rotate(45deg);
 	transform: rotate(45deg);
 	text-decoration: none;
-	color: white;
 	font-weight: bold;
 	text-shadow: 0 0 5px red;
 }
 
+.sidebar .edit a {
+	color: white !important;
+}
 code { 
-	display: inline-block;
 	border-radius: 2px;
 	padding: 0px 2px 2px 2px;
-	background: #e0e0e0;
+	background: #f0f0f0;
 	color: #606060;
 	box-shadow: 0 0 1px #999;
 }
@@ -70,6 +70,7 @@ code code {
 }
 
 pre>code {
+	display: inline-block;
 	padding: 1em;
 	min-width: 50%;
 }

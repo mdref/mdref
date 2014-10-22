@@ -42,5 +42,10 @@
 			<?php endif; ?>
 		</li>
 	</ul>
+	<?php if (isset($entry)) : ?>
+	<div class="edit">
+		<a href="<?=$entry->getEditUrl()?>">Edit</a>
+	</div>
+	<?php endif; ?>
 </div>
 

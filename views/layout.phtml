@@ -5,6 +5,8 @@
 		<title>
 			<?php if (!empty($title)) : ?>
 				<?= $title ?> -
+			<?php elseif (isset($entry)) : ?>
+				<?= $entry ?> -
 			<?php endif; ?>
 			mdref
 		</title>

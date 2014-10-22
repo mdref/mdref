@@ -83,6 +83,14 @@ class Entry implements \IteratorAggregate {
 	}
 	
 	/**
+	 * Get edit URL 
+	 * @return string
+	 */
+	public function getEditUrl() {
+		return $this->repo->getEditUrl($this->name);
+	}
+	
+	/**
 	 * Read the title of the ref entry file
 	 * @return string
 	 */
