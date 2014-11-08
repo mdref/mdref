@@ -80,7 +80,7 @@ pre>code, pre>code code {
 }
 
 p, pre, table {
-	margin: 1em 2em 2em 2em;
+	margin: 1em 2em;
 }
 
 li>p {
@@ -145,6 +145,15 @@ li h3 {
 }
 
 body>h3, body>div>h3 {
+	margin-left: 1.25em;
+}
+body>h4, body>div>h4 {
+	margin-left: 1.5em;
+}
+body>h5, body>div>h5 {
+	margin-left: 1.75em;
+}
+body>h6, body>div>h6 {
 	margin-left: 2em;
 }
 
