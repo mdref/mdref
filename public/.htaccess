@@ -1,4 +1,7 @@
+DirectorySlash Off
 RewriteEngine On
+RewriteRule ^static.*\.html - [L]
+RewriteRule ^(static/.+) $1.html [L]
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d [OR]
 RewriteCond %{REQUEST_FILENAME} -l

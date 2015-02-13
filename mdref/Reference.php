@@ -43,5 +43,19 @@ class Reference implements \IteratorAggregate {
 	public function getIterator() {
 		return new \ArrayIterator($this->repos);
 	}
+
+	public function formatString($string) {
+		$md = \MarkdownDocument::createFromString($string);
+		$md->compile(\MarkdownDocument::AUTOLINK);
+		return $md->getHtml();
+	}
 	
+	public function formatFile($file) {
+		$fd = fopen($file, "r");
+		$md = \MarkdownDocument::createFromStream($fd);
+		$md->compile(\MarkdownDocument::AUTOLINK | \MarkdownDocument::TOC);
+		$html = $md->getHtml();
+		fclose($fd);
+		return $html;
+	}
 }

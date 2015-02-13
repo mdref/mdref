@@ -1,0 +1,14 @@
+#!/usr/bin/env php
+<?php
+
+define("ROOT", dirname(__DIR__));
+define("REFS", getenv("REFPATH") ?: implode(PATH_SEPARATOR, glob(ROOT."/refs/*")));
+
+#ini_set("open_basedir", ROOT.":".REFS);
+
+$loader = require ROOT . "/vendor/autoload.php";
+/* @var $loader \Composer\Autoload\ClassLoader */
+$loader->add("mdref", ROOT);
+
+$g = new mdref\Generator(REFS, @$argv[1]);
+$g->run();

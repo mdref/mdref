@@ -10,9 +10,16 @@
 			<?php endif; ?>
 			mdref
 		</title>
-		<base href="<?= $baseUrl ?>">
-		<meta http-equiv="Content-Location" content="<?= $baseUrl . $ref ?>">
-		<link rel="stylesheet" href="index.css">
+		<?php if (isset($baseUrl)) : ?>
+			<base href="<?= $baseUrl ?>">
+			<meta http-equiv="Content-Location" content="<?= $baseUrl . $ref ?>">
+			<link rel="stylesheet" href="index.css">
+		<?php else: ?>
+			<style type="text/css">
+				<?= file_get_contents(__DIR__."/../public/index.css"); ?>
+			</style>
+		<?php endif; ?>
+		
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	</head>
 	<body>
@@ -25,7 +32,7 @@
 			<?php include __DIR__."/index.phtml" ?>
 		<?php endif; ?>
 
-		<?php if ($_SERVER["SERVER_NAME"] != "localhost") : ?>
+		<?php if (@$_SERVER["SERVER_NAME"] != "localhost") : ?>
 		<div id="disqus_thread"></div>
 		<script>
 			var disqus_shortname = 'mdref';
@@ -41,6 +48,12 @@
 		<footer>
 			<?php include __DIR__."/footer.phtml" ?>
 		</footer>
-		<script src="index.js"></script>
+		<?php if (isset($baseUrl)) : ?>
+			<script src="index.js"></script>
+		<?php else : ?>
+			<script type="application/javascript">
+				<?= file_get_contents(__DIR__."/../public/index.js"); ?>
+			</script>
+		<?php endif; ?>
 	</body>
 </html>

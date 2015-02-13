@@ -97,8 +97,12 @@ $(function() {
 					return "<a href=\"" + s.replace(/::|\\/g, "/") + "\">";
 				}
 			}
-			if (-1 !== (j = s.indexOf("\\")) && s.substr(j+1,1) !== "n") {
-				return "<a href=\"" + s.replace(/\\/g, "/").replace(/::|$/, "#") + "\">";
+			if (-1 !== (j = s.lastIndexOf("\\")) && s.substr(j+1,1) !== "n") {
+				t = s.substring(j+1);
+				if (!mdref.is_constant(t)) {
+					return "<a href=\"" + s.replace(/\\/g, "/").replace(/::|$/, "#") + "\">";
+				}
+				return "<a href=\"" + s.substring(0,j).replace(/\\/g, "/") + "#" + t + "\">";
 			}
 
 			switch (s.toLowerCase()) {

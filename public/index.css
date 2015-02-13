@@ -79,7 +79,7 @@ pre>code, pre>code code {
 	color: #eee;
 }
 
-p, pre, table {
+p, pre, table, dl {
 	margin: 1em 2em;
 }
 
@@ -216,7 +216,14 @@ table {
 th, td {
 	padding: .4em;
 }
-
+dt {
+	font-weight: bold;
+	margin-top: 1em;
+}
+dd {
+	line-height: 1.2em;
+	margin-left: 1em;
+}
 h1, footer, table, .sidebar, pre>code, li h3 {
 	box-shadow: 0 0 4px #708090;
 }

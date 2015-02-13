@@ -36,20 +36,8 @@ class Action extends Observer {
 		$pld = new \stdClass;
 		
 		try {
-			$pld->quick = function($string) {
-				$md = \MarkdownDocument::createFromString($string);
-				$md->compile(\MarkdownDocument::AUTOLINK);
-				return $md->getHtml();
-			};
-			
-			$pld->file = function($file) {
-				$fd = fopen($file, "r");
-				$md = \MarkdownDocument::createFromStream($fd);
-				$md->compile(\MarkdownDocument::AUTOLINK | \MarkdownDocument::TOC);
-				$html = $md->getHtml();
-				fclose($fd);
-				return $html;
-			};
+			$pld->quick = [$this->reference, "formatString"];
+			$pld->file = [$this->reference, "formatFile"];
 			
 			$pld->ref = implode("/",  $this->baseUrl->params(
 				$this->baseUrl->mod($ctl->getRequest()->getRequestUrl())));

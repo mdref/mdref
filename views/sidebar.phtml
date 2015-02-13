@@ -1,23 +1,30 @@
 <div class="sidebar">
+	<?php 
+		if (isset($baseUrl) || !isset($entry)) {
+			$up = "";
+		} else {
+			$up = str_repeat("../", count($entry->getParents()));
+		}
+	?>
 	<ul>
-		<li>&lsh; <a href="">Home</a>
+		<li>&lsh; <a href="<?= $up ?>">Home</a>
 			<?php if (isset($entry)) : /* @var \mdref\Entry $entry */ ?>
 			<ul>
 				<li>
 					<?php foreach ($entry->getParents() as $parent) if ($parent->isFile()) : ?>
 					&uarr; 
-						<a href="<?= $view->esc($parent->getName()) ?>">
+						<a href="<?= $up.$view->esc($parent->getName()) ?>">
 							<?= $view->esc($entry->getRepo()->getEntry($parent)) ?>
 						</a>
 						<ul>
 							<li>
 					<?php endif; ?>
-							&circlearrowright; <a href="<?= $view->esc($entry->getName()) ?>"
+							&circlearrowright; <a href="<?= $up.$view->esc($entry->getName()) ?>"
 							><?= $view->esc($entry) ?></a>
 							<ul>
 								<?php foreach ($entry as $sub) : /* @var \mdref\Entry $sub */ ?>
 								<li>
-									&rdsh; <a href="<?= $view->esc($sub->getName()) ?>"
+									&rdsh; <a href="<?= $up.$view->esc($sub->getName()) ?>"
 									><?= $view->esc($sub) ?></a>
 								</li>
 								<?php endforeach; ?>
@@ -44,7 +51,7 @@
 	</ul>
 	<?php if (isset($entry)) : ?>
 	<div class="edit">
-		<a href="<?=$entry->getEditUrl()?>">Edit</a>
+		<a href="<?= $entry->getEditUrl() ?>">Edit</a>
 	</div>
 	<?php endif; ?>
 </div>

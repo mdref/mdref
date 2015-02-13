@@ -46,5 +46,5 @@ fi
 export REFPATH
 
 for p in {8000..8100}; do
-	php -S localhost:$p -t . index.php && break
+	${PHP:-php} -S localhost:$p -t . index.php && break
 done
