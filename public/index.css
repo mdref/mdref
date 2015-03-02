@@ -6,6 +6,7 @@ body, code {
 	font-family: Inconsolata, Monospace, 'Courier New', Courier, monospace;
 }
 body {
+	line-height: 140%;
 	font-size: 1.1em;
 	margin: 0;
 	padding: 0;
@@ -73,6 +74,7 @@ pre>code {
 	display: inline-block;
 	padding: 1em;
 	min-width: 50%;
+	line-height: 110%;
 }
 pre>code, pre>code code {
 	background: #333;
@@ -95,6 +97,7 @@ blockquote {
 }
 
 ul {
+	margin-top: 1em;
 	margin-bottom: 2em;
 }
 li {
