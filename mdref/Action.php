@@ -59,7 +59,7 @@ class Action extends Observer {
 	 */
 	private function serveCanonical($ctl, $cnn) {
 		$ctl->detachAll(Observer\View::class);
-		$ctl->getResponse()->setHeader("Location", $this->baseUrl->mod($cnn));
+		$ctl->getResponse()->setHeader("Location", $this->baseUrl->mod(["path" => $cnn]));
 		$ctl->getResponse()->setResponseCode(301);
 	}
 	

@@ -14,10 +14,6 @@
 			<base href="<?= $baseUrl ?>">
 			<meta http-equiv="Content-Location" content="<?= $baseUrl . $ref ?>">
 			<link rel="stylesheet" href="index.css">
-		<?php else: ?>
-			<style type="text/css">
-				<?= file_get_contents(__DIR__."/../public/index.css"); ?>
-			</style>
 		<?php endif; ?>
 		
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -50,10 +46,6 @@
 		</footer>
 		<?php if (isset($baseUrl)) : ?>
 			<script src="index.js"></script>
-		<?php else : ?>
-			<script type="application/javascript">
-				<?= file_get_contents(__DIR__."/../public/index.js"); ?>
-			</script>
 		<?php endif; ?>
 	</body>
 </html>
