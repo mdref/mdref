@@ -100,7 +100,7 @@ $(function() {
 			if (-1 !== (j = s.lastIndexOf("\\")) && s.substr(j+1,1) !== "n") {
 				t = s.substring(j+1);
 				if (!mdref.is_constant(t)) {
-					return "<a href=\"" + s.replace(/\\/g, "/").replace(/::|$/, "#") + "\">";
+					return "<a href=\"" + s.replace(/\\/g, "/").replace(/::/, "#") + "\">";
 				}
 				return "<a href=\"" + s.substring(0,j).replace(/\\/g, "/") + "#" + t + "\">";
 			}
@@ -130,7 +130,7 @@ $(function() {
 			$n.text().split(/([^a-zA-Z0-9_\\\$:]+)/).forEach(function(v) {
 				var t;
 				
-				if ((t = mdref.type(v, nn))) {
+				if ((t = mdref.type(v.replace(/:$/, ""), nn))) {
 					a.push($(t).text(v));
 				} else if (a.length && a[a.length-1].nodeName === "#text") {
 					/* if we already have a text node and the next is also gonna be a text

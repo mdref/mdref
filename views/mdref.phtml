@@ -5,9 +5,9 @@
 <ul>
 	<?php foreach($entry as $sub) : if (!$sub->isFunction()) continue; ?>
 	<li>
-		<h3><a href="<?= $view->esc($sub->getName()) ?>"><?= $view->esc($sub) ?></a></h3>
+		<h3><a href="<?= $esc($sub->getName()) ?>"><?= $esc($sub) ?></a></h3>
 		<p><?= $quick($sub->getDescription()) ?></p>
-		<p><?= $view->esc($sub->getTitle()) ?></p>
+		<p><?= $esc($sub->getTitle()) ?></p>
 	</li>
 	<?php endforeach; ?>
 </ul>
@@ -18,9 +18,9 @@
 <ul>
 	<?php foreach ($entry as $sub) : if (!$sub->isNsClass()) continue; ?>
 	<li>
-		<h3><a href="<?= $view->esc($sub->getName()) ?>"><?= $view->esc($sub) ?></a></h3>
+		<h3><a href="<?= $esc($sub->getName()) ?>"><?= $esc($sub) ?></a></h3>
 		<p><?= $quick($sub->getDescription()) ?></p>
-		<p><?= $view->esc($sub->getTitle()) ?></p>
+		<p><?= $esc($sub->getTitle()) ?></p>
 	</li>
 	<?php endforeach; ?>
 </ul>

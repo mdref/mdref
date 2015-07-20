@@ -1,7 +1,7 @@
 <div class="sidebar">
 	<?php 
 		if (isset($baseUrl) || !isset($entry)) {
-			$up = "";
+			$up = "./";
 		} else {
 			$up = str_repeat("../", count($entry->getParents()));
 		}
@@ -13,19 +13,19 @@
 				<li>
 					<?php foreach ($entry->getParents() as $parent) if ($parent->isFile()) : ?>
 					&uarr; 
-						<a href="<?= $up.$view->esc($parent->getName()) ?>">
-							<?= $view->esc($entry->getRepo()->getEntry($parent)) ?>
+						<a href="<?= $up.$esc($parent->getName()) ?>">
+							<?= $esc($entry->getRepo()->getEntry($parent)) ?>
 						</a>
 						<ul>
 							<li>
 					<?php endif; ?>
-							&circlearrowright; <a href="<?= $up.$view->esc($entry->getName()) ?>"
-							><?= $view->esc($entry) ?></a>
+							&circlearrowright; <a href="<?= $up.$esc($entry->getName()) ?>"
+							><?= $esc($entry) ?></a>
 							<ul>
 								<?php foreach ($entry as $sub) : /* @var \mdref\Entry $sub */ ?>
 								<li>
-									&rdsh; <a href="<?= $up.$view->esc($sub->getName()) ?>"
-									><?= $view->esc($sub) ?></a>
+									&rdsh; <a href="<?= $up.$esc($sub->getName()) ?>"
+									><?= $esc($sub) ?></a>
 								</li>
 								<?php endforeach; ?>
 							</ul>
@@ -40,8 +40,8 @@
 				<?php foreach ($refs as $repo) : /* @var \mdref\Repo $repo */ ?>
 					<?php foreach ($repo as $sub) : /* @var \mdref\Entry $entry */ ?>
 						<li>
-							&rdsh; <a href="<?= $view->esc($sub->getName()) ?>"
-							><?= $view->esc($sub->getTitle()) ?></a>
+							&rdsh; <a href="<?= $esc($sub->getName()) ?>"
+							><?= $esc($sub->getTitle()) ?></a>
 						</li>
 					<?php endforeach; ?>
 				<?php endforeach; ?>

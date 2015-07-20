@@ -2,29 +2,46 @@
 
 namespace mdref;
 
-use http\Controller\Observer;
+use http\Env\Request;
+use http\Env\Response;
 
 /**
  * Request handler
  */
-class Action extends Observer {
-	/**
-	 * Reference paths
-	 * @var string
-	 */
-	protected $refpath;
-	
+class Action {
 	/**
 	 * The reference
 	 * @var \mdref\Reference
 	 */
 	private $reference;
+
+	/**
+	 * @var \http\Request
+	 */
+	private $request;
+
+	/**
+	 * @var \http\Response
+	 */
+	private $response;
+
+	/**
+	 * @var \http\Url
+	 */
+	private $baseUrl;
 	
 	/**
 	 * Initialize the reference
 	 */
-	protected function init() {
-		$this->reference = new Reference(explode(PATH_SEPARATOR, $this->refpath));
+	public function __construct(Reference $ref, Request $req, Response $res, BaseUrl $baseUrl) {
+		$this->reference = $ref;
+		$this->request = $req;
+		$this->response = $res;
+		$this->baseUrl = $baseUrl;
+	}
+
+	function esc($txt) {
+		return htmlspecialchars($txt);
 	}
 	
 	/**
@@ -32,64 +49,53 @@ class Action extends Observer {
 	 * @param \http\Controller $ctl
 	 * @return \stdClass
 	 */
-	private function createPayload(\http\Controller $ctl) {
+	private function createPayload() {
 		$pld = new \stdClass;
 		
-		try {
-			$pld->quick = [$this->reference, "formatString"];
-			$pld->file = [$this->reference, "formatFile"];
+		$pld->esc = "htmlspecialchars";
+		$pld->quick = [$this->reference, "formatString"];
+		$pld->file = [$this->reference, "formatFile"];
+
+		$pld->ref = $this->baseUrl->pathinfo(
+			$this->baseUrl->mod($this->request->getRequestUrl()));
+
+		$pld->refs = $this->reference;
+		$pld->baseUrl = $this->baseUrl;
 			
-			$pld->ref = implode("/",  $this->baseUrl->params(
-				$this->baseUrl->mod($ctl->getRequest()->getRequestUrl())));
-			
-			$pld->refs = $this->reference;
-			$pld->baseUrl = $this->baseUrl;
-			
-		} catch (\Exception $e) {
-			$pld->exception = $e;
-		}
-		
 		return $pld;
 	}
 	
 	/**
 	 * Redirect to canononical url
-	 * @param \http\Controller $ctl
 	 * @param string $cnn
 	 */
-	private function serveCanonical($ctl, $cnn) {
-		$ctl->detachAll(Observer\View::class);
-		$ctl->getResponse()->setHeader("Location", $this->baseUrl->mod(["path" => $cnn]));
-		$ctl->getResponse()->setResponseCode(301);
+	private function serveCanonical($cnn) {
+		$this->response->setHeader("Location", $this->baseUrl->mod(["path" => $cnn]));
+		$this->response->setResponseCode(301);
 	}
 	
 	/**
 	 * Serve index.css
-	 * @param \http\Controller $ctl
 	 */
-	private function serveStylesheet($ctl) {
-		$ctl->detachAll(Observer\View::class);
-		$ctl->getResponse()->setHeader("Content-Type", "text/css");
-		$ctl->getResponse()->setBody(new \http\Message\Body(fopen(ROOT."/public/index.css", "r")));
+	private function serveStylesheet() {
+		$this->response->setHeader("Content-Type", "text/css");
+		$this->esponse->setBody(new \http\Message\Body(fopen(ROOT."/public/index.css", "r")));
 	}
 	
 	/**
 	 * Serve index.js
-	 * @param \http\Controller $ctl
 	 */
-	private function serveJavascript($ctl) {
-		$ctl->detachAll(Observer\View::class);
-		$ctl->getResponse()->setHeader("Content-Type", "application/javascript");
-		$ctl->getResponse()->setBody(new \http\Message\Body(fopen(ROOT."/public/index.js", "r")));
+	private function serveJavascript() {
+		$this->response->setHeader("Content-Type", "application/javascript");
+		$this->response->setBody(new \http\Message\Body(fopen(ROOT."/public/index.js", "r")));
 	}
 	
 	/**
 	 * Serve a preset
-	 * @param \http\Controller $ctl
 	 * @param \stdClass $pld
-	 * @throws \http\Controller\Exception
+	 * @throws Exception
 	 */
-	private function servePreset($ctl, $pld) {
+	private function servePreset($pld) {
 		switch ($pld->ref) {
 		case "AUTHORS":
 		case "LICENSE":
@@ -103,38 +109,39 @@ class Action extends Observer {
 			$this->serveJavascript($ctl);
 			break;
 		default:
-			throw new \http\Controller\Exception(404, "$pld->ref not found");
-		}
-	}
-	
-	/**
-	 * Implements Observer
-	 * @param \SplSubject $ctl \http\Controller
-	 */
-	public function update(\SplSubject $ctl) {
-		/* @var http\Controller $ctl */
-		$pld = $this->createPayload($ctl);
-		$ctl[Observer\View::class] = function() use($pld) {
-			return $pld;
-		};
-		
-		if (!isset($pld->ref) || !strlen($pld->ref)) {
-			/* front page */
-			return;
-		}
-		
-		$cnn = null;
-		if (($repo = $this->reference->getRepoForEntry($pld->ref, $cnn))) {
-			if (strlen($cnn)) {
-				/* redirect */
-				$this->serveCanonical($ctl, $cnn);
-			} else {
-				/* direct match */
-				$pld->entry = $repo->getEntry($pld->ref);
-			}
-		} else {
-			$this->servePreset($ctl, $pld);
+			throw new Exception(404, "$pld->ref not found");
 		}
 	}
 
+	private function serve() {
+		extract((array) func_get_arg(0));
+		include ROOT."/views/layout.phtml";
+	}
+	
+	public function handle() {
+		try {
+
+			$pld = $this->createPayload();
+
+			if (strlen($pld->ref)) {
+				$cnn = null;
+				if (($repo = $this->reference->getRepoForEntry($pld->ref, $cnn))) {
+					if (strlen($cnn)) {
+						/* redirect */
+						return $this->serveCanonical($cnn);
+					} else {
+						/* direct match */
+						$pld->entry = $repo->getEntry($pld->ref);
+					}
+				} else {
+					return $this->servePreset($pld);
+				}
+			}
+		
+		} catch (\Exception $e) {
+			$pld->exception = $e;
+		}
+
+		$this->serve($pld);
+	}
 }

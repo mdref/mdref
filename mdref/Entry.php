@@ -153,7 +153,11 @@ class Entry implements \IteratorAggregate {
 	 * @return \mdref\Entry
 	 */
 	public function getParent() {
-		if ("." !== ($dirn = dirname($this->name))) {
+		switch ($dirn = dirname($this->name)) {
+		case ".":
+		case "/":
+			break;
+		default:
 			return $this->repo->getEntry($dirn);
 		}
 	}
