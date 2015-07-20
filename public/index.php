@@ -20,8 +20,4 @@ new ExceptionHandler;
 
 $reference = new Reference(($refs = getenv("REFPATH")) ? explode(PATH_SEPARATOR, $refs) : glob(ROOT."/refs/*"));
 $action = new Action($reference, new Request, new Response, new BaseUrl);
-
-ob_start($response);
 $action->handle();
-ob_end_flush();
-$response->send();

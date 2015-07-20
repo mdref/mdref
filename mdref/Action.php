@@ -38,6 +38,7 @@ class Action {
 		$this->request = $req;
 		$this->response = $res;
 		$this->baseUrl = $baseUrl;
+		ob_start($res);
 	}
 
 	function esc($txt) {
@@ -72,6 +73,7 @@ class Action {
 	private function serveCanonical($cnn) {
 		$this->response->setHeader("Location", $this->baseUrl->mod(["path" => $cnn]));
 		$this->response->setResponseCode(301);
+		$this->response->send();
 	}
 	
 	/**
@@ -79,7 +81,8 @@ class Action {
 	 */
 	private function serveStylesheet() {
 		$this->response->setHeader("Content-Type", "text/css");
-		$this->esponse->setBody(new \http\Message\Body(fopen(ROOT."/public/index.css", "r")));
+		$this->response->setBody(new \http\Message\Body(fopen(ROOT."/public/index.css", "r")));
+		$this->response->send();
 	}
 	
 	/**
@@ -88,6 +91,7 @@ class Action {
 	private function serveJavascript() {
 		$this->response->setHeader("Content-Type", "application/javascript");
 		$this->response->setBody(new \http\Message\Body(fopen(ROOT."/public/index.js", "r")));
+		$this->response->send();
 	}
 	
 	/**
@@ -116,6 +120,7 @@ class Action {
 	private function serve() {
 		extract((array) func_get_arg(0));
 		include ROOT."/views/layout.phtml";
+		$this->response->send();
 	}
 	
 	public function handle() {
