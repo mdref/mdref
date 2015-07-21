@@ -107,10 +107,10 @@ class Action {
 			$pld->text = file_get_contents(ROOT."/$pld->ref");
 			break;
 		case "index.css":
-			$this->serveStylesheet($ctl);
+			$this->serveStylesheet();
 			break;
 		case "index.js":
-			$this->serveJavascript($ctl);
+			$this->serveJavascript();
 			break;
 		default:
 			throw new Exception(404, "$pld->ref not found");
