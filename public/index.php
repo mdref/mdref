@@ -9,15 +9,18 @@ use http\Env\Request;
 use http\Env\Response;
 
 define("ROOT", dirname(__DIR__));
+define("REFS", getenv("REFPATH") ?: implode(PATH_SEPARATOR, glob(ROOT."/refs/*")));
 
-#ini_set("open_basedir", ROOT.":".REFS);
+ini_set("open_basedir", ROOT.PATH_SEPARATOR.REFS);
 
-$loader = require ROOT . "/vendor/autoload.php";
-/* @var $loader \Composer\Autoload\ClassLoader */
-$loader->add("mdref", ROOT);
+spl_autoload_register(function($c) {
+	if (!strncmp($c, "mdref\\", 6)) {
+		return require ROOT . "/" . strtr($c, "\\", "/") . ".php";
+	}
+});
 
 new ExceptionHandler;
 
-$reference = new Reference(($refs = getenv("REFPATH")) ? explode(PATH_SEPARATOR, $refs) : glob(ROOT."/refs/*"));
+$reference = new Reference(explode(PATH_SEPARATOR, REFS));
 $action = new Action($reference, new Request, new Response, new BaseUrl);
 $action->handle();
