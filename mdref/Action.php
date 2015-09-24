@@ -97,6 +97,7 @@ class Action {
 	/**
 	 * Serve a preset
 	 * @param \stdClass $pld
+	 * @return true to continue serving the payload
 	 * @throws Exception
 	 */
 	private function servePreset($pld) {
@@ -105,7 +106,7 @@ class Action {
 		case "LICENSE":
 		case "VERSION":
 			$pld->text = file_get_contents(ROOT."/$pld->ref");
-			break;
+			return true;
 		case "index.css":
 			$this->serveStylesheet();
 			break;
@@ -115,6 +116,7 @@ class Action {
 		default:
 			throw new Exception(404, "$pld->ref not found");
 		}
+		return false;
 	}
 
 	private function serve() {
@@ -138,8 +140,8 @@ class Action {
 						/* direct match */
 						$pld->entry = $repo->getEntry($pld->ref);
 					}
-				} else {
-					return $this->servePreset($pld);
+				} elseif (!$this->servePreset($pld)) {
+					return;
 				}
 			}
 		
