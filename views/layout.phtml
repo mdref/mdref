@@ -19,6 +19,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 	</head>
 	<body>
+		<div class="page">
 		<?php include __DIR__."/sidebar.phtml" ?>
 		<?php if (isset($exception)) : ?>
 			<?= \mdref\ExceptionHandler::htmlException($exception) ?>
@@ -47,5 +48,6 @@
 		<?php if (isset($baseUrl)) : ?>
 			<script src="index.js"></script>
 		<?php endif; ?>
+		</div>
 	</body>
 </html>

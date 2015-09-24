@@ -1,4 +1,9 @@
 <div class="sidebar">
+	<?php if (isset($entry)) : ?>
+	<div class="edit">
+		<a href="<?= $entry->getEditUrl() ?>">Edit</a>
+	</div>
+	<?php endif; ?>
 	<?php 
 		if (isset($baseUrl) || !isset($entry)) {
 			$up = "./";
@@ -49,10 +54,5 @@
 			<?php endif; ?>
 		</li>
 	</ul>
-	<?php if (isset($entry)) : ?>
-	<div class="edit">
-		<a href="<?= $entry->getEditUrl() ?>">Edit</a>
-	</div>
-	<?php endif; ?>
 </div>
 

@@ -2,6 +2,10 @@
 	font-size: 99.9%;
 }
 
+html, body{
+	height: 100%;
+	min-height: 100%;
+}
 body, code {
 	font-family: Inconsolata, Monospace, 'Courier New', Courier, monospace;
 }
@@ -10,14 +14,21 @@ body {
 	font-size: 1.1em;
 	margin: 0;
 	padding: 0;
-	padding-bottom: 5em;
 	color: #3f3f3f;
 }
 
-body>* {
+div.page {
+	margin: auto;
+	max-width: 1200px;
+	min-height: 100%;
+	padding-bottom: 5em;
+	box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.5);
+}
+
+div.page>* {
 	margin-left: 1em;
 }
-body>ul, body>div>ul {
+div.page>ul, div.page>div>ul {
 	margin-left: 2em;
 }
 
@@ -41,14 +52,15 @@ body>ul, body>div>ul {
 
 .sidebar .edit {
 	display: block;
-	position: absolute;
+	position: relative;
 	top: 2em;
-	right: 0.5em;
+	right: 0;
 	-webkit-transform: rotate(45deg);
 	transform: rotate(45deg);
 	text-decoration: none;
 	font-weight: bold;
 	text-shadow: 0 0 5px red;
+	float: right;
 }
 
 .sidebar .edit a {
@@ -122,6 +134,7 @@ a[href^="http:"]:after, a[href^="https:"]:after {
 
 h1 {
 	line-height: 1.5;
+	margin-left: 0 !important;
 }
 h1 code {
 	font-weight: normal;
@@ -136,6 +149,7 @@ footer, h1, li h3, th {
 
 footer, h1 {
 	margin: 0;
+	max-width: 1200px;
 	padding: 1em;
 }
 
@@ -147,16 +161,16 @@ li h3 {
 	margin: .5em 0 0 0;
 }
 
-body>h3, body>div>h3 {
+div.page>h3, div.page>div>h3 {
 	margin-left: 1.25em;
 }
-body>h4, body>div>h4 {
+div.page>h4, div.page>div>h4 {
 	margin-left: 1.5em;
 }
-body>h5, body>div>h5 {
+div.page>h5, div.page>div>h5 {
 	margin-left: 1.75em;
 }
-body>h6, body>div>h6 {
+div.page>h6, div.page>div>h6 {
 	margin-left: 2em;
 }
 
@@ -192,6 +206,7 @@ footer {
 	bottom: 0;
 	width: 100%;
 	padding: 0;
+	margin: 0 !important;
 }
 
 footer ul {
@@ -229,4 +244,15 @@ dd {
 }
 h1, footer, table, .sidebar, pre>code, li h3 {
 	box-shadow: 0 0 4px #708090;
+}
+
+.gradient {
+background: rgba(254,254,254,1);
+background: -moz-linear-gradient(left, rgba(254,254,254,1) 0%, rgba(254,254,254,1) 20%, rgba(209,209,209,1) 25%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 75%, rgba(209,209,209,1) 75%, rgba(255,255,255,1) 80%, rgba(255,255,255,1) 100%);
+background: -webkit-gradient(left top, right top, color-stop(0%, rgba(254,254,254,1)), color-stop(20%, rgba(254,254,254,1)), color-stop(25%, rgba(209,209,209,1)), color-stop(25%, rgba(255,255,255,1)), color-stop(75%, rgba(255,255,255,1)), color-stop(75%, rgba(209,209,209,1)), color-stop(80%, rgba(255,255,255,1)), color-stop(100%, rgba(255,255,255,1)));
+background: -webkit-linear-gradient(left, rgba(254,254,254,1) 0%, rgba(254,254,254,1) 20%, rgba(209,209,209,1) 25%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 75%, rgba(209,209,209,1) 75%, rgba(255,255,255,1) 80%, rgba(255,255,255,1) 100%);
+background: -o-linear-gradient(left, rgba(254,254,254,1) 0%, rgba(254,254,254,1) 20%, rgba(209,209,209,1) 25%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 75%, rgba(209,209,209,1) 75%, rgba(255,255,255,1) 80%, rgba(255,255,255,1) 100%);
+background: -ms-linear-gradient(left, rgba(254,254,254,1) 0%, rgba(254,254,254,1) 20%, rgba(209,209,209,1) 25%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 75%, rgba(209,209,209,1) 75%, rgba(255,255,255,1) 80%, rgba(255,255,255,1) 100%);
+background: linear-gradient(to right, rgba(254,254,254,1) 0%, rgba(254,254,254,1) 20%, rgba(209,209,209,1) 25%, rgba(255,255,255,1) 25%, rgba(255,255,255,1) 75%, rgba(209,209,209,1) 75%, rgba(255,255,255,1) 80%, rgba(255,255,255,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefefe', endColorstr='#ffffff', GradientType=1 );
 }
