@@ -2,4 +2,10 @@
     "name": "m6w6/mdref",
     "description": "Quick Markdown Reference Browser",
     "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Michael Wallner",
+            "email": "mike@php.net"
+        }
+    ]
 }
