@@ -1,4 +1,4 @@
-* { 
+* {
 	font-size: 99.9%;
 }
 
@@ -10,7 +10,7 @@ body, code {
 	font-family: Inconsolata, Monospace, 'Courier New', Courier, monospace;
 }
 body {
-	line-height: 140%;
+	line-height: 1.5;
 	font-size: 1.1em;
 	margin: 0;
 	padding: 0;
@@ -66,7 +66,7 @@ div.page>ul, div.page>div>ul {
 .sidebar .edit a {
 	color: white !important;
 }
-code { 
+code {
 	border-radius: 2px;
 	padding: 0px 2px 2px 2px;
 	background: #f0f0f0;
@@ -86,8 +86,9 @@ pre>code {
 	display: inline-block;
 	padding: 1em;
 	min-width: 50%;
-	line-height: 110%;
+	line-height: 1.2;
 }
+
 pre>code, pre>code code {
 	background: #333;
 	color: #eee;
@@ -95,6 +96,11 @@ pre>code, pre>code code {
 
 p, pre, table, dl {
 	margin: 1em 2em;
+	margin-left: 2em !important;
+}
+
+pre>code, table, dl {
+	margin-bottom: 2em !important;
 }
 
 li>p {
@@ -105,7 +111,7 @@ blockquote {
 	border-top: 1px solid #800000;
 	border-bottom: 1px solid #800000;
 	background: #ffe4e1;
-	margin: 2em 0;
+	margin: 2em 0 !important;
 }
 
 ul {
@@ -239,10 +245,9 @@ dt {
 	margin-top: 1em;
 }
 dd {
-	line-height: 1.2em;
+	line-height: 1.33;
 	margin-left: 1em;
 }
 h1, footer, table, .sidebar, pre>code, li h3 {
 	box-shadow: 0 0 4px #708090;
 }
-
