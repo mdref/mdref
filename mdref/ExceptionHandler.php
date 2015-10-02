@@ -62,9 +62,9 @@ class ExceptionHandler
 	public static function htmlException(\Exception $e, array $title_tag = ["h1"], array $message_tag = ["p"], array $trace_tag = ["pre", "style='font-size:smaller;overflow-x:scroll'"]) {
 		if ($e instanceof Exception) {
 			$code = $e->getCode() ?: 500;
-			foreach ($e->getHeaders() as $key => $val) {
-				HTTP::setResponseHeader($key, $val);
-			}
+			#foreach ($e->getHeaders() as $key => $val) {
+			#	HTTP::setResponseHeader($key, $val);
+			#}
 		} else {
 			$code = 500;
 		}
