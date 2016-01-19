@@ -26,7 +26,9 @@ class Tree implements \RecursiveIterator {
 	 * @param \mdref\Repo $repo
 	 */
 	public function __construct($path, Repo $repo) {
-		if (!($list = glob("$path/*.md"))) {
+		if (realpath($path)."/" === $repo->getPath()) {
+			$list = [$path ."/". $repo->getName() .".md"];
+		} elseif (!($list = glob("$path/*.md"))) {
 			$list = glob("$path/*/*.md");
 		}
 		if ($list) {
