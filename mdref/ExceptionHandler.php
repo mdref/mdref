@@ -10,24 +10,39 @@ use http\Env as HTTP;
 class ExceptionHandler
 {
 	/**
+	 * @var \http\Env\Response
+	 */
+	private $response;
+
+	/**
 	 * Set up error/exception/shutdown handler
 	 */
-	public function __construct() {
+	public function __construct(\http\Env\Response $r) {
+		$this->response = $r;
 		set_exception_handler($this);
 		set_error_handler($this);
 		register_shutdown_function($this);
 	}
-	
+
+	private static function cleanBuffers() {
+		while (ob_get_level()) {
+			if (!@ob_end_clean()) {
+				break;
+			}
+		}
+	}
+
 	/**
 	 * The exception/error/shutdown handler callback
 	 */
 	public function __invoke($e = null, $msg = null) {
-		if ($e instanceof \Exception) {
+		if ($e instanceof \Exception || $e instanceof \Throwable) {
 			try {
+				self::cleanBuffers();
 				echo static::htmlException($e);
 			} catch (\Exception $ignore) {
 				headers_sent() or HTTP::setResponseCode(500);
-				die("FATAL ERROR");
+				die("FATAL ERROR:\n$e\n$ignore");
 			}
 		} elseif (isset($e, $msg)) {
 			throw new \Exception($msg, $e);
@@ -38,33 +53,26 @@ class ExceptionHandler
 			case E_USER_ERROR:
 			case E_CORE_ERROR:
 			case E_COMPILE_ERROR:
-				while (ob_get_level()) {
-					if (!@ob_end_clean()) {
-						break;
-					}
-				}
-				$message = sprintf("%s in %s at line %d", 
+				self::cleanBuffers();
+				$message = sprintf("%s in %s at line %d",
 					$error["message"], $error["file"], $error["line"]);
 				echo static::htmlError("Application Error", $message, 500, "");
 				break;
 			}
 		}
 	}
-	
+
 	/**
 	 * Format an exception as HTML and send appropriate exception info as HTTP headers
-	 * @param \Exception $e
+	 * @param Throwable $e
 	 * @param array $title_tag
 	 * @param array $message_tag
 	 * @param array $trace_tag
 	 * @return string
 	 */
-	public static function htmlException(\Exception $e, array $title_tag = ["h1"], array $message_tag = ["p"], array $trace_tag = ["pre", "style='font-size:smaller;overflow-x:scroll'"]) {
+	public static function htmlException(/*\Throwable*/ $e, array $title_tag = ["h1"], array $message_tag = ["p"], array $trace_tag = ["pre", "style='font-size:smaller;overflow-x:scroll'"]) {
 		if ($e instanceof Exception) {
 			$code = $e->getCode() ?: 500;
-			#foreach ($e->getHeaders() as $key => $val) {
-			#	HTTP::setResponseHeader($key, $val);
-			#}
 		} else {
 			$code = 500;
 		}
