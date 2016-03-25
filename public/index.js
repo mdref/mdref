@@ -99,7 +99,7 @@ $(function() {
 			}
 			if (-1 !== (j = s.lastIndexOf("\\")) && s.substr(j+1,1) !== "n") {
 				t = s.substring(j+1);
-				if (!mdref.is_constant(t) || s.match(/\\/).length <= 1) {
+				if (!mdref.is_constant(t) || s.match(/\\/g).length <= 1) {
 					return "<a href=\"" + s.replace(/\\/g, "/").replace(/::/, "#") + "\">";
 				}
 				return "<a href=\"" + s.substring(0,j).replace(/\\/g, "/") + "#" + t + "\">";
