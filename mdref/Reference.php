@@ -11,7 +11,7 @@ class Reference implements \IteratorAggregate {
 	 * @var array
 	 */
 	private $repos = array();
-	
+
 	/**
 	 * @param array $refs list of mdref repository paths
 	 */
@@ -21,7 +21,7 @@ class Reference implements \IteratorAggregate {
 			$this->repos[$repo->getName()] = $repo;
 		}
 	}
-	
+
 	/**
 	 * Lookup the repo containing a ref entry
 	 * @param string $entry requested reference entry, e.g. "pq/Connection/exec"
@@ -35,7 +35,7 @@ class Reference implements \IteratorAggregate {
 			}
 		}
 	}
-	
+
 	/**
 	 * Implements \IteratorAggregate
 	 * @return \ArrayIterator repository list
@@ -44,12 +44,19 @@ class Reference implements \IteratorAggregate {
 		return new \ArrayIterator($this->repos);
 	}
 
+	public function formatAnchor($anchor) {
+		if (is_numeric($anchor)) {
+			return "L$anchor";
+		}
+		return preg_replace("/[^[:alnum:]\.:_]/", ".", $anchor);
+	}
+
 	public function formatString($string) {
 		$md = \MarkdownDocument::createFromString($string);
 		$md->compile(\MarkdownDocument::AUTOLINK);
 		return $md->getHtml();
 	}
-	
+
 	public function formatFile($file) {
 		$fd = fopen($file, "r");
 		$md = \MarkdownDocument::createFromStream($fd);

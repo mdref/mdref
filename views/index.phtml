@@ -7,7 +7,7 @@
 <?php elseif (isset($refs)) : ?>
 	<?php foreach ($refs as $repo) : /* @var \mdref\Repo $repo */ ?>
 		<?php foreach ($repo as $entry) : /* @var \mdref\Entry $entry */ ?>
-		<h2>
+		<h2 id="<?= $anchor($entry->getTitle()) ?>">
 			<a href="<?= $esc($entry->getName()) ?>"
 			><?= $esc($entry->getTitle()) ?></a></h2>
 		<div><?= $quick($entry->getIntro()) ?></div>

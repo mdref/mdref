@@ -29,7 +29,7 @@ class Action {
 	 * @var \http\Url
 	 */
 	private $baseUrl;
-	
+
 	/**
 	 * Initialize the reference
 	 */
@@ -44,7 +44,7 @@ class Action {
 	function esc($txt) {
 		return htmlspecialchars($txt);
 	}
-	
+
 	/**
 	 * Create the view payload
 	 * @param \http\Controller $ctl
@@ -52,8 +52,9 @@ class Action {
 	 */
 	private function createPayload() {
 		$pld = new \stdClass;
-		
+
 		$pld->esc = "htmlspecialchars";
+		$pld->anchor = [$this->reference, "formatAnchor"];
 		$pld->quick = [$this->reference, "formatString"];
 		$pld->file = [$this->reference, "formatFile"];
 
@@ -62,10 +63,10 @@ class Action {
 
 		$pld->refs = $this->reference;
 		$pld->baseUrl = $this->baseUrl;
-			
+
 		return $pld;
 	}
-	
+
 	/**
 	 * Redirect to canononical url
 	 * @param string $cnn
@@ -75,7 +76,7 @@ class Action {
 		$this->response->setResponseCode(301);
 		$this->response->send();
 	}
-	
+
 	/**
 	 * Serve index.css
 	 */
@@ -84,7 +85,7 @@ class Action {
 		$this->response->setBody(new \http\Message\Body(fopen(ROOT."/public/index.css", "r")));
 		$this->response->send();
 	}
-	
+
 	/**
 	 * Serve index.js
 	 */
@@ -93,7 +94,7 @@ class Action {
 		$this->response->setBody(new \http\Message\Body(fopen(ROOT."/public/index.js", "r")));
 		$this->response->send();
 	}
-	
+
 	/**
 	 * Serve a preset
 	 * @param \stdClass $pld
@@ -124,7 +125,7 @@ class Action {
 		include ROOT."/views/layout.phtml";
 		$this->response->send();
 	}
-	
+
 	public function handle() {
 		try {
 
@@ -144,7 +145,7 @@ class Action {
 					return;
 				}
 			}
-		
+
 		} catch (\Exception $e) {
 			$pld->exception = $e;
 		}

@@ -1,7 +1,7 @@
 <?= $file($entry->getPath()) ?>
 
 <?php if ($entry->hasFunctions()) : ?>
-<h2>Functions:</h2>
+<h2 id="Functions:">Functions:</h2>
 <ul>
 	<?php foreach($entry as $sub) : if (!$sub->isFunction()) continue; ?>
 	<li>
@@ -14,7 +14,7 @@
 <?php endif; ?>
 
 <?php if ($entry->hasNsClasses()) : ?>
-<h2>Namespaces, Interfaces and Classes:</h2>
+<h2 id="Namespaces,.Interfaces.and.Classes:">Namespaces, Interfaces and Classes:</h2>
 <ul>
 	<?php foreach ($entry as $sub) : if (!$sub->isNsClass()) continue; ?>
 	<li>

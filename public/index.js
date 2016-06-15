@@ -129,7 +129,7 @@ $(function() {
 
 			$n.text().split(/([^a-zA-Z0-9_\\\$:]+)/).forEach(function(v) {
 				var t;
-				
+
 				if ((t = mdref.type(v.replace(/:$/, ""), nn))) {
 					a.push($(t).text(v));
 				} else if (a.length && a[a.length-1].nodeName === "#text") {
@@ -146,6 +146,28 @@ $(function() {
 		},
 		walk: function walk(i, e) {
 			// mdref.log("walk", i, e);
+
+			switch (e.nodeName) {
+			case "H1":
+			case "H2":
+			case "H3":
+			case "H4":
+			case "H5":
+			case "H6":
+				if (e.id.length) {
+					var href = document.location.pathname;
+					var perm = $("<a class=\"permalink\" href=\""+href+"#\">#</a>");
+					if (e.nodeName === "H1") {
+						perm.prependTo(e);
+					} else {
+						perm.attr("href", function(i, href) {
+							return href + e.id;
+						});
+						perm.appendTo(e);
+					}
+				}
+				break;
+			}
 
 			$.each($.makeArray(e.childNodes), function(i, n) {
 				switch (n.nodeName) {
@@ -178,29 +200,34 @@ $(function() {
 		},
 		hashchange: function hashchange() {
 			if (location.hash.length > 1) {
-				var hash = location.hash.substring(1);
-				var name = mdref.is_variable(hash) ? ".var" : ".constant";
-				var scrolled = false;
+				var e;
+				if ((e = document.getElementById(location.hash.substring(1)))) {
+					mdref.blink(e);
+				} else {
+					var hash = location.hash.substring(1);
+					var name = mdref.is_variable(hash) ? ".var" : ".constant";
+					var scrolled = false;
 
-				$(name).each(hash.substring(hash.length-1) === "_" ? function(i, c) {
-					if (c.textContent.substring(0, hash.length) === hash) {
-						if (!scrolled) {
-							$(window).scrollTop($(c).offset().top - 100);
-							scrolled = true;
+					$(name).each(hash.substring(hash.length-1) === "_" ? function(i, c) {
+						if (c.textContent.substring(0, hash.length) === hash) {
+							if (!scrolled) {
+								$(window).scrollTop($(c).offset().top - 100);
+								scrolled = true;
+							}
+							mdref.blink(c);
 						}
-						mdref.blink(c);
-					}
-				} : function(i, c) {
-					if (c.textContent === hash) {
-						$(window).scrollTop($(c).offset().top - 100);
-						mdref.blink(c);
-						return false;
-					}
-				});
+					} : function(i, c) {
+						if (c.textContent === hash) {
+							$(window).scrollTop($(c).offset().top - 100);
+							mdref.blink(c);
+							return false;
+						}
+					});
+				}
 			}
 		}
 	};
-	
+
 	$("h1,h2,h3,h4,h5,h6,p,li,code,td").each(mdref.walk);
 	$(window).on("hashchange", mdref.hashchange);
 	mdref.hashchange();

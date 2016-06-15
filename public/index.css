@@ -7,7 +7,7 @@ html, body{
 	min-height: 100%;
 }
 body, code {
-	font-family: Inconsolata, Monospace, 'Courier New', Courier, monospace;
+	font-family: Inconsolata, 'Courier New', Courier, monospace;
 }
 body {
 	line-height: 1.5;
@@ -129,6 +129,14 @@ a:hover {
 }
 a[href^="http:"]:after, a[href^="https:"]:after {
 	content: " ⬈";
+}
+
+a.permalink {
+	position: relative;
+	top: 0;
+	right: 0;
+	color: #999999;
+	opacity: 0.25;
 }
 
 .var {
