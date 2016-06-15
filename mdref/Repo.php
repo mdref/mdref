@@ -12,19 +12,19 @@ class Repo implements \IteratorAggregate {
 	 * @var string
 	 */
 	private $name;
-	
+
 	/**
 	 * The path to the repository
 	 * @var string
 	 */
 	private $path;
-	
+
 	/**
 	 * The edit url template
 	 * @var string
 	 */
 	private $edit;
-	
+
 	/**
 	 * Path to the repository containing the name.mdref file
 	 * @param string $path
@@ -36,12 +36,12 @@ class Repo implements \IteratorAggregate {
 				sprintf("Not a reference, could not find '*.mdref': '%s'",
 					$path));
 		}
-		
+
 		$this->path = realpath($path);
 		$this->name = basename($mdref, ".mdref");
 		$this->edit = trim(file_get_contents($mdref));
 	}
-	
+
 	/**
 	 * Get the repository's name
 	 * @return string
@@ -49,7 +49,7 @@ class Repo implements \IteratorAggregate {
 	public function getName() {
 		return $this->name;
 	}
-	
+
 	/**
 	 * Get the path of the repository or a file in it
 	 * @param string $file
@@ -58,7 +58,7 @@ class Repo implements \IteratorAggregate {
 	public function getPath($file = "") {
 		return $this->path . "/$file";
 	}
-	
+
 	/**
 	 * Get the edit url for a ref entry
 	 * @param string $entry
@@ -67,15 +67,19 @@ class Repo implements \IteratorAggregate {
 	public function getEditUrl($entry) {
 		return sprintf($this->edit, $entry);
 	}
-	
+
 	/**
 	 * Get the file path of an entry in this repo
 	 * @param string $entry
 	 * @return string file path
 	 */
 	public function hasEntry($entry, &$canonical = null) {
-		$file = $this->getPath("$entry.md");
-		if (is_file($file)) { 
+		$trim = rtrim($entry, "/");
+		$file = $this->getPath("$trim.md");
+		if (is_file($file)) {
+			if ($trim !== $entry) {
+				$canonical = $trim;
+			}
 			return $file;
 		}
 		$file = $this->getPath($this->getName()."/$entry.md");
@@ -84,7 +88,7 @@ class Repo implements \IteratorAggregate {
 			return $file;
 		}
 	}
-	
+
 	/**
 	 * Get the canonical entry name of a file in this repo
 	 * @param string $file
@@ -97,16 +101,16 @@ class Repo implements \IteratorAggregate {
 			if (!strncmp($file, $path, $plen)) {
 				$dirname = dirname(substr($file, $plen));
 				$basename = basename($file, ".md");
-				
+
 				if ($dirname === ".") {
 					return $basename;
 				}
-				
+
 				return  $dirname . "/". $basename;
 			}
 		}
 	}
-	
+
 	/**
 	 * Get an Entry instance
 	 * @param string $entry
@@ -116,7 +120,7 @@ class Repo implements \IteratorAggregate {
 	public function getEntry($entry) {
 		return new Entry($entry, $this);
 	}
-	
+
 	/**
 	 * Get the root Entry instance
 	 * @return \mdref\Entry
@@ -124,7 +128,7 @@ class Repo implements \IteratorAggregate {
 	public function getRootEntry() {
 		return new Entry($this->name, $this);
 	}
-	
+
 	/**
 	 * Implements \IteratorAggregate
 	 * @return \mdref\Tree
