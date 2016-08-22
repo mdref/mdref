@@ -1,7 +1,6 @@
-* {
-	font-size: 99.9%;
+html {
+	font-size: 18px;
 }
-
 html, body{
 	height: 100%;
 	min-height: 100%;
@@ -236,7 +235,6 @@ footer a, h1 a, pre>code a, li h3 a {
 	color: #b0e0e6;
 }
 li h3 {
-	font-size: 100%;
 }
 li h3 a {
 	text-decoration: none;
