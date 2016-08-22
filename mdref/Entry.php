@@ -236,8 +236,10 @@ class Entry implements \IteratorAggregate {
 				($loose && glob($this->getBasename() . "/*/$glob"));
 		} elseif ($this->isRoot()) {
 			return true;
-		} else {
+		} elseif ($this->getBasename() !== "/") {
 			return is_dir($this->getBasename());
+		} else {
+			return false;
 		}
 	}
 

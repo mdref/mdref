@@ -16,6 +16,7 @@
 			<link rel="stylesheet" href="index.css">
 		<?php endif; ?>
 
+		<link href="https://fonts.googleapis.com/css?family=Inconsolata&subset=latin-ext" rel="stylesheet">
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<link rel="shortcut icon" href="<?= $baseUrl . "favicon.ico" ?>">
 	</head>
@@ -31,24 +32,28 @@
 		<?php endif; ?>
 
 		<?php if (@$_SERVER["SERVER_NAME"] != "localhost") : ?>
-		<div id="disqus_thread"></div>
-		<script>
-			var disqus_shortname = 'mdref';
-			var disqus_identifier = '<?=$ref?>';
-			(function() {
-				var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-				dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-				(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-			})();
-		</script>
+
+			<div id="disqus_thread"></div>
+			<script>
+				var disqus_shortname = 'mdref';
+				var disqus_identifier = '<?=$ref?>';
+				(function() {
+					var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+					dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+					(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+				})();
+			</script>
 		<?php endif; ?>
 
-		<footer>
-			<?php include __DIR__."/footer.phtml" ?>
-		</footer>
+			<footer>
+				<?php include __DIR__."/footer.phtml" ?>
+
+			</footer>
 		<?php if (isset($baseUrl)) : ?>
+
 			<script src="index.js"></script>
 		<?php endif; ?>
+
 		</div>
 	</body>
 </html>

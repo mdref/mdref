@@ -1,58 +1,115 @@
+
 <div class="sidebar">
 	<?php if (isset($entry)) : ?>
+
 	<div class="edit">
 		<a href="<?= $entry->getEditUrl() ?>">Edit</a>
 	</div>
 	<?php endif; ?>
-	<?php 
+
+	<?php
 		if (isset($baseUrl) || !isset($entry)) {
 			$up = "./";
 		} else {
 			$up = str_repeat("../", count($entry->getParents()));
 		}
 	?>
+
 	<ul>
 		<li>&lsh; <a href="<?= $up ?>">Home</a>
 			<?php if (isset($entry)) : /* @var \mdref\Entry $entry */ ?>
+
 			<ul>
 				<li>
-					<?php foreach ($entry->getParents() as $parent) if ($parent->isFile()) : ?>
-					&uarr; 
-						<a href="<?= $up.$esc($parent->getName()) ?>">
+					<?php foreach ($entry->getParents() as $parent) : ?>
+						<?php if ($parent->isFile()) : ?>
+
+					&uarr; <a href="<?= $up.$esc($parent->getName()) ?>">
 							<?= $esc($entry->getRepo()->getEntry($parent)) ?>
+
 						</a>
 						<ul>
 							<li>
-					<?php endif; ?>
-							&circlearrowright; <a href="<?= $up.$esc($entry->getName()) ?>"
-							><?= $esc($entry) ?></a>
+						<?php endif; ?>
+					<?php endforeach; ?>
+
+							&circlearrowright; <strong><a href="<?= $up.$esc($entry->getName()) ?>"
+							><?= $esc($entry) ?></a></strong>
+
+							<?php if ($entry->hasIterator()): ?>
+
 							<ul>
 								<?php foreach ($entry as $sub) : /* @var \mdref\Entry $sub */ ?>
+
 								<li>
 									&rdsh; <a href="<?= $up.$esc($sub->getName()) ?>"
 									><?= $esc($sub) ?></a>
 								</li>
 								<?php endforeach; ?>
+
 							</ul>
-					<?php foreach ($entry->getParents() as $parent) if ($parent->isFile()) : ?>
+							<?php endif; ?>
+
+							<?php if (isset($parent)) : ?>
+								<?php
+								while ($parent && !$parent->isFile()) {
+									$parent = $parent->getParent();
+								}
+								?>
+								<?php if ($parent && $parent->hasIterator()) : ?>
+									<?php
+									$parent_closed = true;
+									?>
+
+						</ul>
+									<?php foreach ($parent as $sub) : ?>
+										<?php
+										if ($sub->getName() === $entry->getName()) {
+											continue;
+										}
+										?>
+
+						<li>&ldsh; <a href="<?= $up.$esc($sub->getName()) ?>"><?= $esc($sub) ?></a></li>
+									<?php endforeach; ?>
+								<?php endif; ?>
+							<?php endif; ?>
+						<?php foreach ($entry->getParents() as $parent) : ?>
+							<?php if (!empty($parent_closed)) : ?>
+								<?php
+								$parent_closed = false;
+								?>
+							<?php elseif ($parent->isFile()) : ?>
+								<?php if (isset($parent_closed)) : ?>
+									<?php
+									unset($parent_closed);
+									?>
+								<?php else : ?>
+
 						</li>
+								<?php endif; ?>
+
 					</ul>
-					<?php endif; ?>
+							<?php endif; ?>
+						<?php endforeach; ?>
+
 				</li>
 			</ul>
 			<?php elseif (isset($refs)) : ?>
+
 			<ul>
 				<?php foreach ($refs as $repo) : /* @var \mdref\Repo $repo */ ?>
 					<?php foreach ($repo as $sub) : /* @var \mdref\Entry $entry */ ?>
+
 						<li>
 							&rdsh; <a href="<?= $esc($sub->getName()) ?>"
 							><?= $esc($sub->getTitle()) ?></a>
 						</li>
 					<?php endforeach; ?>
 				<?php endforeach; ?>
+
 			</ul>
 			<?php endif; ?>
+
 		</li>
 	</ul>
 </div>
-

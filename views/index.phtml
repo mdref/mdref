@@ -1,12 +1,15 @@
+
 <h1>mdref</h1>
 
 <?php if (isset($html)) : ?>
 	<?= $html ?>
 <?php elseif (isset($text)) : ?>
+
 	<p style="white-space:pre-wrap"><?= $esc($text) ?></p>
 <?php elseif (isset($refs)) : ?>
 	<?php foreach ($refs as $repo) : /* @var \mdref\Repo $repo */ ?>
 		<?php foreach ($repo as $entry) : /* @var \mdref\Entry $entry */ ?>
+
 		<h2 id="<?= $anchor($entry->getTitle()) ?>">
 			<a href="<?= $esc($entry->getName()) ?>"
 			><?= $esc($entry->getTitle()) ?></a></h2>

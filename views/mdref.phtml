@@ -1,27 +1,34 @@
+
 <?= $file($entry->getPath()) ?>
 
 <?php if ($entry->hasFunctions()) : ?>
+
 <h2 id="Functions:">Functions:</h2>
 <ul>
 	<?php foreach($entry as $sub) : if (!$sub->isFunction()) continue; ?>
+
 	<li>
 		<h3><a href="<?= $esc($sub->getName()) ?>"><?= $esc($sub) ?></a></h3>
 		<p><?= $quick($sub->getDescription()) ?></p>
 		<p><?= $esc($sub->getTitle()) ?></p>
 	</li>
 	<?php endforeach; ?>
+
 </ul>
 <?php endif; ?>
 
 <?php if ($entry->hasNsClasses()) : ?>
+
 <h2 id="Namespaces,.Interfaces.and.Classes:">Namespaces, Interfaces and Classes:</h2>
 <ul>
 	<?php foreach ($entry as $sub) : if (!$sub->isNsClass()) continue; ?>
+
 	<li>
 		<h3><a href="<?= $esc($sub->getName()) ?>"><?= $esc($sub) ?></a></h3>
 		<p><?= $quick($sub->getDescription()) ?></p>
 		<p><?= $esc($sub->getTitle()) ?></p>
 	</li>
 	<?php endforeach; ?>
+
 </ul>
 <?php endif; ?>
