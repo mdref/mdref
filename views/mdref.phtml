@@ -9,7 +9,8 @@
 
 	<li>
 		<h3><a href="<?= $esc($sub->getName()) ?>"><?= $esc($sub) ?></a></h3>
-		<p><?= $quick($sub->getDescription()) ?></p>
+		<?= $quick($sub->getDescription()) ?>
+
 		<p><?= $esc($sub->getTitle()) ?></p>
 	</li>
 	<?php endforeach; ?>
@@ -25,7 +26,8 @@
 
 	<li>
 		<h3><a href="<?= $esc($sub->getName()) ?>"><?= $esc($sub) ?></a></h3>
-		<p><?= $quick($sub->getDescription()) ?></p>
+		<?= $quick($sub->getDescription()) ?>
+
 		<p><?= $esc($sub->getTitle()) ?></p>
 	</li>
 	<?php endforeach; ?>
