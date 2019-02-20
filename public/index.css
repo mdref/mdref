@@ -18,8 +18,8 @@ body {
 
 div.page {
 	margin: auto;
-	max-width: 1200px;
-	min-height: 100%;
+/*	max-width: 1200px;
+*/	min-height: 100%;
 	padding-bottom: 5em;
 	box-shadow: 0 0 20px 10px rgba(0, 0, 0, 0.5);
 }
@@ -172,8 +172,8 @@ h1, li h3, th, footer {
 
 h1, footer {
 	margin: 0;
-	max-width: 1200px;
-	padding: 1em;
+/*	max-width: 1200px;
+*/	padding: 1em;
 }
 
 h1 {
