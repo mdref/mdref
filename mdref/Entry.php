@@ -105,7 +105,7 @@ class Entry implements \IteratorAggregate {
 	}
 
 	/**
-	 * Read the description of the ref entry file
+	 * Read the first line of the description of the ref entry file
 	 * @return string
 	 */
 	public function getDescription() {
@@ -114,6 +114,20 @@ class Entry implements \IteratorAggregate {
 		}
 		if ($this->isRoot()) {
 			return trim($this->repo->getRootEntry()->getDescription());
+		}
+		return $this;
+	}
+
+	/**
+	 * Read the full description of the ref entry file
+	 * @return string
+	 */
+	public function getFullDescription() {
+		if ($this->isFile()) {
+			return trim($this->getFile()->readFullDescription());
+		}
+		if ($this->isRoot()) {
+			return trim($this->repo->getRootEntry()->getFullDescription());
 		}
 		return $this;
 	}
@@ -192,6 +206,22 @@ class Entry implements \IteratorAggregate {
 		return ctype_upper($base{0});
 	}
 
+	public function getEntryName() {
+		return end($this->list);
+	}
+
+	public function getNsName() {
+		if ($this->isRoot()) {
+			return $this->getName();
+		} elseif ($this->isFunction()) {
+			$parts = explode("/", trim($this->getName(), "/"));
+			$self = array_pop($parts);
+			return implode("\\", $parts) . "::" . $self;
+		} else {
+			return strtr($this->getName(), "/", "\\");
+		}
+	}
+
 	/**
 	 * Display name
 	 * @return string
@@ -265,5 +295,9 @@ class Entry implements \IteratorAggregate {
 	 */
 	function getIterator() {
 		return new Tree($this->getBasename(), $this->repo);
+	}
+
+	function getStructure() {
+		return new Structure($this);
 	}
 }

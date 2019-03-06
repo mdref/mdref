@@ -24,21 +24,37 @@ class File {
 	 * @return string
 	 */
 	public function readTitle() {
-		if (0 === fseek($this->fd, 1, SEEK_SET)) {
+		if ($this->rewind(1)) {
 			return fgets($this->fd);
 		}
 	}
 
 	/**
-	 * Read the description of the refentry
+	 * Read the description (first line) of the refentry
 	 * @return string
 	 */
 	public function readDescription() {
-		if (0 === fseek($this->fd, 0, SEEK_SET)
+		if ($this->rewind()
 		&& (false !== fgets($this->fd))
 		&& (false !== fgets($this->fd))) {
 			return fgets($this->fd);
 		}
+	}
+
+	/**
+	 * Read the full description (first section) of the refentry
+	 * @return string
+	 */
+	public function readFullDescription() {
+		$desc = $this->readDescription();
+		while (false !== ($line = fgets($this->fd))) {
+			if ($line{0} === "#") {
+				break;
+			} else {
+				$desc .= $line;
+			}
+		}
+		return $desc;
 	}
 
 	/**
@@ -47,7 +63,7 @@ class File {
 	 */
 	public function readIntro() {
 		$intro = "";
-		if (0 === fseek($this->fd, 0, SEEK_SET)) {
+		if ($this->rewind()) {
 			$header = false;
 
 			while (!feof($this->fd)) {
@@ -55,7 +71,7 @@ class File {
 					break;
 				}
 				/* search first header and read until next header*/
-				if ("## " === substr($line, 0, 3)) {
+				if ($this->isHeading($line)) {
 					if ($header) {
 						break;
 					} else {
@@ -69,5 +85,43 @@ class File {
 			}
 		}
 		return $intro;
+	}
+
+	public function readSection($title) {
+		$section = "";
+		if ($this->rewind()) {
+			while (!feof($this->fd)) {
+				if (false === ($line = fgets($this->fd))) {
+					break;
+				}
+				/* search for heading with $title and read until next heading */
+				if ($this->isHeading($line, $title)) {
+					do {
+						if (false === $line = fgets($this->fd)) {
+							break;
+						}
+						if ($this->isHeading($line)) {
+							break;
+						}
+						$section .= $line;
+					} while (true);
+				}
+			}
+		}
+		return $section;
+	}
+
+	private function rewind($offset = 0) {
+		return 0 === fseek($this->fd, $offset, SEEK_SET);
+	}
+
+	private function isHeading(string $line, string $title = null) {
+		if ("## " !== substr($line, 0, 3)) {
+			return false;
+		}
+		if (isset($title)) {
+			return !strncmp(substr($line, 3), $title, strlen($title));
+		}
+		return true;
 	}
 }

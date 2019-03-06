@@ -14,6 +14,20 @@
 			<a href="<?= $esc($entry->getName()) ?>"
 			><?= $esc($entry->getTitle()) ?></a></h2>
 		<div><?= $quick($entry->getIntro()) ?></div>
+			<?php if ($repo->hasStub($stub)) : ?>
+				<div>
+					<p><strong>Download the Stub file:</strong></p>
+					<ul style="list-style-type: '&raquo;'">
+						<li>
+							<a href="stub?ref=<?= $entry->getName() ?>"><?= $entry->getName() ?>.stub.php</a><br>
+							<small>
+								Last modified:
+								<?= date_create("@".filemtime($stub))->format("Y-m-d H:i:s") ?>
+							</small>
+						</li>
+					</ul>
+				</div>
+			<?php endif; ?>
 		<?php endforeach; ?>
 	<?php endforeach; ?>
 <?php endif; ?>

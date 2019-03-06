@@ -4,6 +4,7 @@ namespace mdref;
 
 use http\Env\Request;
 use http\Env\Response;
+use http\Message\Body;
 
 /**
  * Request handler
@@ -96,6 +97,21 @@ class Action {
 	}
 
 	/**
+	 * Server a PHP stub
+	 */
+	private function serveStub() {
+		$name = $this->request->getQuery("ref", "s");
+		$repo = $this->reference->getRepoForEntry($name);
+		if (!$repo->hasStub($stub)) {
+			throw new Exception(404, "Stub not found");
+		}
+		$this->response->setHeader("Content-Type", "application/x-php");
+		$this->response->setContentDisposition(["attachment" => ["filename" => "$name.stub.php"]]);
+		$this->response->setBody(new Body(fopen($stub, "r")));
+		$this->response->send();
+	}
+
+	/**
 	 * Serve a preset
 	 * @param \stdClass $pld
 	 * @return true to continue serving the payload
@@ -113,6 +129,9 @@ class Action {
 			break;
 		case "index.js":
 			$this->serveJavascript();
+			break;
+		case "stub":
+			$this->serveStub();
 			break;
 		default:
 			throw new Exception(404, "$pld->ref not found");

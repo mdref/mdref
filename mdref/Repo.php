@@ -111,6 +111,11 @@ class Repo implements \IteratorAggregate {
 		}
 	}
 
+	public function hasStub(&$path = null) {
+		$path = $this->getPath($this->getName() . ".stub.php");
+		return is_file($path) && is_readable($path);
+	}
+
 	/**
 	 * Get an Entry instance
 	 * @param string $entry
