@@ -7,5 +7,11 @@
             "name": "Michael Wallner",
             "email": "mike@php.net"
         }
-    ]
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "mdref\\": "mdref/"
+        }
+    }
 }
