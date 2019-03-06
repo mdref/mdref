@@ -231,4 +231,18 @@ $(function() {
 	$("h1,h2,h3,h4,h5,h6,p,li,code,td").each(mdref.walk);
 	$(window).on("hashchange", mdref.hashchange);
 	mdref.hashchange();
+
+	$("#disqus_activator").on("click", function() {
+		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+	});
+	$.ajax("https://disqus.com/api/3.0/threads/details.json?thread:ident="+(disqus_identifier||"index")+"&forum=mdref&api_key=VmhVG4z5jjtY8SCaMstOjfUuwniMv43Xy9FCU9YfEzhsrl95dNz1epykXSJn8jt9"). then(function(json) {
+		if (json && json.response) {
+			$("#disqus_activator span").text(json.response.posts);
+		}
+	});
+	setTimeout(function() {
+		$("footer").addClass("hidden");
+	}, 1);
 });

@@ -27,6 +27,9 @@ div.page {
 div.page>* {
 	margin-left: 1em;
 }
+div.page>footer {
+	margin-left: 0;
+}
 div.page>ul, div.page>div>ul {
 	margin-left: 2em;
 }
@@ -247,6 +250,18 @@ li h3 a:hover {
 	margin-top: 8em;
 	margin-right: 2em;
 }
+#disqus_activator {
+	margin: auto;
+	width: 80%;
+	padding: 1em;
+	background-color: slategrey;
+	color: white;
+	font-size: 1em;
+	font-weight: bold;
+	border: 0;
+	border-radius: 2px;
+	box-shadow: 0 0 4px #999;
+}
 
 footer {
 	font-size: smaller;
@@ -256,7 +271,11 @@ footer {
 	bottom: 0;
 	width: 100%;
 	padding: 0;
-	margin: 0 !important;
+	transition: margin-bottom 2s ease 0.1s;
+}
+footer.hidden {
+	margin-bottom: -10em;
+	transition: margin-bottom 2s ease 0.1s;
 }
 
 footer ul {
