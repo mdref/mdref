@@ -30,6 +30,7 @@ class Reference implements \IteratorAggregate {
 	 */
 	public function getRepoForEntry($entry, &$canonical = null) {
 		foreach ($this->repos as $repo) {
+			/** @var $repo Repo */
 			if ($repo->hasEntry($entry, $canonical)) {
 				return $repo;
 			}
@@ -52,17 +53,31 @@ class Reference implements \IteratorAggregate {
 	}
 
 	public function formatString($string) {
-		$md = \MarkdownDocument::createFromString($string);
-		$md->compile(\MarkdownDocument::AUTOLINK);
-		return $md->getHtml();
+		if (extension_loaded("discount")) {
+			$md = \MarkdownDocument::createFromString($string);
+			$md->compile(\MarkdownDocument::AUTOLINK);
+			return $md->getHtml();
+		}
+		if (extension_loaded("cmark")) {
+			$node = \CommonMark\Parse($string);
+			return \CommonMark\Render\HTML($node);
+		}
+		throw new \Exception("No Markdown implementation found");
 	}
 
 	public function formatFile($file) {
-		$fd = fopen($file, "r");
-		$md = \MarkdownDocument::createFromStream($fd);
-		$md->compile(\MarkdownDocument::AUTOLINK | \MarkdownDocument::TOC);
-		$html = $md->getHtml();
-		fclose($fd);
-		return $html;
+		if (extension_loaded("discount")) {
+			$fd = fopen($file, "r");
+			$md = \MarkdownDocument::createFromStream($fd);
+			$md->compile(\MarkdownDocument::AUTOLINK | \MarkdownDocument::TOC);
+			$html = $md->getHtml();
+			fclose($fd);
+			return $html;
+		}
+		if (extension_loaded("cmark")) {
+			$node = \CommonMark\Parse(file_get_contents($file));
+			return \CommonMark\Render\HTML($node);
+		}
+		throw new \Exception("No Markdown implementation found");
 	}
 }
