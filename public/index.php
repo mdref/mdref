@@ -9,7 +9,7 @@ use http\Env\Request;
 use http\Env\Response;
 
 define("ROOT", dirname(__DIR__));
-define("REFS", getenv("REFPATH") ?: implode(PATH_SEPARATOR, glob(ROOT."/refs/*")));
+define("REFS", getenv("REFPATH") ?: implode(PATH_SEPARATOR, glob(ROOT."/refs/*", GLOB_ONLYDIR)));
 
 ini_set("open_basedir", ROOT.PATH_SEPARATOR.REFS);
 
