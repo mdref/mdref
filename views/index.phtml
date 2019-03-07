@@ -22,7 +22,7 @@
 							<a href="stub?ref=<?= $entry->getName() ?>"><?= $entry->getName() ?>.stub.php</a><br>
 							<small>
 								Last modified:
-								<?= date_create("@".filemtime($stub))->format("Y-m-d H:i:s") ?>
+								<?= date_create("@".filemtime($stub))->setTimezone(new DateTimezone("UTC"))->format("Y-m-d H:i:s T") ?>
 							</small>
 						</li>
 					</ul>
