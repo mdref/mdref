@@ -115,7 +115,7 @@ class File {
 		return 0 === fseek($this->fd, $offset, SEEK_SET);
 	}
 
-	private function isHeading(string $line, string $title = null) {
+	private function isHeading($line, $title = null) {
 		if ("## " !== substr($line, 0, 3)) {
 			return false;
 		}
