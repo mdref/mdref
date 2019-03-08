@@ -1,6 +1,6 @@
 /nbproject/
 /composer.phar
 /vendor/
-/refs/
 /.idea/
 *.stub.php
+/refs
