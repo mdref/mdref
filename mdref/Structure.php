@@ -210,14 +210,11 @@ class Structure {
 		/x';
 		
 		$returns = $this->splitList($pattern, $this->getSection("Returns"));
-		$retdesc = "";
+		$retvals = [];
 		foreach ($returns as list(, $type, $desc)) {
-			if (strlen($retdesc)) {
-				$retdesc .= "\n\t or $type $desc";
-			} else {
-				$retdesc = $desc;
-			}
+			$retvals[] = [$type, $desc];
 		}
+		return $retvals;
 		return [implode("|", array_unique(array_column($returns, "type"))), $retdesc];
 	}
 
@@ -252,17 +249,54 @@ abstract class StructureOf {
 
 	// abstract function format();
 
-	function formatDesc(int $level, array $tags = []) {
+	function formatDesc($level, array $tags = []) {
 		$indent = str_repeat("\t", $level);
 		$desc = trim($this->desc);
 		if (false !== stristr($desc, "deprecated in")) {
-			$tags[] = "@deprecated";
+			$tags[] = "deprecated";
 		}
 		if ($tags) {
 			$desc .= "\n\n@" . implode("\n@", $tags);
 		}
 		$desc = preg_replace('/[\t ]*\n/',"\n$indent * ", $desc);
 		printf("%s/**\n%s * %s\n%s */\n", $indent, $indent, $desc, $indent);
+	}
+
+	function saneTypes(array $types) {
+		$sane = [];
+		foreach ($types as $type) {
+			if (strlen($s = $this->saneType($type, false))) {
+				$sane[] = $s;
+			}
+		}
+		return $sane;
+	}
+
+	function saneType($type, $strict = true) {
+		switch (strtolower($type)) {
+			case "object":
+			case "resource":
+			case "stream":
+			case "mixed":
+			case "true":
+			case "false":
+			case "null":
+				if ($strict) {
+					break;
+				}
+				/* fallthrough */
+			case "bool":
+			case "int":
+			case "float":
+			case "string":
+			case "array":
+			case "callable":
+				return $type;
+				break;
+			default:
+				return ($type{0} === "\\" ? "":"\\") . $type;
+				break;
+		}
 	}
 }
 
@@ -362,23 +396,54 @@ class StructureOfFunc extends StructureOf {
 	public $returns;
 	public $throws;
 
+	function omitParamTypes() {
+		switch ($this->name) {
+			// ArrayAccess
+			case "offsetGet":
+			case "offsetSet":
+			case "offsetExists":
+			case "offsetUnset":
+			// Serializable
+			case "serialize":
+			case "unserialize":
+				return true;
+		}
+		return false;
+	}
+
 	function format(int $level) {
 		$tags = [];
 		foreach ($this->params as $param) {
-			$tags[] = "param {$param->type} {$param->name} {$param->desc}";
+			$type = $this->saneType($param->type, false);
+			$tags[] = "param {$type} {$param->name} {$param->desc}";
 		}
 		foreach ($this->throws as $throws) {
-			$tags[] = "throws $throws";
+			$tags[] = "throws " . $this->saneType($throws);
 		}
-		if ($this->name !== "__construct" && $this->returns[0]) {
-			$tags[] = "return {$this->returns[0]} {$this->returns[1]}";
+		if ($this->name !== "__construct" && $this->returns) {
+
+			if (count($this->returns) > 1) {
+				$type = implode("|", $this->saneTypes(array_column($this->returns, 0)));
+				$desc = "";
+				foreach ($this->returns as list($typ, $ret)) {
+					if (strlen($desc)) {
+						$desc .= "\n\t\t or ";
+					}
+					$desc .= $this->saneType($typ, false) . " " . $ret;
+				}
+			} else {
+				$type = $this->saneType($this->returns[0][0]);
+				$desc = $this->returns[0][1];
+			}
+			$tags[] = "return $type $desc";
 		}
 		$this->formatDesc(1, $tags);
 		printf("\tfunction %s(", $this->name);
 		$comma = "";
+		$omit = $this->omitParamTypes();
 		foreach ($this->params as $param) {
 			print $comma;
-			$param->formatAsParam($level);
+			$param->formatAsParam($level, !$omit);
 			$comma = ", ";
 		}
 		printf(")");
@@ -419,17 +484,20 @@ class StructureOfVar extends StructureOf {
 			}
 		}
 	}
-	function formatAsProp(int $level) {
+	function formatAsProp($level) {
 		$indent = str_repeat("\t", $level);
 		$this->formatDesc($level,
 			preg_split('/\s+/', $this->modifiers, -1, PREG_SPLIT_NO_EMPTY)
-			+ [-1 => "var {$this->type}"]
+			+ [-1 => "var " . $this->saneType($this->type)]
 		);
 		printf("%s%s %s", $indent, $this->modifiers, $this->name);
 		$this->formatDefval();
 	}
 
-	function formatAsParam(int $level) {
+	function formatAsParam($level, $with_type = true) {
+		if ($with_type && strlen($type = $this->saneType($this->type))) {
+			printf("%s ", $type);
+		}
 		printf("%s", $this->name);
 		$this->formatDefval();
 	}
