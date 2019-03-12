@@ -2,13 +2,19 @@
 
 namespace mdref;
 
+use ArrayIterator;
+use Iterator;
+use IteratorAggregate;
+use function is_numeric;
+use function preg_replace;
+
 /**
  * The complete available reference
  */
-class Reference implements \IteratorAggregate {
+class Reference implements IteratorAggregate {
 	/**
 	 * List of mdref repositories
-	 * @var array
+	 * @var Repo[]
 	 */
 	private $repos = array();
 
@@ -25,34 +31,44 @@ class Reference implements \IteratorAggregate {
 	/**
 	 * Lookup the repo containing a ref entry
 	 * @param string $entry requested reference entry, e.g. "pq/Connection/exec"
-	 * @param type $canonical
+	 * @param string $canonical
 	 * @return \mdref\Repo|NULL
 	 */
-	public function getRepoForEntry($entry, &$canonical = null) {
+	public function getRepoForEntry(string $entry, string &$canonical = null) : ?Repo {
 		foreach ($this->repos as $repo) {
 			/** @var $repo Repo */
 			if ($repo->hasEntry($entry, $canonical)) {
 				return $repo;
 			}
 		}
+		return null;
 	}
 
 	/**
-	 * Implements \IteratorAggregate
-	 * @return \ArrayIterator repository list
+	 * Implements IteratorAggregate
+	 * @return ArrayIterator repository list
 	 */
-	public function getIterator() {
-		return new \ArrayIterator($this->repos);
+	public function getIterator() : Iterator {
+		return new ArrayIterator($this->repos);
 	}
 
-	public function formatAnchor($anchor) {
+	/**
+	 * @param string $anchor
+	 * @return string
+	 */
+	public function formatAnchor(string $anchor) : string {
 		if (is_numeric($anchor)) {
 			return "L$anchor";
 		}
 		return preg_replace("/[^[:alnum:]\.:_]/", ".", $anchor);
 	}
 
-	public function formatString($string) {
+	/**
+	 * @param string $string
+	 * @return string
+	 * @throws \Exception
+	 */
+	public function formatString(string $string) : string {
 		if (extension_loaded("discount")) {
 			$md = \MarkdownDocument::createFromString($string);
 			$md->compile(\MarkdownDocument::AUTOLINK);
@@ -65,7 +81,12 @@ class Reference implements \IteratorAggregate {
 		throw new \Exception("No Markdown implementation found");
 	}
 
-	public function formatFile($file) {
+	/**
+	 * @param string $file
+	 * @return string
+	 * @throws \Exception
+	 */
+	public function formatFile(string $file) : string {
 		if (extension_loaded("discount")) {
 			$fd = fopen($file, "r");
 			$md = \MarkdownDocument::createFromStream($fd);

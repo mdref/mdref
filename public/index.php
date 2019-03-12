@@ -1,12 +1,18 @@
 <?php
 
-use mdref\Action;
-use mdref\BaseUrl;
-use mdref\Reference;
-use mdref\ExceptionHandler;
+namespace mdref;
 
 use http\Env\Request;
 use http\Env\Response;
+use function ini_get;
+use function ini_set;
+use function spl_autoload_register;
+use function strncmp;
+use function strtr;
+use const GLOB_ONLYDIR;
+use const PATH_SEPARATOR;
+use const REFS;
+use const ROOT;
 
 define("ROOT", dirname(__DIR__));
 define("REFS", getenv("REFPATH") ?: implode(PATH_SEPARATOR, glob(ROOT."/refs/*", GLOB_ONLYDIR)));

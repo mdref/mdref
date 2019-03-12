@@ -8,10 +8,21 @@
             "email": "mike@php.net"
         }
     ],
-
+    "bin": ["bin/ref2stub"],
     "autoload": {
         "psr-4": {
             "mdref\\": "mdref/"
         }
+    },
+    "require": {
+        "php": "^7.3",
+        "ext-ctype": "^7.3",
+        "ext-http": "^3.2",
+        "ext-filter": "^7.3",
+        "ext-pcre": "^7.3"
+    },
+    "suggests": {
+        "ext-discount": "A Markdown renderer is needed, this is the preferred one.",
+        "ext-cmark": "A Markdown renderer is needed, this is the fallback one."
     }
 }

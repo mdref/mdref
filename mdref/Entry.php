@@ -2,10 +2,24 @@
 
 namespace mdref;
 
+use IteratorAggregate;
+use function array_pop;
+use function count;
+use function ctype_lower;
+use function ctype_upper;
+use function dirname;
+use function end;
+use function explode;
+use function implode;
+use function strlen;
+use function strtr;
+use function substr;
+use function trim;
+
 /**
  * A single reference entry
  */
-class Entry implements \IteratorAggregate {
+class Entry implements IteratorAggregate {
 	/**
 	 * Compound name
 	 * @var string
@@ -26,7 +40,7 @@ class Entry implements \IteratorAggregate {
 
 	/**
 	 * The file path, if the refentry exists
-	 * @var type
+	 * @var ?string
 	 */
 	private $path;
 
@@ -38,9 +52,9 @@ class Entry implements \IteratorAggregate {
 
 	/**
 	 * @param string $name the compound name of the ref entry, e.g. "pq/Connection/exec"
-	 * @param \mdref\Repo $repo the containing repository
+	 * @param Repo $repo the containing repository
 	 */
-	public function __construct($name, Repo $repo) {
+	public function __construct(string $name, Repo $repo) {
 		$this->repo = $repo;
 		$this->name = $name;
 		$this->list = explode("/", $name);
@@ -51,7 +65,7 @@ class Entry implements \IteratorAggregate {
 	 * Get the compound name, e.g. "pq/Connection/exec"
 	 * @return string
 	 */
-	public function getName() {
+	public function getName() : string {
 		return $this->name;
 	}
 
@@ -59,7 +73,7 @@ class Entry implements \IteratorAggregate {
 	 * Get the containing repository
 	 * @return \mdref\Repo
 	 */
-	public function getRepo() {
+	public function getRepo() : Repo {
 		return $this->repo;
 	}
 
@@ -67,15 +81,17 @@ class Entry implements \IteratorAggregate {
 	 * Get the file path, if any
 	 * @return string
 	 */
-	public function getPath() {
+	public function getPath() : ?string {
 		return $this->path;
 	}
 
 	/**
 	 * Get the file instance of this entry
+	 *
 	 * @return \mdref\File
+	 * @throws Exception
 	 */
-	public function getFile() {
+	public function getFile() : File {
 		if (!$this->file) {
 			$this->file = new File($this->path);
 		}
@@ -86,15 +102,17 @@ class Entry implements \IteratorAggregate {
 	 * Get edit URL
 	 * @return string
 	 */
-	public function getEditUrl() {
+	public function getEditUrl() : string {
 		return $this->repo->getEditUrl($this->name);
 	}
 
 	/**
 	 * Read the title of the ref entry file
+	 *
 	 * @return string
+	 * @throws Exception
 	 */
-	public function getTitle() {
+	public function getTitle() : string {
 		if ($this->isFile()) {
 			return trim($this->getFile()->readTitle());
 		}
@@ -106,9 +124,11 @@ class Entry implements \IteratorAggregate {
 
 	/**
 	 * Read the first line of the description of the ref entry file
+	 *
 	 * @return string
+	 * @throws Exception
 	 */
-	public function getDescription() {
+	public function getDescription() : string {
 		if ($this->isFile()) {
 			return trim($this->getFile()->readDescription());
 		}
@@ -120,9 +140,11 @@ class Entry implements \IteratorAggregate {
 
 	/**
 	 * Read the full description of the ref entry file
+	 *
 	 * @return string
+	 * @throws Exception
 	 */
-	public function getFullDescription() {
+	public function getFullDescription() : string {
 		if ($this->isFile()) {
 			return trim($this->getFile()->readFullDescription());
 		}
@@ -134,9 +156,11 @@ class Entry implements \IteratorAggregate {
 
 	/**
 	 * Read the intriductory section of the refentry file
+	 *
 	 * @return string
+	 * @throws Exception
 	 */
-	public function getIntro() {
+	public function getIntro() : string {
 		if ($this->isFile()) {
 			return trim($this->getFile()->readIntro());
 		}
@@ -150,7 +174,7 @@ class Entry implements \IteratorAggregate {
 	 * Check if the refentry exists
 	 * @return bool
 	 */
-	public function isFile() {
+	public function isFile() : bool {
 		return strlen($this->path) > 0;
 	}
 
@@ -158,7 +182,7 @@ class Entry implements \IteratorAggregate {
 	 * Check if this is the first entry of the reference tree
 	 * @return bool
 	 */
-	public function isRoot() {
+	public function isRoot() : bool {
 		return count($this->list) === 1;
 	}
 
@@ -166,11 +190,11 @@ class Entry implements \IteratorAggregate {
 	 * Get the parent ref entry
 	 * @return \mdref\Entry
 	 */
-	public function getParent() {
+	public function getParent() : ?Entry {
 		switch ($dirn = dirname($this->name)) {
 		case ".":
 		case "/":
-			break;
+			return null;
 		default:
 			return $this->repo->getEntry($dirn);
 		}
@@ -180,7 +204,7 @@ class Entry implements \IteratorAggregate {
 	 * Get the list of parents up-down
 	 * @return array
 	 */
-	public function getParents() {
+	public function getParents() : array {
 		$parents = array();
 		for ($parent = $this->getParent(); $parent; $parent = $parent->getParent()) {
 			array_unshift($parents, $parent);
@@ -192,7 +216,7 @@ class Entry implements \IteratorAggregate {
 	 * Guess whether this ref entry is about a function or method
 	 * @return bool
 	 */
-	public function isFunction() {
+	public function isFunction() : bool {
 		$base = end($this->list);
 		return $base{0} === "_" || ctype_lower($base{0});
 	}
@@ -201,16 +225,23 @@ class Entry implements \IteratorAggregate {
 	 * Guess whether this ref entry is about a namespace, interface or class
 	 * @return bool
 	 */
-	public function isNsClass() {
+	public function isNsClass() : bool {
 		$base = end($this->list);
 		return ctype_upper($base{0});
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getEntryName() {
 		return end($this->list);
 	}
 
-	public function getNsName() {
+	/**
+	 * Get namespaced name
+	 * @return string
+	 */
+	public function getNsName() : string {
 		if ($this->isRoot()) {
 			return $this->getName();
 		} elseif ($this->isFunction()) {
@@ -226,7 +257,7 @@ class Entry implements \IteratorAggregate {
 	 * Display name
 	 * @return string
 	 */
-	public function __toString() {
+	public function __toString() : string {
 		$parts = explode("/", trim($this->getName(), "/"));
 		$myself = array_pop($parts);
 		if (!$parts) {
@@ -248,26 +279,27 @@ class Entry implements \IteratorAggregate {
 	}
 
 	/**
-	 * Get the base name of this ref entry
+	 * Get the dirname for child entries
 	 * @return string
 	 */
-	public function getBasename() {
+	public function getNextDirname() : string {
 		return dirname($this->path) . "/" . basename($this->path, ".md");
 	}
 
 	/**
 	 * Guess whether there are any child nodes
 	 * @param string $glob
-	 * @return boolean
+	 * @param bool $loose
+	 * @return bool
 	 */
-	function hasIterator($glob = null, $loose = false) {
+	function hasIterator(?string $glob = null, bool $loose = false) : bool {
 		if (strlen($glob)) {
-			return glob($this->getBasename() . "/$glob") ||
-				($loose && glob($this->getBasename() . "/*/$glob"));
+			return glob($this->getNextDirname() . "/$glob") ||
+				($loose && glob($this->getNextDirname() . "/*/$glob"));
 		} elseif ($this->isRoot()) {
 			return true;
-		} elseif ($this->getBasename() !== "/") {
-			return is_dir($this->getBasename());
+		} elseif ($this->getNextDirname() !== "/") {
+			return is_dir($this->getNextDirname());
 		} else {
 			return false;
 		}
@@ -277,7 +309,7 @@ class Entry implements \IteratorAggregate {
 	 * Guess whether there are namespace/interface/class child nodes
 	 * @return bool
 	 */
-	function hasNsClasses() {
+	function hasNsClasses() : bool {
 		return $this->hasIterator("/[A-Z]*.md", true);
 	}
 
@@ -285,19 +317,23 @@ class Entry implements \IteratorAggregate {
 	 * Guess whether there are function/method child nodes
 	 * @return bool
 	 */
-	function hasFunctions() {
+	function hasFunctions() : bool {
 		return $this->hasIterator("/[a-z_]*.md");
 	}
 
 	/**
-	 * Implements \IteratorAggregate
-	 * @return \mdref\Tree child nodes
+	 * Implements IteratorAggregate
+	 * @return Tree child nodes
 	 */
-	function getIterator() {
-		return new Tree($this->getBasename(), $this->repo);
+	function getIterator() : Tree {
+		return new Tree($this->getNextDirname(), $this->repo);
 	}
 
-	function getStructure() {
+	/**
+	 * Get the structure of the refentry
+	 * @return Structure
+	 */
+	function getStructure() : Structure {
 		return new Structure($this);
 	}
 }

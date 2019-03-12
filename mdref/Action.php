@@ -5,6 +5,11 @@ namespace mdref;
 use http\Env\Request;
 use http\Env\Response;
 use http\Message\Body;
+use stdClass;
+use function file_get_contents;
+use function htmlspecialchars;
+use function ob_start;
+use const ROOT;
 
 /**
  * Request handler
@@ -17,12 +22,12 @@ class Action {
 	private $reference;
 
 	/**
-	 * @var \http\Request
+	 * @var \http\Env\Request
 	 */
 	private $request;
 
 	/**
-	 * @var \http\Response
+	 * @var \http\Env\Response
 	 */
 	private $response;
 
@@ -42,17 +47,21 @@ class Action {
 		ob_start($res);
 	}
 
-	function esc($txt) {
+	/**
+	 * Shorthand for \htmlspecialchars()
+	 * @param $txt string
+	 * @return string
+	 */
+	function esc(string $txt) : string {
 		return htmlspecialchars($txt);
 	}
 
 	/**
 	 * Create the view payload
-	 * @param \http\Controller $ctl
 	 * @return \stdClass
 	 */
-	private function createPayload() {
-		$pld = new \stdClass;
+	private function createPayload() : object {
+		$pld = new stdClass;
 
 		$pld->esc = "htmlspecialchars";
 		$pld->anchor = [$this->reference, "formatAnchor"];
@@ -69,10 +78,10 @@ class Action {
 	}
 
 	/**
-	 * Redirect to canononical url
+	 * Redirect to canonical url
 	 * @param string $cnn
 	 */
-	private function serveCanonical($cnn) {
+	private function serveCanonical(string $cnn) : void {
 		$this->response->setHeader("Location", $this->baseUrl->mod(["path" => $cnn]));
 		$this->response->setResponseCode(301);
 		$this->response->send();
@@ -81,25 +90,27 @@ class Action {
 	/**
 	 * Serve index.css
 	 */
-	private function serveStylesheet() {
+	private function serveStylesheet() : void {
 		$this->response->setHeader("Content-Type", "text/css");
-		$this->response->setBody(new \http\Message\Body(fopen(ROOT."/public/index.css", "r")));
+		$this->response->setBody(new Body(\fopen(ROOT."/public/index.css", "r")));
 		$this->response->send();
 	}
 
 	/**
 	 * Serve index.js
 	 */
-	private function serveJavascript() {
+	private function serveJavascript() : void {
 		$this->response->setHeader("Content-Type", "application/javascript");
-		$this->response->setBody(new \http\Message\Body(fopen(ROOT."/public/index.js", "r")));
+		$this->response->setBody(new Body(\fopen(ROOT."/public/index.js", "r")));
 		$this->response->send();
 	}
 
 	/**
 	 * Server a PHP stub
+	 * @throws Exception
+	 *
 	 */
-	private function serveStub() {
+	private function serveStub() : void {
 		$name = $this->request->getQuery("ref", "s");
 		$repo = $this->reference->getRepoForEntry($name);
 		if (!$repo->hasStub($stub)) {
@@ -107,17 +118,17 @@ class Action {
 		}
 		$this->response->setHeader("Content-Type", "application/x-php");
 		$this->response->setContentDisposition(["attachment" => ["filename" => "$name.stub.php"]]);
-		$this->response->setBody(new Body(fopen($stub, "r")));
+		$this->response->setBody(new Body(\fopen($stub, "r")));
 		$this->response->send();
 	}
 
 	/**
 	 * Serve a preset
-	 * @param \stdClass $pld
+	 * @param object $pld
 	 * @return true to continue serving the payload
 	 * @throws Exception
 	 */
-	private function servePreset($pld) {
+	private function servePreset(object $pld) : bool {
 		switch ($pld->ref) {
 		case "AUTHORS":
 		case "LICENSE":
@@ -139,15 +150,22 @@ class Action {
 		return false;
 	}
 
-	private function serve() {
+	/**
+	 * Serve a payload
+	 */
+	private function serve() : void {
 		extract((array) func_get_arg(0));
 		include ROOT."/views/layout.phtml";
+		$this->response->addHeader("Link", "<" . $this->baseUrl->path . "index.css>; rel=preload; as=style");
+		$this->response->addHeader("Link", "<" . $this->baseUrl->path . "index.js>; rel=preload; as=script");
 		$this->response->send();
 	}
 
-	public function handle() {
+	/**
+	 * Request handler
+	 */
+	public function handle() : void {
 		try {
-
 			$pld = $this->createPayload();
 
 			if (strlen($pld->ref)) {
@@ -155,7 +173,8 @@ class Action {
 				if (($repo = $this->reference->getRepoForEntry($pld->ref, $cnn))) {
 					if (strlen($cnn)) {
 						/* redirect */
-						return $this->serveCanonical($cnn);
+						$this->serveCanonical($cnn);
+						return;
 					} else {
 						/* direct match */
 						$pld->entry = $repo->getEntry($pld->ref);

@@ -3,10 +3,22 @@
 namespace mdref;
 
 
+use InvalidArgumentException;
+use IteratorAggregate;
+use function basename;
+use function current;
+use function file_get_contents;
+use function glob;
+use function is_file;
+use function realpath;
+use function rtrim;
+use function sprintf;
+use function trim;
+
 /**
  * A reference repo
  */
-class Repo implements \IteratorAggregate {
+class Repo implements IteratorAggregate {
 	/**
 	 * The name of the repository
 	 * @var string
@@ -30,11 +42,10 @@ class Repo implements \IteratorAggregate {
 	 * @param string $path
 	 * @throws \InvalidArgumentException
 	 */
-	public function __construct($path) {
+	public function __construct(string $path) {
 		if (!($mdref = current(glob("$path/*.mdref")))) {
-			throw new \InvalidArgumentException(
-				sprintf("Not a reference, could not find '*.mdref': '%s'",
-					$path));
+			throw new InvalidArgumentException(
+				sprintf("Not a reference, could not find '*.mdref': '%s'", $path));
 		}
 
 		$this->path = realpath($path);
@@ -46,7 +57,7 @@ class Repo implements \IteratorAggregate {
 	 * Get the repository's name
 	 * @return string
 	 */
-	public function getName() {
+	public function getName() : string {
 		return $this->name;
 	}
 
@@ -55,7 +66,7 @@ class Repo implements \IteratorAggregate {
 	 * @param string $file
 	 * @return string
 	 */
-	public function getPath($file = "") {
+	public function getPath(string $file = "") : string {
 		return $this->path . "/$file";
 	}
 
@@ -64,16 +75,18 @@ class Repo implements \IteratorAggregate {
 	 * @param string $entry
 	 * @return string
 	 */
-	public function getEditUrl($entry) {
+	public function getEditUrl(string $entry) : string {
 		return sprintf($this->edit, $entry);
 	}
 
 	/**
 	 * Get the file path of an entry in this repo
+	 *
 	 * @param string $entry
+	 * @param string|null $canonical
 	 * @return string file path
 	 */
-	public function hasEntry($entry, &$canonical = null) {
+	public function hasEntry(string $entry, ?string &$canonical = null) : ?string {
 		$trim = rtrim($entry, "/");
 		$file = $this->getPath("$trim.md");
 		if (is_file($file)) {
@@ -87,6 +100,7 @@ class Repo implements \IteratorAggregate {
 			$canonical = $this->getName() . "/" . $entry;
 			return $file;
 		}
+		return null;
 	}
 
 	/**
@@ -94,7 +108,7 @@ class Repo implements \IteratorAggregate {
 	 * @param string $file
 	 * @return string entry
 	 */
-	public function hasFile($file) {
+	public function hasFile(string $file) : ?string {
 		if (($file = realpath($file))) {
 			$path = $this->getPath();
 			$plen = strlen($path);
@@ -109,9 +123,15 @@ class Repo implements \IteratorAggregate {
 				return  $dirname . "/". $basename;
 			}
 		}
+		return null;
 	}
 
-	public function hasStub(&$path = null) {
+	/**
+	 * Check whether the repo has a stub file to serve
+	 * @param string|null $path receives the path if there's a stub
+	 * @return bool
+	 */
+	public function hasStub(string &$path = null) : bool {
 		$path = $this->getPath($this->getName() . ".stub.php");
 		return is_file($path) && is_readable($path);
 	}
@@ -122,7 +142,7 @@ class Repo implements \IteratorAggregate {
 	 * @return \mdref\Entry
 	 * @throws \OutOfBoundsException
 	 */
-	public function getEntry($entry) {
+	public function getEntry(string $entry) : Entry {
 		return new Entry($entry, $this);
 	}
 
@@ -130,7 +150,7 @@ class Repo implements \IteratorAggregate {
 	 * Get the root Entry instance
 	 * @return \mdref\Entry
 	 */
-	public function getRootEntry() {
+	public function getRootEntry() : Entry {
 		return new Entry($this->name, $this);
 	}
 
@@ -138,7 +158,7 @@ class Repo implements \IteratorAggregate {
 	 * Implements \IteratorAggregate
 	 * @return \mdref\Tree
 	 */
-	public function getIterator() {
+	public function getIterator() : Tree {
 		return new Tree($this->path, $this);
 	}
 }

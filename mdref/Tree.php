@@ -2,7 +2,24 @@
 
 namespace mdref;
 
-class Tree implements \RecursiveIterator {
+use Iterator;
+use RecursiveIterator;
+use function array_filter;
+use function array_search;
+use function basename;
+use function current;
+use function dirname;
+use function glob;
+use function is_dir;
+use function key;
+use function next;
+use function pathinfo;
+use function preg_match;
+use function reset;
+use function strcmp;
+use function usort;
+
+class Tree implements RecursiveIterator {
 	/**
 	 * The repository
 	 * @var \mdref\Repo
@@ -25,7 +42,7 @@ class Tree implements \RecursiveIterator {
 	 * @param string $path
 	 * @param \mdref\Repo $repo
 	 */
-	public function __construct($path, Repo $repo) {
+	public function __construct(string $path, Repo $repo) {
 		if (realpath($path)."/" === $repo->getPath()) {
 			$list = [$path ."/". $repo->getName() .".md"];
 		} elseif (!($list = glob("$path/*.md"))) {
@@ -42,7 +59,7 @@ class Tree implements \RecursiveIterator {
 	 * @param array $list
 	 * @return callable
 	 */
-	private function generateFilter(array $list) {
+	private function generateFilter(array $list) : \Closure {
 		return function($v) use($list) {
 			if ($v{0} === ".") {
 				return false;
@@ -63,7 +80,7 @@ class Tree implements \RecursiveIterator {
 	/**
 	 * @return callable
 	 */
-	private function generateSorter() {
+	private function generateSorter() : \Closure {
 		return function($a, $b) {
 			$ab = basename($a, ".md");
 			$bb = basename($b, ".md");
@@ -106,14 +123,14 @@ class Tree implements \RecursiveIterator {
 	 * Implements \Iterator
 	 * @return \mdref\Entry
 	 */
-	public function current() {
+	public function current() : Entry {
 		return $this->repo->getEntry($this->repo->hasFile(current($this->iter)));
 	}
 
 	/**
 	 * Implements \Iterator
 	 */
-	public function next() {
+	public function next() : void {
 		next($this->iter);
 	}
 
@@ -121,14 +138,14 @@ class Tree implements \RecursiveIterator {
 	 * Implements \Iterator
 	 * @return int
 	 */
-	public function key() {
+	public function key() : int {
 		return key($this->iter);
 	}
 
 	/**
 	 * Implements \Iterator
 	 */
-	public function rewind() {
+	public function rewind() : void {
 		$this->iter = $this->list;
 		reset($this->iter);
 	}
@@ -137,7 +154,7 @@ class Tree implements \RecursiveIterator {
 	 * Implements \Iterator
 	 * @return bool
 	 */
-	public function valid() {
+	public function valid() : bool {
 		return null !== key($this->iter);
 	}
 
@@ -145,7 +162,7 @@ class Tree implements \RecursiveIterator {
 	 * Implements \RecursiveIterator
 	 * @return bool
 	 */
-	public function hasChildren() {
+	public function hasChildren() : bool {
 		return $this->current()->hasIterator();
 	}
 
@@ -153,7 +170,7 @@ class Tree implements \RecursiveIterator {
 	 * Implements \RecursiveIterator
 	 * @return \mdref\Tree
 	 */
-	public function getChildren() {
+	public function getChildren() : Iterator {
 		return $this->current()->getIterator();
 	}
 }

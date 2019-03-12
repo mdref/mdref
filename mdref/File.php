@@ -2,6 +2,14 @@
 
 namespace mdref;
 
+use function feof;
+use function fgets;
+use function fopen;
+use function fseek;
+use function strncmp;
+use function substr;
+use const SEEK_SET;
+
 /**
  * A ref entry file
  */
@@ -13,39 +21,53 @@ class File {
 
 	/**
 	 * Open the file
+	 *
 	 * @param string $path
+	 * @throws Exception
 	 */
-	public function __construct($path) {
-		$this->fd = fopen($path, "rb");
+	public function __construct(string $path) {
+		if (!$this->fd = fopen($path, "rb")) {
+			throw Exception::fromLastError();
+		}
 	}
 
 	/**
 	 * Read the title of the refentry
+	 *
 	 * @return string
+	 * @throws Exception
 	 */
-	public function readTitle() {
+	public function readTitle() : string {
 		if ($this->rewind(1)) {
 			return fgets($this->fd);
 		}
+		throw Exception::fromLastError();
 	}
 
 	/**
 	 * Read the description (first line) of the refentry
+	 *
 	 * @return string
+	 * @throws Exception
 	 */
-	public function readDescription() {
-		if ($this->rewind()
-		&& (false !== fgets($this->fd))
+	public function readDescription() : ?string {
+		if (!$this->rewind()) {
+			throw Exception::fromLastError();
+		}
+		if (false !== fgets($this->fd)
 		&& (false !== fgets($this->fd))) {
 			return fgets($this->fd);
 		}
+		return null;
 	}
 
 	/**
 	 * Read the full description (first section) of the refentry
+	 *
 	 * @return string
+	 * @throws Exception
 	 */
-	public function readFullDescription() {
+	public function readFullDescription() : ?string {
 		$desc = $this->readDescription();
 		while (false !== ($line = fgets($this->fd))) {
 			if ($line{0} === "#") {
@@ -61,7 +83,7 @@ class File {
 	 * Read the first subsection of a global refentry
 	 * @return string
 	 */
-	public function readIntro() {
+	public function readIntro() : string {
 		$intro = "";
 		if ($this->rewind()) {
 			$header = false;
@@ -87,7 +109,13 @@ class File {
 		return $intro;
 	}
 
-	public function readSection($title) {
+	/**
+	 * Read section of $title
+	 *
+	 * @param $title
+	 * @return string
+	 */
+	public function readSection(string $title) : string {
 		$section = "";
 		if ($this->rewind()) {
 			while (!feof($this->fd)) {
@@ -111,11 +139,20 @@ class File {
 		return $section;
 	}
 
-	private function rewind($offset = 0) {
+	/**
+	 * @param int $offset
+	 * @return bool
+	 */
+	private function rewind(int $offset = 0) : bool {
 		return 0 === fseek($this->fd, $offset, SEEK_SET);
 	}
 
-	private function isHeading($line, $title = null) {
+	/**
+	 * @param string $line
+	 * @param string $title
+	 * @return bool
+	 */
+	private function isHeading(string $line, ?string $title = null) : bool {
 		if ("## " !== substr($line, 0, 3)) {
 			return false;
 		}
