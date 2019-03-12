@@ -1,0 +1,13 @@
+				<div>
+					<p><strong>Download the Stub file:</strong></p>
+					<ul style="list-style-type: '&raquo;'">
+						<li>
+							<a href="stub?ref=<?= $entry->getName() ?>"><?= $entry->getName() ?>.stub.php</a><br>
+							<small>
+								Last modified:
+								<?= date_create("@".filemtime($stub))->setTimezone(new DateTimezone("UTC"))->format("Y-m-d H:i:s T") ?>
+							</small>
+						</li>
+					</ul>
+				</div>
+

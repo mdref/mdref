@@ -1,6 +1,12 @@
 
 <?= $file($entry->getPath()) ?>
 
+<?php if ($entry->isRoot() && $entry->getRepo()->hasStub($stub)) : ?>
+	<h2 id="Editor.Stub:">Editor Stub:</h2>
+	<p>This extension provides a stub file four your editor's auto-completion.</p>
+	<?php include __DIR__ . "/stub.phtml"; ?>
+<?php endif; ?>
+
 <?php if ($entry->hasFunctions()) : ?>
 
 <h2 id="Functions:">Functions:</h2>
