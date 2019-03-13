@@ -1,0 +1,19 @@
+<?php if ($sub->hasNsClasses()) : ?>
+	<?= $indent ?><ul>
+		<?php foreach ($sub as $subentry) : ?>
+			<?php
+			array_push($indents, $indent);
+			$indent .= "\t";
+			?>
+			<?php if ($subentry->isNsClass()) : ?>
+				<?=$indent?><li>&rdsh; <a href="<?= $up.$esc($subentry->getName()) ?>"><?= $esc($subentry) ?></a><?php
+					$tmp = $sub;
+					$sub = $subentry;
+					include __FILE__;
+					$sub = $tmp;
+					?><?= $indent ?></li>
+			<?php endif; ?>
+		<?php $indent = array_pop($indents); ?>
+		<?php endforeach; ?>
+	<?= $indent ?></ul>
+<?php endif; ?>

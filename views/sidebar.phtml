@@ -33,8 +33,7 @@
 						<?php endif; ?>
 					<?php endforeach; ?>
 
-							&circlearrowright; <strong><a href="<?= $up.$esc($entry->getName()) ?>"
-							><?= $esc($entry) ?></a></strong>
+							&circlearrowright; <strong><a href="<?= $up.$esc($entry->getName()) ?>"><?= $esc($entry) ?></a></strong>
 
 							<?php if ($entry->hasIterator()): ?>
 
@@ -42,8 +41,11 @@
 								<?php foreach ($entry as $sub) : /* @var \mdref\Entry $sub */ ?>
 
 								<li>
-									&rdsh; <a href="<?= $up.$esc($sub->getName()) ?>"
-									><?= $esc($sub) ?></a>
+									&rdsh; <a href="<?= $up.$esc($sub->getName()) ?>"><?= $esc($sub) ?></a>
+									<?php $indents= [] ; $indent = "
+									";
+									include __DIR__ . "/sidebar-rec.phtml"; ?>
+
 								</li>
 								<?php endforeach; ?>
 
