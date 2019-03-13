@@ -432,7 +432,7 @@ class StructureOfFunc extends StructureOf {
 					$desc .= $this->saneType($typ, false) . " " . $ret;
 				}
 			} else {
-				$type = $this->saneType($this->returns[0][0]);
+				$type = $this->saneType($this->returns[0][0], false);
 				$desc = $this->returns[0][1];
 			}
 			$tags[] = "return $type $desc";
