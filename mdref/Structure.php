@@ -187,8 +187,8 @@ class Structure {
 		static $pattern = '/
 			\*\s+
 			(?P<modifiers>\w+\s+)*
-			(?P<type>[\\\\\w]+)\s+
-			(?<name>\$\w+)
+			(?P<type>[\\\\\w_]+)\s+
+			(?P<ref>&)?(?P<name>\$[\w_]+)
 			(?:\s*=\s*(?P<defval>.+))?
 			(?P<desc>(?:\s*[^*]*\n(?!\n)\s*[^\*].*)*)
 		/x';
@@ -204,7 +204,7 @@ class Structure {
 	private function getReturns() : array {
 		static $pattern = '/
 			\*\s+
-			(?<type>[\\\\\w]+)
+			(?<type>[\\\\\w_]+)
 			\s*,?\s*
 			(?P<desc>(?:.|\n(?!\s*\*))*)
 		/x';
@@ -353,8 +353,6 @@ class StructureOfClass extends StructureOfNs
 	public $ns;
 	public $props;
 
-	static $lastNs;
-
 	function format() {
 		if ($this->ns !== StructureOfNs::$last) {
 			printf("namespace %s;\n", $this->ns);
@@ -469,6 +467,7 @@ class StructureOfVar extends StructureOf {
 	public $desc;
 	public $modifiers;
 	public $defval;
+	public $ref;
 
 	function formatDefval() {
 		if (strlen($this->defval)) {
@@ -476,6 +475,9 @@ class StructureOfVar extends StructureOf {
 				printf(" = ");
 				var_export(constant($this->defval));
 			} else if (strlen($this->defval)) {
+				if (false !== strchr($this->defval, "\\") && $this->defval{0} != "\\") {
+					$this->defval = "\\" . $this->defval;
+				}
 				printf(" = %s", $this->defval);
 			}
 		} elseif ($this->modifiers) {
@@ -498,7 +500,7 @@ class StructureOfVar extends StructureOf {
 		if ($with_type && strlen($type = $this->saneType($this->type))) {
 			printf("%s ", $type);
 		}
-		printf("%s", $this->name);
+		printf("%s%s", $this->ref, $this->name);
 		$this->formatDefval();
 	}
 }
