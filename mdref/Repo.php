@@ -43,11 +43,12 @@ class Repo implements IteratorAggregate {
 	 * @throws \InvalidArgumentException
 	 */
 	public function __construct(string $path) {
-		if (!($mdref = current(glob("$path/*.mdref")))) {
+		if (!($glob = glob("$path/*.mdref"))) {
 			throw new InvalidArgumentException(
 				sprintf("Not a reference, could not find '*.mdref': '%s'", $path));
 		}
 
+		$mdref = current($glob);
 		$this->path = realpath($path);
 		$this->name = basename($mdref, ".mdref");
 		$this->edit = trim(file_get_contents($mdref));
