@@ -218,7 +218,7 @@ class Entry implements IteratorAggregate {
 	 */
 	public function isFunction() : bool {
 		$base = end($this->list);
-		return $base{0} === "_" || ctype_lower($base{0});
+		return $base[0] === "_" || ctype_lower($base[0]);
 	}
 
 	/**
@@ -227,7 +227,7 @@ class Entry implements IteratorAggregate {
 	 */
 	public function isNsClass() : bool {
 		$base = end($this->list);
-		return ctype_upper($base{0});
+		return ctype_upper($base[0]);
 	}
 
 	/**
@@ -265,12 +265,12 @@ class Entry implements IteratorAggregate {
 		}
 		$parent = end($parts);
 
-		switch ($myself{0}) {
+		switch ($myself[0]) {
 		case ":":
 			return "★" . substr($myself, 1);
 
 		default:
-			if (!ctype_lower($myself{0}) || ctype_lower($parent{0})) {
+			if (!ctype_lower($myself[0]) || ctype_lower($parent[0])) {
 				return $myself;
 			}
 		case "_":

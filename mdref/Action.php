@@ -32,6 +32,11 @@ class Action {
 	private $response;
 
 	/**
+	 * @var resource
+	 */
+	private $output;
+
+	/**
 	 * @var \http\Url
 	 */
 	private $baseUrl;
@@ -39,11 +44,12 @@ class Action {
 	/**
 	 * Initialize the reference
 	 */
-	public function __construct(Reference $ref, Request $req, Response $res, BaseUrl $baseUrl) {
+	public function __construct(Reference $ref, Request $req, Response $res, BaseUrl $baseUrl, $output = null) {
 		$this->reference = $ref;
 		$this->request = $req;
 		$this->response = $res;
 		$this->baseUrl = $baseUrl;
+		$this->output = $output;
 		ob_start($res);
 	}
 
@@ -84,7 +90,11 @@ class Action {
 	private function serveCanonical(string $cnn) : void {
 		$this->response->setHeader("Location", $this->baseUrl->mod(["path" => $cnn]));
 		$this->response->setResponseCode(301);
-		$this->response->send();
+		if (is_resource($this->output)) {
+			$this->response->send($this->output);
+		} else {
+			$this->response->send();
+		}
 	}
 
 	/**
@@ -93,7 +103,11 @@ class Action {
 	private function serveStylesheet() : void {
 		$this->response->setHeader("Content-Type", "text/css");
 		$this->response->setBody(new Body(\fopen(ROOT."/public/index.css", "r")));
-		$this->response->send();
+		if (is_resource($this->output)) {
+			$this->response->send($this->output);
+		} else {
+			$this->response->send();
+		}
 	}
 
 	/**
@@ -102,7 +116,11 @@ class Action {
 	private function serveJavascript() : void {
 		$this->response->setHeader("Content-Type", "application/javascript");
 		$this->response->setBody(new Body(\fopen(ROOT."/public/index.js", "r")));
-		$this->response->send();
+		if (is_resource($this->output)) {
+			$this->response->send($this->output);
+		} else {
+			$this->response->send();
+		}
 	}
 
 	/**
@@ -119,7 +137,11 @@ class Action {
 		$this->response->setHeader("Content-Type", "application/x-php");
 		$this->response->setContentDisposition(["attachment" => ["filename" => "$name.stub.php"]]);
 		$this->response->setBody(new Body(\fopen($stub, "r")));
-		$this->response->send();
+		if (is_resource($this->output)) {
+			$this->response->send($this->output);
+		} else {
+			$this->response->send();
+		}
 	}
 
 	/**
@@ -158,7 +180,11 @@ class Action {
 		include ROOT."/views/layout.phtml";
 		$this->response->addHeader("Link", "<" . $this->baseUrl->path . "index.css>; rel=preload; as=style");
 		$this->response->addHeader("Link", "<" . $this->baseUrl->path . "index.js>; rel=preload; as=script");
-		$this->response->send();
+		if (is_resource($this->output)) {
+			$this->response->send($this->output);
+		} else {
+			$this->response->send();
+		}
 	}
 
 	/**

@@ -70,7 +70,7 @@ class File {
 	public function readFullDescription() : ?string {
 		$desc = $this->readDescription();
 		while (false !== ($line = fgets($this->fd))) {
-			if ($line{0} === "#") {
+			if ($line[0] === "#") {
 				break;
 			} else {
 				$desc .= $line;

@@ -244,5 +244,5 @@ $(function() {
 	});
 	setTimeout(function() {
 		$("footer").addClass("hidden");
-	}, 1);
+	}, 1000);
 });

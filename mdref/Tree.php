@@ -61,7 +61,7 @@ class Tree implements RecursiveIterator {
 	 */
 	private function generateFilter(array $list) : \Closure {
 		return function($v) use($list) {
-			if ($v{0} === ".") {
+			if ($v[0] === ".") {
 				return false;
 			}
 			if (false !== array_search("$v.md", $list, true)) {
@@ -85,11 +85,11 @@ class Tree implements RecursiveIterator {
 			$ab = basename($a, ".md");
 			$bb = basename($b, ".md");
 
-			if ($ab{0} === ":" && $bb{0} === ":") {
+			if ($ab[0] === ":" && $bb[0] === ":") {
 				return strcmp($ab, $bb);
-			} elseif ($ab{0} === ":") {
+			} elseif ($ab[0] === ":") {
 				return -1;
-			} elseif ($bb{0} === ":") {
+			} elseif ($bb[0] === ":") {
 				return 1;
 			}
 

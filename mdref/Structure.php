@@ -149,6 +149,7 @@ class Structure {
 		static $pattern = '/
 			\*\s+
 			(?P<modifiers>\w+\s+)*
+			(?:\((?P<usages>(?:(?:\w+)\s*)*)\))*\s*
 			(?P<type>[\\\\\w]+)\s+
 			(?<name>\$\w+)
 			(?:\s*=\s*(?P<defval>.+))?
@@ -208,7 +209,7 @@ class Structure {
 			\s*,?\s*
 			(?P<desc>(?:.|\n(?!\s*\*))*)
 		/x';
-		
+
 		$returns = $this->splitList($pattern, $this->getSection("Returns"));
 		$retvals = [];
 		foreach ($returns as list(, $type, $desc)) {
@@ -294,7 +295,7 @@ abstract class StructureOf {
 				return $type;
 				break;
 			default:
-				return ($type{0} === "\\" ? "":"\\") . $type;
+				return ($type[0] === "\\" ? "":"\\") . $type;
 				break;
 		}
 	}
@@ -466,6 +467,7 @@ class StructureOfVar extends StructureOf {
 	public $type;
 	public $desc;
 	public $modifiers;
+	public $usages;
 	public $defval;
 	public $ref;
 
@@ -475,7 +477,7 @@ class StructureOfVar extends StructureOf {
 				printf(" = ");
 				var_export(constant($this->defval));
 			} else if (strlen($this->defval)) {
-				if (false !== strchr($this->defval, "\\") && $this->defval{0} != "\\") {
+				if (false !== strchr($this->defval, "\\") && $this->defval[0] != "\\") {
 					$this->defval = "\\" . $this->defval;
 				}
 				printf(" = %s", $this->defval);
@@ -489,7 +491,7 @@ class StructureOfVar extends StructureOf {
 	function formatAsProp($level) {
 		$indent = str_repeat("\t", $level);
 		$this->formatDesc($level,
-			preg_split('/\s+/', $this->modifiers, -1, PREG_SPLIT_NO_EMPTY)
+			preg_split('/\s+/', $this->modifiers ." " . $this->usages, -1, PREG_SPLIT_NO_EMPTY)
 			+ [-1 => "var " . $this->saneType($this->type)]
 		);
 		printf("%s%s %s", $indent, $this->modifiers, $this->name);
