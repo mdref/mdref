@@ -492,7 +492,7 @@ class StructureOfVar extends StructureOf {
 		$indent = str_repeat("\t", $level);
 		$this->formatDesc($level,
 			preg_split('/\s+/', $this->modifiers ." " . $this->usages, -1, PREG_SPLIT_NO_EMPTY)
-			+ [-1 => "var " . $this->saneType($this->type)]
+			+ [-1 => "var " . $this->saneType($this->type, false)]
 		);
 		printf("%s%s %s", $indent, $this->modifiers, $this->name);
 		$this->formatDefval();
