@@ -36,10 +36,6 @@ jobs:
         with:
           repository: mdref/mdref-raphf
           path: refs/raphf
-      - uses: actions/checkout@v2
-        with:
-          repository: mdref/mdref.github.io
-          path: html
       - name: Install dependencies
         run: |
           sudo apt-get update -y
@@ -78,10 +74,6 @@ jobs:
           for ext in http pq; do
             ../bin/ref2stub ../refs/$ext
           done
-      - name: Show changes
-        run: |
-          cd html
-          git diff
       - uses: crazy-max/ghaction-github-pages@v2
         if: success()
         env:
@@ -94,5 +86,3 @@ jobs:
           build_dir: html
           repo: mdref/mdref.github.io
           fqdn: mdref.m6w6.name
-          dry_run: true
-
