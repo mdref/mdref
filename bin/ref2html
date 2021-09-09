@@ -1,0 +1,125 @@
+#!/usr/bin/env php
+<?php
+
+namespace mdref;
+
+use http\Env\Request;
+use http\Env\Response;
+use http\Message\Body;
+use function file_put_contents;
+
+require_once __DIR__."/../vendor/autoload.php";
+define("ROOT", dirname(__DIR__));
+define("REF2HTML", true);
+
+if ($argc < 3) {
+	fprintf(STDERR, "Usage: %s <basedir> <ref>[ <ref> ...]\n", $argv[0]);
+	fprintf(STDERR, "       Note: the basedir will also be used as <base href>\n");
+	exit(1);
+}
+function say($fmt, ...$args) {
+	return fprintf(STDERR, $fmt, ...$args);
+};
+$out = $argv[1];
+if (!is_dir($out) && !mkdir($out, 0775, true)) {
+	fprintf(STDERR, "Could not create output directory %s\n", $out);
+	exit(1);
+}
+$nul = fopen("/dev/null", "w");
+$url = new BaseUrl("/" . $out . "/");
+$url->scheme = null;
+$url->host = null;
+$ref = new Reference(array_slice($argv, 2));
+$fmt = function(string $src, string $dst) use($ref, $out, $nul, $url) {
+	$req = new Request;
+	$req->setRequestMethod("GET");
+	$req->setRequestUrl($url . "./" . $src);
+	$res = new Response;
+	$res->setBody(new Body(fopen($dst, "w+")));
+	$act = new Action($ref, $req, $res, $url, $nul);
+	$act->handle();
+};
+$xfm = [
+	"php/PropertyProxy" => "propro/php/PropertyProxy",
+	"pq/Gateway" => "pq-gateway/pq/Gateway",
+	"pq/Query" => "pq-gateway/pq/Query",
+];
+$red = function($from, $dest, $name) use($out, $url) {
+	$from = $out . "/" . str_replace($dest, $from, $name);
+	if (!is_dir(dirname($from))) {
+		mkdir(dirname($from), 0775, true);
+	}
+	file_put_contents($from . ".html", <<<EOF
+<html>
+	<base href='$url'>
+	<meta http-equiv='refresh' content='0; $name'>
+</html>
+EOF
+);
+};
+$gen = function(Entry $entry) use($fmt, $out, $xfm, $red, &$gen) {
+	$src = $entry->getName();
+	$dir = $out . "/" . $src;
+	$dst = $dir . ".html";
+	foreach ($xfm as $from => $dest) {
+		if (strpos($src, $dest) !== false) {
+			say("Redirecting from %s to %s\n", $from, $dest);
+			$red($from, $dest, $src);
+			break;
+		}
+	}
+	if ($entry->hasIterator()) {
+		if (!is_dir($dir)) {
+			mkdir($dir, 0755, true);
+		}
+		foreach ($entry as $subentry) {
+			$gen($subentry);
+		}
+	}
+	say("Generating %s from %s\n", $dst, $src);
+	$fmt($src, $dst);
+};
+/** @var $repo Repo */
+foreach ($ref as $repo) {
+	say("Entering ref %s\n", $repo->getName());
+	if (is_file($stub = $repo->getPath($repo->getName().".stub.php"))) {
+		copy($stub, $out . "/" . basename($stub));
+	}
+	foreach ($repo as $root) {
+		$gen($root);
+	}
+}
+$fmt("", $out . "/" . "index.html");
+
+$presets = [
+	"AUTHORS",
+	"LICENSE",
+	"VERSION",
+	"public/index.css" => "index.css",
+	"public/index.js" => "index.js",
+	"public/favicon.ico" => "favicon.ico",
+];
+foreach ($presets as $src => $dst) {
+	if (!is_string($src)) {
+		$src = $dst;
+	}
+	copy(ROOT . "/" . $src, $out . "/" . $dst);
+}
+// no jekyll
+touch($out . "/.nojekyll");
+// htacess for apache
+file_put_contents($out . "/.htaccess", <<<EOF
+Options -Indexes +MultiViews +FollowSymLinks
+DirectorySlash Off
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(.+)$ $1.html [L]
+
+<Files *.php>
+    ForceType text/x-php
+    SetHandler default-handler
+</Files>
+
+EOF
+);

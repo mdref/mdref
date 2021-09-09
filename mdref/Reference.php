@@ -19,13 +19,19 @@ class Reference implements IteratorAggregate {
 	private $repos = array();
 
 	/**
+	 * @var Formatter
+	 */
+	private $fmt;
+
+	/**
 	 * @param array $refs list of mdref repository paths
 	 */
-	public function __construct(array $refs) {
+	public function __construct(array $refs, Formatter $fmt = null) {
 		foreach ($refs as $path) {
 			$repo = new Repo($path);
 			$this->repos[$repo->getName()] = $repo;
 		}
+		$this->fmt = $fmt ?: Formatter::factory();
 	}
 
 	/**
@@ -66,39 +72,18 @@ class Reference implements IteratorAggregate {
 	/**
 	 * @param string $string
 	 * @return string
-	 * @throws \Exception
+	 * @throws \Exception, Exception
 	 */
 	public function formatString(string $string) : string {
-		if (extension_loaded("discount")) {
-			$md = \MarkdownDocument::createFromString($string);
-			$md->compile(\MarkdownDocument::AUTOLINK);
-			return $md->getHtml();
-		}
-		if (extension_loaded("cmark")) {
-			$node = \CommonMark\Parse($string);
-			return \CommonMark\Render\HTML($node);
-		}
-		throw new \Exception("No Markdown implementation found");
+		return $this->fmt->formatString($string);
 	}
 
 	/**
 	 * @param string $file
 	 * @return string
-	 * @throws \Exception
+	 * @throws \Exception, Exception
 	 */
 	public function formatFile(string $file) : string {
-		if (extension_loaded("discount")) {
-			$fd = fopen($file, "r");
-			$md = \MarkdownDocument::createFromStream($fd);
-			$md->compile(\MarkdownDocument::AUTOLINK | \MarkdownDocument::TOC);
-			$html = $md->getHtml();
-			fclose($fd);
-			return $html;
-		}
-		if (extension_loaded("cmark")) {
-			$node = \CommonMark\Parse(file_get_contents($file));
-			return \CommonMark\Render\HTML($node);
-		}
-		throw new \Exception("No Markdown implementation found");
+		return $this->fmt->formatFile($file);
 	}
 }

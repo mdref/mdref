@@ -2,7 +2,11 @@
 					<p><strong>Download the Stub file:</strong></p>
 					<ul style="list-style-type: '&raquo;'">
 						<li>
+							<?php if (defined("REF2HTML") && constant("REF2HTML")) :?>
+							<a href="<?= $entry->getName() ?>.stub.php"><?= $entry->getName() ?>.stub.php</a><br>
+							<?php else : ?>
 							<a href="stub?ref=<?= $entry->getName() ?>"><?= $entry->getName() ?>.stub.php</a><br>
+							<?php endif; ?>
 							<small>
 								Last modified:
 								<?= date_create("@".filemtime($stub))->setTimezone(new DateTimezone("UTC"))->format("Y-m-d H:i:s T") ?>
@@ -10,4 +14,3 @@
 						</li>
 					</ul>
 				</div>
-

@@ -6,9 +6,6 @@ use http\Env\Request;
 use http\Env\Response;
 use function ini_get;
 use function ini_set;
-use function spl_autoload_register;
-use function strncmp;
-use function strtr;
 use const GLOB_ONLYDIR;
 use const PATH_SEPARATOR;
 use const REFS;
@@ -23,11 +20,7 @@ if (!ini_get("date.timezone")) {
 	date_default_timezone_set("UTC");
 }
 
-spl_autoload_register(function($c) {
-	if (!strncmp($c, "mdref\\", 6)) {
-		return require ROOT . "/" . strtr($c, "\\", "/") . ".php";
-	}
-});
+require_once __DIR__ . "/../vendor/autoload.php";
 
 $response = new Response;
 $ehandler = new ExceptionHandler($response);

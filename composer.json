@@ -8,21 +8,24 @@
             "email": "mike@php.net"
         }
     ],
-    "bin": ["bin/ref2stub"],
+    "bin": [
+        "bin/ref2stub",
+        "bin/ref2html"
+    ],
     "autoload": {
         "psr-4": {
             "mdref\\": "mdref/"
         }
     },
     "require": {
-        "php": "^7.3",
-        "ext-ctype": "^7.3",
-        "ext-http": "^3.2",
-        "ext-filter": "^7.3",
-        "ext-pcre": "^7.3"
+        "php": "^7.3 || ^8.0",
+        "ext-ctype": "*",
+        "ext-filter": "*",
+        "ext-pcre": "*",
+        "ext-http": "^3.2 || ^4.2",
+        "league/commonmark": "^2.0"
     },
     "suggests": {
-        "ext-discount": "A Markdown renderer is needed, this is the preferred one.",
-        "ext-cmark": "A Markdown renderer is needed, this is the fallback one."
+        "ext-discount": "A Markdown renderer is needed, this is the preferred one."
     }
 }
