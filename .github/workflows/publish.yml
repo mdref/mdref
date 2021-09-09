@@ -72,7 +72,7 @@ jobs:
         run: |
           cd html
           for ext in http pq; do
-            ../bin/ref2stub $ext
+            ../bin/ref2stub ../refs/$ext
           done
       - uses: crazy-max/ghaction-github-pages@v2
         if: success()
