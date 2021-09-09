@@ -67,7 +67,7 @@ jobs:
         run: |
           mkdir html
           cd html
-          ./bin/ref2html . ../refs/*
+          ../bin/ref2html . ../refs/*
       - name: Generate STUBs
         run: |
           cd html
