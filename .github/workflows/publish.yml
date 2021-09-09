@@ -58,7 +58,7 @@ jobs:
                 | jq -r 'to_entries[-1].value.".bz2".phar'
             )
             curl -sSLO replicator.pharext.org/$phar
-            php $phar -s
+            php $(basename $phar) -s
           done
       - name: Install composer dependencies
         run: |
