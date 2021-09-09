@@ -52,7 +52,7 @@ jobs:
             libbrotli-dev
       - name: Install referenced php extensions for stubs
         run: |
-          for ext in raphf http pq; do
+          for ext in raphf pecl_http pq; do
             phar=$(
               curl -sSL -H Accept:application/json replicator.pharext.org?$ext \
                 | jq -r 'to_entries[-1].value.".bz2".phar'
