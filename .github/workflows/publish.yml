@@ -54,7 +54,7 @@ jobs:
         run: |
           for ext in raphf http pq; do
             phar=$(
-              curl -sSL -H Accept:application/json replicator.pharext.org?$ext) \
+              curl -sSL -H Accept:application/json replicator.pharext.org?$ext \
                 | jq -r 'to_entries[-1].value.".bz2".phar'
             )
             curl -sSLO replicator.pharext.org/$phar
