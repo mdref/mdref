@@ -51,8 +51,7 @@ $red = function($from, $dest, $name) use($out, $url) {
 	}
 	file_put_contents($from . ".html", <<<EOF
 <html>
-	<base href='$url'>
-	<meta http-equiv='refresh' content='0; $name'>
+	<meta http-equiv='refresh' content='0; $url$name'>
 </html>
 EOF
 );
