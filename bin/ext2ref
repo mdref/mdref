@@ -1,0 +1,108 @@
+#!/usr/bin/env php
+<?php
+
+require_once __DIR__."/../vendor/autoload.php";
+
+use mdref\Repo;
+use mdref\Structure;
+use mdref\StructureOfClass;
+use mdref\StructureOfFunc;
+use mdref\StructureOfNs;
+
+if ($argc != 2) {
+	fprintf(STDERR, "Usage: cd ref-<extname> && %s <extname>\n", $argv[0]);
+	exit(1);
+}
+
+$repo = new Repo(".");
+$ext = new ReflectionExtension($argv[1]);
+
+$constants  = array();
+$functions  = array();
+$classes = array();
+
+// split up by namespace first
+foreach ($ext->getConstants() as $constant => $value) {
+	$ns_name = ($nsend = strrpos($constant, "\\")) ? substr($constant, 0, $nsend++) : "";
+	$cn = substr($constant, $nsend);
+	$constants[$ns_name][$cn] = $value;
+}
+foreach ($ext->getFunctions() as $f) {
+	/* @var $f ReflectionFunction */
+	$ns_name = $f->inNamespace() ? $f->getNamespaceName() : "";
+	$functions[$ns_name][$f->getShortName()] = $f;
+}
+foreach ($ext->getClasses() as $c) {
+	/* @var $c ReflectionClass */
+	$ns_name = $c->inNamespace() ? $c->getNamespaceName() : "";
+	$classes[$ns_name][$c->getShortName()] = $c;
+}
+
+$namespaces = array_unique(array_merge(
+	array_keys($constants),
+	array_keys($functions),
+	array_keys($classes)
+));
+
+// simple sort
+natsort($namespaces);
+
+foreach ($namespaces as $ns_name) {
+	$ns_path = strtr($ns_name, "\\", "/");
+	if (!$repo->hasEntry($ns_path, $cn_path)) {
+		fprintf(STDERR, "Missing namespace %s\t%s.md\n", $ns_name, $ns_path);
+	} else {
+		$ns_entry = $repo->getEntry($cn_path ?? $ns_path);
+		$ns_struct = Structure::of($ns_entry);
+		/** @var StructureOfNs $ns_struct */
+		if (isset($constants[$ns_name])) foreach ($constants[$ns_name] as $const => $value) {
+			if (!isset($ns_struct->consts[$const])) {
+				fprintf(STDERR, "Missing constant %s in namespace %s\t%s.md\n",
+					$const, $ns_name, $cn_path ?? $ns_path);
+			}
+		}
+		// FIXME: functions are unconditionally assumed to be class methods by \mdref\Structure
+		if (isset($classes[$ns_name])) foreach ($classes[$ns_name] as $class_name => $class) {
+			$class_path = ($cn_path ?? $ns_path) . "/$class_name";
+			if (!isset($ns_struct->classes[$class_name])) {
+				fprintf(STDERR, "Missing class %s in namespace %s\t%s.md\n",
+					$class_name, $ns_name, $class_path);
+			} else {
+				$class_entry = $repo->getEntry($class_path);
+				/** @var StructureOfClass $class_struct */
+				$class_struct = Structure::of($class_entry);
+				/** @var ReflectionClass $class */
+				foreach ($class->getReflectionConstants() as $const) {
+					if ($const->getDeclaringClass()->getName() !== $class_entry->getNsName()) {
+						continue;
+					}
+					if (!isset($class_struct->consts[$const->getName()])) {
+						fprintf(STDERR, "Missing constant %s in class %s\t%s.md\n",
+							$const->getName(), $class->getName(), $class_path);
+					}
+				}
+				foreach ($class->getMethods() as $meth) {
+					//fprintf(STDERR, "Checking %s !== %s\n", $meth->getDeclaringClass()->getName(), $class_entry->getNsName());
+					if ($meth->getDeclaringClass()->getName() !== $class_entry->getNsName()) {
+						continue;
+					}
+					$meth_path = $class_path ."/". $meth->getName();
+					if (!isset($class_struct->funcs[$meth->getName()])) {
+						fprintf(STDERR, "Missing method %s in class %s\t%s.md\n",
+							$meth->getName(), $class->getName(), $meth_path);
+					} else {
+						$meth_entry = $repo->getEntry($meth_path);
+						/** @var StructureOfFunc $meth_struct */
+						$meth_struct = Structure::of($meth_entry);
+						if (count($meth_struct->params) != $meth->getNumberOfParameters()) {
+							fprintf(STDERR, "Missing params in method %s(%s) != arginfo(%s)\t%s\n",
+								$meth->getName(), implode(", ", array_keys($meth_struct->params)),
+								implode(", ", array_map(function($p){return "\$".$p->getName();}, $meth->getParameters())),
+								$meth_path);
+						}
+					}
+				}
+			}
+		}
+	}
+}
