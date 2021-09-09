@@ -129,7 +129,9 @@ class Structure {
 	private function getConstants() : array {
 		static $pattern = '/
 			\*\s+
+			(?:[<]span[ ]class="constant"[>])?
 			(?<name>\w+)
+			(?:[<]\/span[>])?
 			(?:\s*=\s*(?P<value>.+))?
 			(?P<desc>(?:\s*\n\s*[^\*\n#].*)*)
 		/x';
