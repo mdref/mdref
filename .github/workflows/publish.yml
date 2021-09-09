@@ -1,0 +1,90 @@
+name: publish
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  publish:
+    name: publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        with:
+          repository: mdref/mdref-apfd
+          path: refs/apfd
+      - uses: actions/checkout@v2
+        with:
+          repository: mdref/mdref-http
+          path: refs/http
+      - uses: actions/checkout@v2
+        with:
+          repository: mdref/mdref-json_post
+          path: refs/json_post
+      - uses: actions/checkout@v2
+        with:
+          repository: mdref/mdref-pq
+          path: refs/pq
+      - uses: actions/checkout@v2
+        with:
+          repository: mdref/mdref-pq-gateway
+          path: refs/pq-gateway
+      - uses: actions/checkout@v2
+        with:
+          repository: mdref/mdref-propro
+          path: refs/propro
+      - uses: actions/checkout@v2
+        with:
+          repository: mdref/mdref-raphf
+          path: refs/raphf
+      - name: Install dependencies
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y \
+            php-cli \
+            php-dev \
+            php-bz2 \
+            libpq-dev \
+            libcurl4-openssl-dev \
+            libidn11-dev \
+            libidn2-0-dev \
+            libicu-dev \
+            libevent-dev \
+            libbrotli-dev
+      - name: Install referenced php extensions for stubs
+        run: |
+          for ext in raphf http pq; do
+            phar=$(
+              curl -sSL -H Accept:application/json replicator.pharext.org?$ext) \
+                | jq -r 'to_entries[-1].value.".bz2".phar'
+            )
+            curl -sSLO replicator.pharext.org/$phar
+            php $phar -s
+          done
+      - name: Install composer dependencies
+        run: |
+          composer install
+      - name: Generate HTML
+        run: |
+          mkdir html
+          cd html
+          ./bin/ref2html . ../refs/*
+      - name: Generate STUBs
+        run: |
+          cd html
+          for ext in http pq; do
+            ../bin/ref2stub $ext
+          done
+      - uses: crazy-max/ghaction-github-pages@v2
+        if: success()
+        env:
+          GH_PAT: ${{ secrets.PUBLISH_SECRET }}
+        with:
+          jekyll: false
+          keep_history: true
+          target_branch: master
+          allow_empty_commit: false
+          build_dir: html
+          repo: mdref/mdref.github.io
+          fqdn: mdref.m6w6.name
+          dry_run: true
+
