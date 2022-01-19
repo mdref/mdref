@@ -9,8 +9,10 @@
         }
     ],
     "bin": [
+        "bin/ext2ref",
+        "bin/ref2html",
         "bin/ref2stub",
-        "bin/ref2html"
+        "bin/stub2ref"
     ],
     "autoload": {
         "psr-4": {
@@ -23,7 +25,8 @@
         "ext-filter": "*",
         "ext-pcre": "*",
         "ext-http": "^3.2 || ^4.2",
-        "league/commonmark": "^2.0"
+        "league/commonmark": "^2.0",
+        "phpdocumentor/reflection-docblock": "^5.3"
     },
     "suggests": {
         "ext-discount": "A Markdown renderer is needed, this is the preferred one."

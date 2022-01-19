@@ -92,7 +92,7 @@ class Tree implements RecursiveIterator {
 			} elseif ($bb[0] === ":") {
 				return 1;
 			}
-
+/*
 			$ad = is_dir(dirname($a)."/$ab");
 			$bd = is_dir(dirname($b)."/$bb");
 
@@ -103,7 +103,7 @@ class Tree implements RecursiveIterator {
 			} elseif ($bd) {
 				return 1;
 			}
-
+*/
 			$au = preg_match("/^\p{Lu}/", $ab);
 			$bu = preg_match("/^\p{Lu}/", $bb);
 
@@ -170,7 +170,7 @@ class Tree implements RecursiveIterator {
 	 * Implements \RecursiveIterator
 	 * @return \mdref\Tree
 	 */
-	public function getChildren() : Iterator {
+	public function getChildren() : Tree {
 		return $this->current()->getIterator();
 	}
 }

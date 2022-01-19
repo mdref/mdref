@@ -1,0 +1,30 @@
+#!/usr/bin/env php
+<?php
+
+namespace mdref;
+
+require_once __DIR__."/../vendor/autoload.php";
+
+if ($argc < 3) {
+	fprintf(STDERR, "Usage: cd ref-<ns> && %s <ns> <stub.php>\n", $argv[0]);
+	exit(1);
+}
+
+$namespace = $argv[1];
+require_once $argv[2];
+
+if (!file_exists("$namespace.mdref")) {
+	fprintf(STDERR, "Missing $namespace.mdref; generated default.\n");
+	file_put_contents("$namespace.mdref", "./%s");
+}
+if (!file_exists("$namespace.md")) {
+	fprintf(STDERR, "Missing $namespace.md; hard linking README.md\n");
+	link(dirname($argv[2]) . "/README.md", "$namespace.md");
+}
+
+$inspector = new Inspector;
+$inspector->inspectNamespace($namespace);
+
+$generator = new Generator;
+$generator->generateFunctions($inspector->getFunctions());
+$generator->generateClasses($inspector->getClasses());

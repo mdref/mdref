@@ -293,7 +293,7 @@ class Entry implements IteratorAggregate {
 	 * @return bool
 	 */
 	function hasIterator(?string $glob = null, bool $loose = false) : bool {
-		if (strlen($glob)) {
+		if (isset($glob) && strlen($glob)) {
 			return glob($this->getNextDirname() . "/$glob") ||
 				($loose && glob($this->getNextDirname() . "/*/$glob"));
 		} elseif ($this->isRoot()) {

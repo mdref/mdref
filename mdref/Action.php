@@ -180,6 +180,9 @@ class Action {
 		include ROOT."/views/layout.phtml";
 		$this->response->addHeader("Link", "<" . $this->baseUrl->path . "index.css>; rel=preload; as=style");
 		$this->response->addHeader("Link", "<" . $this->baseUrl->path . "index.js>; rel=preload; as=script");
+		if (isset($exception) && $exception->getCode()) {
+			$this->response->setResponseCode($exception->getCode());
+		}
 		if (is_resource($this->output)) {
 			$this->response->send($this->output);
 		} else {
@@ -194,10 +197,10 @@ class Action {
 		try {
 			$pld = $this->createPayload();
 
-			if (strlen($pld->ref)) {
+			if (isset($pld->ref) && strlen($pld->ref)) {
 				$cnn = null;
 				if (($repo = $this->reference->getRepoForEntry($pld->ref, $cnn))) {
-					if (strlen($cnn)) {
+					if (isset($cnn) && strlen($cnn)) {
 						/* redirect */
 						$this->serveCanonical($cnn);
 						return;

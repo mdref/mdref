@@ -51,6 +51,7 @@ $(function() {
 			case "Traversable":
 			case "Iterator":
 			case "IteratorAggregate":
+			case "RecursiveIterator":
 			case "ArrayAccess":
 			case "ArrayObject":
 			case "ArrayIterator":
@@ -73,6 +74,7 @@ $(function() {
 					return "<br>&nbsp;<em>";
 				}
 			case "class":
+			case "enum":
 			case "interface":
 			case "namespace":
 			case "public":
