@@ -8,7 +8,8 @@ use http\Env\Response;
 use http\Message\Body;
 use function file_put_contents;
 
-require_once __DIR__."/../vendor/autoload.php";
+require_once $_composer_autoload_path ?? __DIR__."/../vendor/autoload.php";
+
 define("ROOT", dirname(__DIR__));
 define("REF2HTML", true);
 

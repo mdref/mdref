@@ -3,7 +3,7 @@
 
 namespace mdref;
 
-require_once __DIR__."/../vendor/autoload.php";
+require_once $_composer_autoload_path ?? __DIR__."/../vendor/autoload.php";
 
 if ($argc < 2) {
 	fprintf(STDERR, "Usage: %s <ref>[ <ref> ...]\n", $argv[0]);
