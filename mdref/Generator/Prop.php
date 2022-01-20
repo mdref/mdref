@@ -15,7 +15,7 @@ class Prop extends Scrap {
 }
 
 /** @var $gen Generator */
-/** @var $ref \ReflectionParameter */
+/** @var $ref \ReflectionProperty */
 /** @var $doc ?DocBlock */
 /** @var $tag ?Tags\Param */
 
@@ -25,6 +25,15 @@ __HALT_COMPILER();
 ?> $<?=$ref->getName() ?><?php
 if ($ref->hasDefaultValue()) :
 	?> = <?php var_export($ref->getDefaultValue()) ?><?php
+elseif (($params = $ref->getDeclaringClass()->getConstructor()?->getParameters())) :
+	foreach ($params as $param) :
+		if ($param->getName() === $ref->name) :
+			if ($param->isDefaultValueAvailable()) :
+				?> = <?php var_export($param->getDefaultValue()) ?><?php
+			endif;
+			break;
+		endif;
+	endforeach;
 endif;
 
 if (($desc = $doc?->getSummary())) :
