@@ -5,13 +5,19 @@ namespace mdref;
 use mdref\Generator\{Cls, Func};
 
 class Generator {
+	protected string $destination;
+
+	public function __construct(string $destination = ".") {
+		$this->destination = $destination;
+	}
+
 	/**
 	 * @param array<string, array<string, \ReflectionFunctionAbstract>> $functions
 	 * @return void
 	 */
 	public function generateFunctions(array $functions) : void {
 		foreach ($functions as $ns => $funcs) {
-			$ns_path = strtr($ns, "\\", "/");
+			$ns_path = $this->destination . "/" . strtr($ns, "\\", "/");
 			foreach ($funcs as $fn => $rf) {
 				$fn_file = "$ns_path/$fn.md";
 				fprintf(STDERR, "Generating %s\n", $fn_file);
@@ -27,7 +33,7 @@ class Generator {
 	 */
 	public function generateClasses(array $classes) : void {
 		foreach ($classes as $ns => $cls) {
-			$ns_path = strtr($ns, "\\", "/");
+			$ns_path = $this->destination . "/" . strtr($ns, "\\", "/");
 			foreach ($cls as $cn => $rc) {
 				$cn_path = "$ns_path/$cn";
 				$cn_file = "$cn_path.md";
