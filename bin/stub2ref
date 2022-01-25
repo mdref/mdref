@@ -22,10 +22,6 @@ if (!file_exists("$destination/$namespace.mdref")) {
 	fprintf(STDERR, "Missing $destination/$namespace.mdref; generated default.\n");
 	file_put_contents("$destination/$namespace.mdref", "./%s") || exit -2;
 }
-if (!file_exists("$destination/$namespace.md")) {
-	fprintf(STDERR, "Missing $destination/$namespace.md; hard linking README.md\n");
-	link(dirname($argv[2]) . "/README.md", "$destination/$namespace.md") || exit -3;
-}
 
 $inspector = new Inspector;
 $inspector->inspectNamespace($namespace);
