@@ -50,7 +50,7 @@ class File {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function readDescription() : ?string {
+	public function readDescription() : string {
 		if (!$this->rewind()) {
 			throw Exception::fromLastError();
 		}
@@ -58,7 +58,7 @@ class File {
 		&& (false !== fgets($this->fd))) {
 			return fgets($this->fd);
 		}
-		return null;
+		return "";
 	}
 
 	/**
@@ -67,7 +67,7 @@ class File {
 	 * @return string
 	 * @throws Exception
 	 */
-	public function readFullDescription() : ?string {
+	public function readFullDescription() : string {
 		$desc = $this->readDescription();
 		while (false !== ($line = fgets($this->fd))) {
 			if ($line[0] === "#") {

@@ -31,7 +31,15 @@ class Reference implements IteratorAggregate {
 			$repo = new Repo($path);
 			$this->repos[$repo->getName()] = $repo;
 		}
-		$this->fmt = $fmt ?: Formatter::factory();
+		$this->fmt = $fmt ?: new Formatter;
+	}
+
+	/**
+	 * Get the formatter.
+	 * @return Formatter
+	 */
+	public function getFormatter() : Formatter {
+		return $this->fmt;
 	}
 
 	/**
@@ -62,7 +70,7 @@ class Reference implements IteratorAggregate {
 	 * @param string $anchor
 	 * @return string
 	 */
-	public function formatAnchor(string $anchor) : string {
+	public function formatAnchor(string $anchor, string $location = null) : string {
 		if (is_numeric($anchor)) {
 			return "L$anchor";
 		}
@@ -74,8 +82,8 @@ class Reference implements IteratorAggregate {
 	 * @return string
 	 * @throws \Exception, Exception
 	 */
-	public function formatString(string $string) : string {
-		return $this->fmt->formatString($string);
+	public function formatString(string $string, string $location = null) : string {
+		return $this->fmt->formatString($string, $location);
 	}
 
 	/**
@@ -83,7 +91,7 @@ class Reference implements IteratorAggregate {
 	 * @return string
 	 * @throws \Exception, Exception
 	 */
-	public function formatFile(string $file) : string {
-		return $this->fmt->formatFile($file);
+	public function formatFile(string $file, string $location = null) : string {
+		return $this->fmt->formatFile($file, $location);
 	}
 }

@@ -31,7 +31,15 @@ endif;
 if (($parent = $ref->getParentClass())) :
 	?> extends <?= $parent->getName() ?><?php
 endif;
-if (($implements = $ref->getInterfaceNames())) : sort($implements);
+if (($implements = $ref->getInterfaceNames())) :
+	foreach ($implements as $index => $iface) :
+		foreach ($implements as $implemented) :
+			if ($iface !== $implemented && is_subclass_of($implemented, $iface)) :
+				unset($implements[$index]);
+			endif;
+		endforeach;
+	endforeach;
+	sort($implements);
 	?> implements <?= implode(", ", $implements); ?><?php
 endif;
 ?>

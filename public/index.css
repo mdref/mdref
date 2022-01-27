@@ -96,7 +96,16 @@ pre>code {
 
 pre>code, pre>code code {
 	background: #333;
-	color: #eee;
+	color: ghostwhite;
+}
+pre>code .comment {
+	color: darkorange !important;
+}
+pre>code .string {
+	color: darkseagreen !important;
+}
+pre>code .keyword {
+	color: darkgray !important;
 }
 
 p, pre, table, dl {
@@ -151,6 +160,12 @@ a:hover {
 }
 a[href^="http:"]:after, a[href^="https:"]:after {
 	content: " ⬈";
+}
+code>a {
+	text-decoration: none;
+}
+code a[href^="http:"]:after, code a[href^="https:"]:after {
+	content: "";
 }
 
 a.permalink {

@@ -77,6 +77,10 @@ class Action {
 		$pld->ref = $this->baseUrl->pathinfo(
 			$this->baseUrl->mod($this->request->getRequestUrl()));
 
+		$pld->markup = function($page) use($pld) {
+			return $this->reference->getFormatter()->markup($page, $pld);
+		};
+
 		$pld->refs = $this->reference;
 		$pld->baseUrl = $this->baseUrl;
 

@@ -38,6 +38,9 @@ jobs:
           path: refs/raphf
       - name: Install dependencies
         run: |
+          v=8.0; for b in "" ize -config; do \
+            sudo update-alternatives --set php$b /usr/bin/php$b$v; \
+          done
           sudo apt-get update -y
           sudo apt-get install -y \
             php-cli \
@@ -75,7 +78,7 @@ jobs:
             ../bin/ref2stub ../refs/$ext
           done
       - uses: crazy-max/ghaction-github-pages@v2
-        if: success()
+        if: false
         env:
           GH_PAT: ${{ secrets.PUBLISH_SECRET }}
         with:

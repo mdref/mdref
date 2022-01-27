@@ -20,15 +20,14 @@
         }
     },
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.0",
         "ext-ctype": "*",
+        "ext-dom": "*",
+        "ext-libxml": "*",
         "ext-filter": "*",
         "ext-pcre": "*",
-        "ext-http": "^3.2 || ^4.2",
-        "league/commonmark": "^2.0",
+        "ext-http": "^4.2",
+        "league/commonmark": "~2.1.0",
         "phpdocumentor/reflection-docblock": "^5.3"
-    },
-    "suggests": {
-        "ext-discount": "A Markdown renderer is needed, this is the preferred one."
     }
 }

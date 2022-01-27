@@ -92,3 +92,24 @@ endif;
 
 
 <?php
+if (($tags = $doc?->getTagsWithTypeByName("throws"))) :
+?>
+
+## Throws:
+
+<?php
+	foreach ($tags as $tag) :
+		?>* <?= $tag->getType()
+		?><?php
+		if ($tag->getDescription()?->getBodyTemplate()) :
+			?>, <?= $tag->getDescription()
+			?><?php
+		endif;
+		?><?="\n"
+	?><?php
+	endforeach;
+endif;
+?>
+
+
+<?php
