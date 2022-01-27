@@ -199,7 +199,7 @@ class Wrapper {
 			$span->setAttribute("class", "constant");
 			$span->textContent = $item;
 			if (!$strict && $pld->currentSection === "Constants:" && $node->parentNode->nodeName === "li" && $node->parentNode->firstChild === $node) {
-				$perm = $this->createPermaLink($span, $this->formatSlug($item), $pld);
+				$perm = $this->fmt->createPermaLink($span, $this->fmt->formatSlug($item), $pld);
 				$span->insertBefore($perm);
 			}
 			return $span;
