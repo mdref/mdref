@@ -70,11 +70,11 @@ class Reference implements IteratorAggregate {
 	 * @param string $anchor
 	 * @return string
 	 */
-	public function formatAnchor(string $anchor, string $location = null) : string {
+	public function formatAnchor(string $anchor) : string {
 		if (is_numeric($anchor)) {
 			return "L$anchor";
 		}
-		return preg_replace("/[^[:alnum:]\.:_]/", ".", $anchor);
+		return $this->fmt->formatSlug($anchor);
 	}
 
 	/**
@@ -82,8 +82,8 @@ class Reference implements IteratorAggregate {
 	 * @return string
 	 * @throws \Exception, Exception
 	 */
-	public function formatString(string $string, string $location = null) : string {
-		return $this->fmt->formatString($string, $location);
+	public function formatString(string $string) : string {
+		return $this->fmt->formatString($string);
 	}
 
 	/**
@@ -91,7 +91,7 @@ class Reference implements IteratorAggregate {
 	 * @return string
 	 * @throws \Exception, Exception
 	 */
-	public function formatFile(string $file, string $location = null) : string {
-		return $this->fmt->formatFile($file, $location);
+	public function formatFile(string $file) : string {
+		return $this->fmt->formatFile($file);
 	}
 }

@@ -60,7 +60,7 @@ class Formatter {
 	 * @return string the simplified slug
 	 */
 	public function formatSlug(string $string) : string {
-		return preg_replace("/[^\$[:alnum:]:._-]+/", ".", $string);
+		return preg_replace("/[^\$[:alnum:]:._-]+/", ".", trim($string, "/ \r\n\t"));
 	}
 
 	/**
