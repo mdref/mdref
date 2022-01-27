@@ -78,7 +78,7 @@ jobs:
             ../bin/ref2stub ../refs/$ext
           done
       - uses: crazy-max/ghaction-github-pages@v2
-        if: false
+        if: success()
         env:
           GH_PAT: ${{ secrets.PUBLISH_SECRET }}
         with:
