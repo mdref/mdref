@@ -1,0 +1,113 @@
+#!/usr/bin/env php
+<?php
+
+namespace mdref;
+
+require_once $_composer_autoload_path ?? __DIR__."/../vendor/autoload.php";
+
+if ($argc < 2) {
+	fprintf(STDERR, "Usage: %s <stub.php> [<ns>]\n", $argv[0]);
+	exit(1);
+}
+
+if (!($stub = realpath($argv[1]))) {
+	$stat = stat($stub);
+	assert(!$stat);
+	exit(2);
+}
+if ($argc > 2) {
+	$namespace = $argv[2];
+} else {
+	$namespace = basename($stub, ".stub.php");
+}
+
+$tmplck = tempnam(sys_get_temp_dir(), "mdref.");
+$tmpdir = $tmplck . ".d";
+mkdir($tmpdir) && chdir($tmpdir) || exit(-1);
+
+$running = true;
+$shutdown = function() use($tmpdir, $tmplck, &$running) {
+	$running = false;
+	chdir(__DIR__) && rm_r($tmpdir, $tmplck);
+};
+register_shutdown_function($shutdown);
+pcntl_signal(SIGINT, $shutdown, false);
+pcntl_signal(SIGTERM, $shutdown, false);
+
+$passthru = fn($cmd) => fn() => printf("%s\n", $cmd) && !passthru("$cmd 2>&1 >/dev/null", $rc) && !$rc;
+$stub2ref = $passthru(
+	sprintf("%s/stub2ref %s %s %s",
+			__DIR__,
+			escapeshellarg($namespace),
+			escapeshellarg($stub),
+			escapeshellarg($tmpdir)
+	)
+);
+$ref2html = $passthru(
+	sprintf("%s/ref2html . .",
+		__DIR__,
+	)
+);
+$update = fn() => $stub2ref() && $ref2html();
+
+if ($update()) {
+	$ifd = inotify_init();
+	inotify_add_watch($ifd, $stub, IN_MODIFY);
+	stream_set_blocking($ifd, false);
+
+	file_put_contents("router.php", file_get_contents(__FILE__, false, null, __COMPILER_HALT_OFFSET__));
+	$php = popen(sprintf("%s -S localhost:0 -t . router.php 2>&1 | grep --line-buffered -Ev 'Accepted|Closing|GET'", PHP_BINARY), "r");
+	echo fgets($php);
+	stream_set_blocking($php, false);
+
+	while ($running) {
+		$R = [$ifd, $php]; $W = []; $E = [];
+		if (stream_select($R, $W, $E, null)) {
+			foreach ($R as $r) {
+				switch ($r) {
+					case $php:
+						while (($string = fgets($php))) echo $string;
+						break;
+					case $ifd:
+						// cooldown
+						usleep(50 * 1000);
+						while (inotify_read($ifd));
+						$update();
+						break;
+				}
+			}
+		}
+		pcntl_signal_dispatch();
+	}
+}
+
+function rm_r(string ...$args) {
+	foreach ($args as $del) {
+		if (is_dir($del)) {
+			rm_r(...array_map(fn($sub) => "$del/$sub", array_slice(scandir($del), 2)));
+			rmdir($del);
+		} else if (file_exists($del)) {
+			unlink($del);
+		}
+	}
+}
+
+__HALT_COMPILER();
+<?php
+
+$file = __DIR__ . urldecode($_SERVER["REQUEST_URI"]);
+
+if (is_file($file)) {
+	return false;
+}
+
+if (is_dir($file) && file_exists($file."/index.html")) {
+	readfile($file."/index.html");
+} else {
+	$file = rtrim($file, "/").".html";
+	if (file_exists($file)) {
+		readfile($file);
+	} else {
+		return false;
+	}
+}

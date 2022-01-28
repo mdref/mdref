@@ -19,8 +19,18 @@ if (!is_dir($destination)) {
 	mkdir($destination) || exit -1;
 }
 if (!file_exists("$destination/$namespace.mdref")) {
-	fprintf(STDERR, "Missing $destination/$namespace.mdref; generated default.\n");
+	fprintf(STDERR, "Missing $destination/$namespace.mdref; generating default.\n");
 	file_put_contents("$destination/$namespace.mdref", "./%s") || exit -2;
+}
+if (!file_exists("$destination/$namespace.md")) {
+	fprintf(STDERR, "Missing $destination/$namespace.mdref; generating default from README.\n");
+	$readme = dirname($argv[2]) . "/README.md";
+	if (!file_exists($readme))  {
+		fprintf(STDERR, "Missing $readme; creating empty $namespace.md");
+		touch("$destination/$namespace.md");
+	} else {
+		link(realpath($readme), "$destination/$namespace.md");
+	}
 }
 
 $inspector = new Inspector;

@@ -20,7 +20,7 @@ class Generator {
 			$ns_path = $this->destination . "/" . strtr($ns, "\\", "/");
 			foreach ($funcs as $fn => $rf) {
 				$fn_file = "$ns_path/$fn.md";
-				fprintf(STDERR, "Generating %s\n", $fn_file);
+				printf("Generating %s\n", $fn_file);
 				is_dir($ns_path) || mkdir($ns_path, 0770, true);
 				file_put_contents($fn_file, new Func($this, $rf));
 			}
@@ -37,7 +37,7 @@ class Generator {
 			foreach ($cls as $cn => $rc) {
 				$cn_path = "$ns_path/$cn";
 				$cn_file = "$cn_path.md";
-				fprintf(STDERR, "Generating %s\n", $cn_file);
+				printf("Generating %s\n", $cn_file);
 				is_dir($ns_path) || mkdir($ns_path, 0770, true);
 				file_put_contents($cn_file, new Cls($this, $rc));
 				$this->generateMethods($rc);

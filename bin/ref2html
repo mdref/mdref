@@ -18,9 +18,6 @@ if ($argc < 3) {
 	fprintf(STDERR, "       Note: the basedir will also be used as <base href>\n");
 	exit(1);
 }
-function say($fmt, ...$args) {
-	return fprintf(STDERR, $fmt, ...$args);
-};
 $out = $argv[1];
 if (!is_dir($out) && !mkdir($out, 0775, true)) {
 	fprintf(STDERR, "Could not create output directory %s\n", $out);
@@ -63,7 +60,7 @@ $gen = function(Entry $entry) use($fmt, $out, $xfm, $red, &$gen) {
 	$dst = $dir . ".html";
 	foreach ($xfm as $from => $dest) {
 		if (strpos($src, $dest) !== false) {
-			say("Redirecting from %s to %s\n", $from, $dest);
+			printf("Redirecting from %s to %s\n", $from, $dest);
 			$red($from, $dest, $src);
 			break;
 		}
@@ -76,12 +73,12 @@ $gen = function(Entry $entry) use($fmt, $out, $xfm, $red, &$gen) {
 			$gen($subentry);
 		}
 	}
-	say("Generating %s from %s\n", $dst, $src);
+	printf("Generating %s from %s\n", $dst, $src);
 	$fmt($src, $dst);
 };
 /** @var $repo Repo */
 foreach ($ref as $repo) {
-	say("Entering ref %s\n", $repo->getName());
+	printf("Entering ref %s\n", $repo->getName());
 	if (is_file($stub = $repo->getPath($repo->getName().".stub.php"))) {
 		copy($stub, $out . "/" . basename($stub));
 	}
