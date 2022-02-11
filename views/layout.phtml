@@ -17,8 +17,6 @@
 			<link rel="stylesheet" href="index.css">
 		<?php endif; ?>
 
-		<link href="https://fonts.googleapis.com/css?family=Inconsolata&amp;subset=latin-ext" rel="stylesheet">
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 		<link rel="shortcut icon" href="<?= $baseUrl . "favicon.ico" ?>">
 	</head>
 	<body>
@@ -32,11 +30,6 @@
 			<?php include __DIR__."/index.phtml" ?>
 		<?php endif; ?>
 
-			<div id="disqus_thread"><button id="disqus_activator">Show <span> </span> Comment(s)</button></div>
-			<script>
-				var disqus_shortname = 'mdref';
-				var disqus_identifier = '<?=$ref?>';
-			</script>
 
 			<footer>
 				<?php include __DIR__."/footer.phtml" ?>

@@ -1,61 +1,49 @@
 "use strict";
 
-$(function() {
-	var mdref = {
-		log: function log() {
-			console.log.apply(console, arguments);
-		},
-		blink: function blink(c) {
-			var $c = $(c);
-
-			$c.fadeOut("fast").queue(function(next) {
-				this.style.color = "red";
-				next();
-			}).fadeIn("fast").fadeOut("slow").queue(function(next) {
-				this.style.color = "";
-				next();
-			}).fadeIn("slow");
-		},
-		hashchange: function hashchange() {
-			if (location.hash.length > 1) {
-				var hash = decodeURIComponent(location.hash.substring(1));
-				var e;
-				if ((e = document.getElementById(location.hash.substring(1)))) {
-					mdref.blink(e);
-				} else {
-					var scrolled = false;
-
-					if (hash.substring(hash.length-1) === "*") {
-						hash = hash.substring(0, hash.length-1);
-					}
-					$((hash.substring(0,1) === "$") ? ".var" : ".constant").each(function(i, c) {
-						if (c.textContent.substring(0, hash.length) === hash) {
-							if (!scrolled) {
-								$(window).scrollTop($(c).offset().top - 100);
-								scrolled = true;
-							}
-							mdref.blink(c);
-						}
-					});
+document.addEventListener("DOMContentLoaded", function() {
+	const doTransition = function(e, trans, state, speed) {
+		e.classList.remove(trans + "-in", trans + "-out", "trans-slow", "trans-fast");
+		e.classList.add(trans + "-" + state, "trans-" + speed);
+		return (cb) => setTimeout(cb, speed === "slow" ? 600 : 200);
+	};
+	const letElementBlink = function(e, last) {
+		setTimeout(() => doTransition(e, "fade", "out", "fast")(function() {
+			e.classList.add("blink");
+			doTransition(e, "fade", "in", "fast")(function() {
+				e.classList.remove("blink");
+				doTransition(e, "fade", "out", "slow")(function () {
+					doTransition(e, "fade", "in", "slow");
+				});
+			});
+		}), 200);
+	};
+	const onHashChange = function() {
+		if (location.hash.length > 1) {
+			let hash = decodeURIComponent(location.hash.substring(1));
+			let e = document.getElementById(hash) || document.getElementById(location.hash.substring(1));
+			if (e) {
+				letElementBlink(e);
+			} else {
+				if (hash.substring(hash.length-1) === "*") {
+					hash = hash.substring(0, hash.length-1);
 				}
+				let klass = (hash.substring(0,1) === "$") ? "var" : "constant";
+				let scrolled = false;
+				Array.prototype.forEach.call(document.getElementsByClassName(klass), function(e) {
+					if (e.textContent.substring(0, hash.length) !== hash) {
+						return;
+					}
+					if (!scrolled) {
+						scrolled = true;
+						window.scrollTo(0, e.offsetTop > 64 ? e.offsetTop - 64 : 0);
+					}
+					letElementBlink(e);
+				});
 			}
 		}
 	};
 
-	$(window).on("hashchange", mdref.hashchange);
-	mdref.hashchange();
-
-	$("#disqus_activator").on("click", function() {
-		var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-		dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-		(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-	});
-	$.ajax("https://disqus.com/api/3.0/threads/details.json?thread:ident="+(disqus_identifier||"index")+"&forum=mdref&api_key=VmhVG4z5jjtY8SCaMstOjfUuwniMv43Xy9FCU9YfEzhsrl95dNz1epykXSJn8jt9"). then(function(json) {
-		if (json && json.response) {
-			$("#disqus_activator span").text(json.response.posts);
-		}
-	});
-	setTimeout(function() {
-		$("footer").addClass("hidden");
-	}, 1000);
-});
+	onHashChange();
+	window.addEventListener("hashchange", onHashChange);
+	setTimeout(()=>document.getElementsByTagName("footer")[0].classList.add("hidden"), 1000);
+})
