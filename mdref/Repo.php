@@ -33,9 +33,27 @@ class Repo implements IteratorAggregate {
 
 	/**
 	 * The edit url template
-	 * @var string
+	 * @var ?string
 	 */
-	private $edit;
+	private $editUrl;
+
+	/**
+	 * Origin url
+	 * @var ?string
+	 */
+	private $origin;
+
+	/**
+	 * Git branch
+	 * @var ?string
+	 */
+	private $branch;
+
+	/**
+	 * Comment provider configuration
+	 * @var ?object
+	 */
+	private $commentProvider;
 
 	/**
 	 * Path to the repository containing the name.mdref file
@@ -43,15 +61,33 @@ class Repo implements IteratorAggregate {
 	 * @throws \InvalidArgumentException
 	 */
 	public function __construct(string $path) {
-		if (!($glob = glob("$path/*.mdref"))) {
-			throw new InvalidArgumentException(
-				sprintf("Not a reference, could not find '*.mdref': '%s'", $path));
+		if (!($glob = glob("$path/{mdref.*,*.mdref}", GLOB_BRACE))) {
+			throw new InvalidArgumentException("Not a reference, could not find any '{mdref.*,*.mdref}': '$path'");
 		}
 
-		$mdref = current($glob);
-		$this->path = realpath($path);
-		$this->name = basename($mdref, ".mdref");
-		$this->edit = trim(file_get_contents($mdref));
+		foreach ($glob as $mdref) {
+			switch (pathinfo($mdref, PATHINFO_EXTENSION)) {
+				case "mdref":
+					$this->name = basename($mdref, ".mdref");
+					$this->editUrl = trim(file_get_contents($mdref));
+					break;
+				case "json":
+					$json = json_decode(file_get_contents($mdref));
+					if (!isset($json->name)) {
+						throw new InvalidArgumentException("Missing key 'path' in $mdref");
+					}
+					$this->name = $json->name;
+					foreach (["origin", "branch", "editUrl", "commentProvider"] as $key) {
+						if (isset($json->$key)) {
+							$this->$key = $json->$key;
+						}
+					}
+					break;
+				default:
+					throw InvalidArgumentException("Unknown $path");
+			}
+			$this->path = realpath($path);
+		}
 	}
 
 	/**
@@ -77,7 +113,28 @@ class Repo implements IteratorAggregate {
 	 * @return string
 	 */
 	public function getEditUrl(string $entry) : string {
-		return sprintf($this->edit, $entry);
+		return sprintf($this->editUrl, $entry);
+	}
+
+	/**
+	 * @return ?string
+	 */
+	public function getBranch() {
+		return $this->branch;
+	}
+
+	/**
+	 * @return ?string
+	 */
+	public function getOrigin() {
+		return $this->origin;
+	}
+
+	/**
+	 * @return ?object
+	 */
+	public function getCommentProvider() {
+		return $this->commentProvider;
 	}
 
 	/**
