@@ -1,0 +1,15 @@
+<?php if (isset($providerData->data)) : ?>
+	<style>.giscus-frame {min-height: 16em;}</style>
+	<script>
+		function giscus_load(button) {
+			let script = document.createElement("script");
+			<?php foreach ($providerData->data as $key => $val) : ?>
+			script.setAttribute("data-<?=$key?>", <?php var_export($val)?>);
+			<?php endforeach; ?>
+
+			script.src = "//giscus.app/client.js";
+			button.parentNode.replaceChild(script, button);
+		}
+	</script>
+	<button class="activator" onclick="giscus_load(this)">Show Comments from Github Discussions</button>
+<?php endif; ?>

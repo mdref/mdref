@@ -9,12 +9,12 @@
 	<p style="white-space:pre-wrap"><?= $esc($text) ?></p>
 <?php elseif (isset($refs)) : ?>
 	<?php foreach ($refs as $repo) : /* @var \mdref\Repo $repo */ ?>
-		<?php foreach ($repo as $entry) : /* @var \mdref\Entry $entry */ ?>
+		<?php foreach ($repo as $root) : /* @var \mdref\Entry $root */ ?>
 
-		<h2 id="<?= $anchor($entry->getTitle()) ?>">
-			<a href="<?= $esc($entry->getName()) ?>"
-			><?= $esc($entry->getTitle()) ?></a></h2>
-		<div><?= $quick($entry->getIntro()) ?></div>
+		<h2 id="<?= $anchor($root->getTitle()) ?>">
+			<a href="<?= $esc($root->getName()) ?>"
+			><?= $esc($root->getTitle()) ?></a></h2>
+		<div><?= $quick($root->getIntro()) ?></div>
 			<?php if ($repo->hasStub($stub)) : ?>
 				<?php include __DIR__ . "/stub.phtml"; ?>
 			<?php endif; ?>

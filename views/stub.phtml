@@ -3,9 +3,9 @@
 					<ul style="list-style-type: '&raquo;'">
 						<li>
 							<?php if (defined("REF2HTML") && constant("REF2HTML")) :?>
-							<a href="<?= $entry->getName() ?>.stub.php"><?= $entry->getName() ?>.stub.php</a><br>
+							<a href="<?= $root->getName() ?>.stub.php"><?= $root->getName() ?>.stub.php</a><br>
 							<?php else : ?>
-							<a href="stub?ref=<?= $entry->getName() ?>"><?= $entry->getName() ?>.stub.php</a><br>
+							<a href="stub?ref=<?= $root->getName() ?>"><?= $root->getName() ?>.stub.php</a><br>
 							<?php endif; ?>
 							<small>
 								Last modified:

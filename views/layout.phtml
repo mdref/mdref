@@ -29,7 +29,15 @@
 		<?php else: ?>
 			<?php include __DIR__."/index.phtml" ?>
 		<?php endif; ?>
+		<?php if (isset($entry) && ($comments = $entry->getRepo()->getCommentProvider())) : ?>
 
+			<div class="comments">
+				<?php foreach ($comments as $providerName => $providerData) : ?>
+					<?php include __DIR__."/comments.$providerName.phtml" ?>
+				<?php endforeach; ?>
+
+			</div>
+		<?php endif; ?>
 
 			<footer>
 				<?php include __DIR__."/footer.phtml" ?>
@@ -37,7 +45,7 @@
 			</footer>
 		<?php if (isset($baseUrl)) : ?>
 
-			<script src="index.js"></script>
+			<script src="index.js" defer></script>
 		<?php endif; ?>
 
 		</div>
