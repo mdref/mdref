@@ -11,7 +11,7 @@
 <?php if ($entry->hasFunctions()) : ?>
 
 <h2 id="Functions:">Functions:</h2>
-<ul>
+<ul class="sub-entries sub-functions">
 	<?php foreach($entry as $sub) : if (!$sub->isFunction()) continue; ?>
 
 	<li>
@@ -28,7 +28,7 @@
 <?php if ($entry->hasNsClasses()) : ?>
 
 <h2 id="Namespaces,.Interfaces.and.Classes:">Namespaces, Interfaces and Classes:</h2>
-<ul>
+<ul class="sub-entries sub-ns-classes">
 	<?php foreach ($entry as $sub) : if (!$sub->isNsClass()) continue; ?>
 
 	<li>
