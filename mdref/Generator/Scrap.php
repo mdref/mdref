@@ -19,7 +19,7 @@ class Scrap {
 			$this->createDocBlock();
 		}
 		if (!$this->doc) {
-			printf(... match (get_class($ref)) {
+			fprintf(STDERR, ... match (get_class($ref)) {
 				\ReflectionClass::class => ["Missing docs for class %s\n", $ref->name],
 				\ReflectionMethod::class => ["Missing docs for method %s::%s()\n", $ref->class, $ref->name],
 				\ReflectionProperty::class => ["Missing docs for property %s %s::\$%s\n", $ref->getType(), $ref->class, $ref->name],
