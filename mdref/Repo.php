@@ -65,6 +65,7 @@ class Repo implements IteratorAggregate {
 			throw new InvalidArgumentException("Not a reference, could not find any '{mdref.*,*.mdref}': '$path'");
 		}
 
+		$this->path = realpath($path);
 		foreach ($glob as $mdref) {
 			switch (pathinfo($mdref, PATHINFO_EXTENSION)) {
 				case "mdref":
@@ -82,11 +83,10 @@ class Repo implements IteratorAggregate {
 							$this->$key = $json->$key;
 						}
 					}
-					break;
+					break 2;
 				default:
 					throw InvalidArgumentException("Unknown $path");
 			}
-			$this->path = realpath($path);
 		}
 	}
 
