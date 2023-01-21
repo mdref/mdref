@@ -38,7 +38,7 @@ jobs:
           path: refs/raphf
       - name: Install dependencies
         run: |
-          v=8.0; for b in "" ize -config; do \
+          v=8.1; for b in "" ize -config; do \
             sudo update-alternatives --set php$b /usr/bin/php$b$v; \
           done
           sudo apt-get update -y
